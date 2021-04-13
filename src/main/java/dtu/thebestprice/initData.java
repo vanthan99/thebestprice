@@ -57,6 +57,99 @@ public class initData {
         initRetailer();
         initBrand();
         initProduct();
+        initManyProductRetailer();
+    }
+
+    private void initManyProductRetailer() {
+        List<Product> productList = productRepository.findAll();
+        initProductRetailerForXuanVinh(
+                productList.get(0),
+                9890000L,
+                "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt"
+        );
+
+        initProductRetailerForXuanVinh(
+                productList.get(1),
+                9990000L,
+                "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(2),
+                10000000L,
+                "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(3),
+                11900000L,
+                "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(4),
+                11950000L,
+                "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(5),
+                12890000L,
+                "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(6),
+                13900000L,
+                "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(7),
+                16990000L,
+                "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(8),
+                17290000L,
+                "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(9),
+                17500000L,
+                "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(10),
+                18500000L,
+                "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(11),
+                18900000L,
+                "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw"
+                );
+
+        initProductRetailerForXuanVinh(
+                productList.get(12),
+                19800000L,
+                "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10"
+                );
+    }
+
+    private void initProductRetailerForXuanVinh(Product product,Long price, String url){
+        Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
+        ProductRetailer productRetailer = new ProductRetailer();
+
+        productRetailer.setUrl(url);
+        productRetailer.setProduct(product);
+        productRetailer.setRetailer(xuanVinhRetailer);
+        productRetailerRepository.save(productRetailer);
+        initPrice(productRetailer,price);
     }
 
     private void initProduct() {
