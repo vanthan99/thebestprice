@@ -65,20 +65,24 @@ public class ProductConverter {
         LongSummaryStatistics statistics = this.summaryStatisticsPrice(productRetailerResponseList);
         longProductResponse.setLowestPrice(statistics.getMin());
         longProductResponse.setHighestPrice(statistics.getMax());
+
+
         return longProductResponse;
     }
 
+
+    /*
+    * Thống kê
+    *
+    * Trong Product Retailer Response có 1 thuộc tính price
+    * trả về thống kê từ danh sách Product Retailer Response truyền vào.
+    * */
     private LongSummaryStatistics summaryStatisticsPrice(List<ProductRetailerResponse> productRetailerResponses){
         List<Long> prices = new ArrayList<>();
 
         productRetailerResponses.forEach(item -> {
-
-            if (item.getDiscountPrice() != null && item.getInitPrice() != null){
-                prices.add(item.getDiscountPrice());
-            }
-
-            if (item.getDiscountPrice() == null && item.getInitPrice() != null){
-                prices.add(item.getInitPrice());
+            if (item != null){
+                prices.add(item.getPrice());
             }
         });
         return prices.stream().mapToLong(Long::new).summaryStatistics();

@@ -40,16 +40,7 @@ public class ProductRetailerConverter {
 
         // set price
         Price price = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer);
-
-        // Trường hợp price la null. set all price la null
-        if (price == null){
-            productRetailerResponse.setInitPrice(null);
-            productRetailerResponse.setDiscountPrice(null);
-        }
-        else {
-            productRetailerResponse.setInitPrice(price.getPrice());
-            productRetailerResponse.setDiscountPrice(price.getDiscountPrice());
-        }
+        productRetailerResponse.setPrice(price.getPrice());
 
         return productRetailerResponse;
     }

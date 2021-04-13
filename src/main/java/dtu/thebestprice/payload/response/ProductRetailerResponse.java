@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class ProductRetailerResponse {
     private RetailerResponse retailerResponse;
     private String url;
-    private Long initPrice;
-    private Long discountPrice;
+    private Long price;
 }

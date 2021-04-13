@@ -154,8 +154,7 @@ public class initData {
                 "https://philong.com.vn/media/product/24222-1.jpg",
                 phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-swift-3-sf314-42-r0tr-ryzen-5-4500u-ram-16gb-ssd-1tb-man-hinh-14quot-full-hd-win-10.html",
-                21990000L,
-                null
+                21990000L
         );
 
         saveProduct(
@@ -241,8 +240,7 @@ public class initData {
                 "https://philong.com.vn/media/product/23178-an515-55-1.jpg",
                 phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-nitro-an515-55-5923-core-i5-10300hram-8gssd-512gman-hinh-15.6-fhdvga-4gb1650tiwin-10.html",
-                20090000L,
-                23990000L
+                20090000L
         );
 
         saveProduct(
@@ -336,8 +334,7 @@ public class initData {
                 "https://philong.com.vn/media/product/24207-1.jpg",
                 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-aspire-3-a315-56-502x-i5-1035g1-ram-4gb-ssd-256gb-man-hinh-15.6quot-fhd-win-10.html",
-                12990000L,
-                13190000L
+                12990000L
         );
 
         saveProduct(
@@ -389,8 +386,7 @@ public class initData {
                 "https://philong.com.vn/media/product/24205-1.png",
                 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-aspire-7-a715-42g-r4st-ryzen-5-5500u-ram-8gb-ssd-256gb-vga-gtx1650-4gb-man-hinh-15.6quot-fhd-win-10.html",
-                18490000L,
-                null
+                18490000L
         );
 
         saveProduct(
@@ -482,8 +478,7 @@ public class initData {
                 "https://philong.com.vn/media/product/24202-191084.jpg",
 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-aspire-a514-54-540f-core-i5-1135g7ram-8gbssd-512gbman-hinh-14quot-fhdwin-10silver.html",
-                17690000L,
-                null
+                17690000L
         );
 
         saveProduct(
@@ -539,8 +534,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23826-13.png",
                 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-aspire-a515-56g-51yl-core-i5-1135g7-ram-8gb-ssd-512gb-man-hinh-15.6inch-full-hd-vga-mx350-2gb-win-10.html",
-                18690000L,
-                null
+                18690000L
         );
 
         saveProduct(
@@ -630,8 +624,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23787-4b969e2e31009785163807b410b54024.jpg",
                 phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-predator-ph315-53-770l-core-i7-10750h-ram-8gb-ssd-512gb-man-hinh-15.6quot-full-hdvga-6gb-1660ti-win-10.html",
-                35790000L,
-                37390000L
+                35790000L
         );
 
         saveProduct(
@@ -717,8 +710,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23723-1.png",
 phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-aspire-a514-54-39ku-core-i3-1115g4ram-4gbssd-256gbman-hinh-14quot-fhdwin-10silver.html",
-                12990000L,
-                13490000L
+                12990000L
         );
 
         saveProduct(
@@ -772,8 +764,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23664-6.jpg",
                 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-swift-5-sf514-55t-51nz-i5-1135g7-ram-8gb-ssd-512gb-intel-iris-xe-graphics-man-hinh-14-fhd-touch-win-10.html",
-                23990000L,
-                null
+                23990000L
         );
 
         saveProduct(
@@ -861,8 +852,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23659-thumb650_acer_aspire_5_a514-54_silver_1.jpg",
 phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-aspire-a514-54-51vt-core-i5-1135g7ram-8gbssd-512gbman-hinh-14quot-fhdwin-10siver.html",
-                15990000L,
-                null
+                15990000L
         );
 
         saveProduct(
@@ -952,8 +942,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23658-5925_35205_1.jpg",
                 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-aspire-a514-54-51rb-core-i5-1135g7ram-8gbssd-256gbman-hinh-14quot-fhdwin-10gold.html",
-                15490000L,
-                null
+                15490000L
         );
 
         saveProduct(
@@ -1041,8 +1030,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23259-5774_aspire7_a715_75g_41g_black_01.png",
                 phiLongRetailer,
 "https://philong.com.vn/laptop-acer-aspire-7-a715-41g-r150-r7-3750hram-8gbssd-512gbman-hinh-15.6quot-fhdvga-1650ti-4gwin-10.html",
-                18090000L,
-                20990000L
+                18090000L
         );
 
         saveProduct(
@@ -1128,8 +1116,7 @@ phiLongRetailer,
                 "https://philong.com.vn/media/product/23258-6731_acer_nitro_5_an515_55_55e3_nh_q7qsv_002_1.jpg",
                 phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-nitro-an515-55-77p9-core-i7-10750hram-8gbssd-512gbman-hinh-15.6quot-fhdvga-4g-1650tiwin-10.html",
-                24090000L,
-                28990000L
+                24090000L
         );
     }
 
@@ -1144,8 +1131,7 @@ phiLongRetailer,
 
             Retailer retailer,
             String url,
-            Long initPrice,
-            Long discountPrice
+            Long price
     ) {
 
         Product product = new Product();
@@ -1158,23 +1144,22 @@ phiLongRetailer,
         productRepository.save(product);
         imageRepository.save(new Image(image, product));
 
-        initProductRetailer(product,retailer,url,initPrice,discountPrice);
+        initProductRetailer(product,retailer,url,price);
     }
 
-    private void initProductRetailer(Product product,Retailer retailer, String url, Long initPrice, Long discountPrice){
+    private void initProductRetailer(Product product,Retailer retailer, String url, Long price){
         ProductRetailer productRetailer = new ProductRetailer();
         productRetailer.setProduct(product);
         productRetailer.setRetailer(retailer);
         productRetailer.setUrl(url);
         productRetailerRepository.save(productRetailer);
 
-        initPrice(productRetailer,initPrice,discountPrice);
+        initPrice(productRetailer,price);
     }
 
-    private void initPrice(ProductRetailer productRetailer, Long initPrice, Long discountPrice) {
+    private void initPrice(ProductRetailer productRetailer,Long p) {
         Price price = new Price();
-        price.setDiscountPrice(discountPrice);
-        price.setPrice(initPrice);
+        price.setPrice(p);
         price.setProductRetailer(productRetailer);
         priceRepository.save(price);
     }
