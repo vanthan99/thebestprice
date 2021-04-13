@@ -1,3 +1,7 @@
 # thebestprice
 
-uncomment @PostConstruct trong class initData để khởi tạo dữ liệu.
+#Khởi tạo dữ liệu
+Uncomment @PostConstruct trong class initData.
+
+# Rest Document API
+"/swagger-ui.html"
