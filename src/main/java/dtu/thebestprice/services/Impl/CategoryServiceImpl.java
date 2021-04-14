@@ -66,7 +66,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return new ApiResponse(false, "Already Exists Name In Same Level");
     }
-
     public Category toEntity(CategoryRequest categoryRequest) throws IllegalArgumentException {
         Category category = new Category();
         category.setTitle(categoryRequest.getTitle());

@@ -22,6 +22,6 @@ public class CategoryController {
     @ApiOperation(value = "Danh sách tất cả danh mục")
     @GetMapping
     public ResponseEntity<Object> findAll(){
-        return ResponseEntity.ok(categoryRepository.findByOrderByCategory());
+        return ResponseEntity.ok(categoryRepository.findByCategoryIsNull());
     }
 }

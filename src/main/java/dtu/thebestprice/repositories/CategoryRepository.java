@@ -10,6 +10,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Category findByTitleAndCategory(String title,Category category);
     Category findByTitle(String title);
 
+    List<Category> findByCategoryIsNull();
+
     // Lấy danh sách category có category truyền vào là parent.
     List<Category> findByOrderByCategory();
 //    List<Category>
