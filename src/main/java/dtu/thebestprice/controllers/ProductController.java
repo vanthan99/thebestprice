@@ -16,17 +16,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/v1/product")
 @Api
 public class ProductController {
-    @Autowired
-    ProductService productService;
 
-    @ApiOperation(value = "Lọc sản phẩm")
-    @GetMapping(value = "/filter")
-    public ResponseEntity<Object> filter(
-            @ApiParam(value = "Từ khóa cần lọc") @RequestParam(name = "keyword", required = false) String keyword,
-            @ApiParam(value = "Mã danh mục cần lọc") @RequestParam(name = "catId", required = false) Long catId,
-            Pageable pageable
-    ){
-
-        return ResponseEntity.ok(productService.filter(keyword, catId, pageable));
-    }
 }
