@@ -31,8 +31,8 @@ public class ProductRetailerConverter {
 
         // kiểm tra nếu retailer null thì set product retailer là null.
         if (retailer == null)
-            productRetailerResponse.setRetailerResponse(null);
-        else productRetailerResponse.setRetailerResponse(retailerConverter.toRetailerResponse(retailer));
+            productRetailerResponse.setStore(null);
+        else productRetailerResponse.setStore(retailerConverter.toRetailerResponse(retailer));
 
 
         // set url product

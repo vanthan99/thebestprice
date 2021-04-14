@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductRetailerResponse {
-    private RetailerResponse retailerResponse;
+    private RetailerResponse store;
     private String url;
     private Long price;
+
 }

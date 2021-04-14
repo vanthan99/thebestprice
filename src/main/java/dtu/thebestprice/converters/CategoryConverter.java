@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CategoryConverter {
-    public ShortCategoryResponse toShortCategoryResponse(Category category){
+    public ShortCategoryResponse toShortCategoryResponse(Category category) {
         if (category == null)
             return null;
         return new ShortCategoryResponse(category.getId(), category.getTitle());

@@ -14,11 +14,10 @@ public class LongProductResponse {
     private String title;
     private String shortDescription;
     private String longDescription;
-    private ShortCategoryResponse shortCategoryResponse;
-    private BrandResponse brandResponse;
+    private ShortCategoryResponse category;
+    private BrandResponse brand;
     private List<String> images;
     private Long lowestPrice;
     private Long highestPrice;
     private List<ProductRetailerResponse> listStores;
-
 }

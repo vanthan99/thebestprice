@@ -1,12 +1,9 @@
 package dtu.thebestprice.converters;
 
-import dtu.thebestprice.entities.Category;
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
-import dtu.thebestprice.payload.response.RetailerResponse;
-import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.repositories.ImageRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +40,10 @@ public class ProductConverter {
         longProductResponse.setLongDescription(product.getLongDescription());
 
         // set category
-        longProductResponse.setShortCategoryResponse(categoryConverter.toShortCategoryResponse(product.getCategory()));
+        longProductResponse.setCategory(categoryConverter.toShortCategoryResponse(product.getCategory()));
 
         // set brand
-        longProductResponse.setBrandResponse(brandConverter.toBrandResponse(product.getBrand()));
+        longProductResponse.setBrand(brandConverter.toBrandResponse(product.getBrand()));
 
         // set list image
         List<String> images = new ArrayList<>();
