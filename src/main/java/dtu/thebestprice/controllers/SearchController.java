@@ -1,5 +1,6 @@
 package dtu.thebestprice.controllers;
 
+import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.services.ProductService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,12 +18,10 @@ public class SearchController {
     @ApiOperation(value = "Lọc sản phẩm")
     @PostMapping(value = "/v1/filter")
     public ResponseEntity<Object> filter(
-            @ApiParam(value = "Từ khóa cần lọc") @RequestParam(name = "keyword", required = false) String keyword,
-            @ApiParam(value = "Mã danh mục cần lọc") @RequestParam(name = "catId", required = false) Long catId,
+            @RequestBody FilterRequest filterRequest,
             Pageable pageable
     ){
-
-        return ResponseEntity.ok(productService.filter(keyword, catId, pageable));
+        return ResponseEntity.ok(productService.filter(filterRequest.getKeyword(), filterRequest.getCatId(), pageable));
     }
 
 }

@@ -8,7 +8,7 @@ public final class ProductSpecification {
         return (root, criteriaQuery, criteriaBuilder) -> {
             if (title == null)
                 return criteriaBuilder.conjunction();
-            return criteriaBuilder.like(root.get("title"), "%" + title + "%");
+            return criteriaBuilder.like(criteriaBuilder.upper(root.get("title")) , "%" + title.toUpperCase() + "%");
         };
     }
 
