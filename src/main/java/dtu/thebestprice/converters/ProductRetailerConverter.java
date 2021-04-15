@@ -27,12 +27,10 @@ public class ProductRetailerConverter {
     public ProductRetailerResponse toProductRetailerResponse(ProductRetailer productRetailer){
         ProductRetailerResponse productRetailerResponse = new ProductRetailerResponse();
 
-        Retailer retailer = retailerRepository.findById(productRetailer.getRetailer().getId()).orElse(null);
-
         // kiểm tra nếu retailer null thì set product retailer là null.
-        if (retailer == null)
+        if (productRetailer.getRetailer() == null)
             productRetailerResponse.setStore(null);
-        else productRetailerResponse.setStore(retailerConverter.toRetailerResponse(retailer));
+        else productRetailerResponse.setStore(retailerConverter.toRetailerResponse(productRetailer.getRetailer()));
 
 
         // set url product
