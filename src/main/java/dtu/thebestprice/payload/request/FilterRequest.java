@@ -14,5 +14,5 @@ public class FilterRequest {
     private String keyword;
 
     @ApiModelProperty(notes = "mã danh mục cần lọc")
-    private Set<String> catIds;
+    private String catId;
 }

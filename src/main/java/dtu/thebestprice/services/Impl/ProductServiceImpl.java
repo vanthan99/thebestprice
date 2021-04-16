@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
         Specification specification = Specification
                 .where(
-                        ProductSpecification.categoryIs(getSetCatId(filterRequest.getCatIds()))
+                        ProductSpecification.categoryIs(getSetCatId(filterRequest.getCatId()))
                                 .and(ProductSpecification.titleContaining(filterRequest.getKeyword()))
                 );
 
@@ -42,25 +42,24 @@ public class ProductServiceImpl implements ProductService {
         return productPage.map(product -> productConverter.toLongProductResponse(product));
     }
 
-    private Set<Long> getSetCatId(Set<String> categoryIds) {
-
-        if (categoryIds == null || categoryIds.isEmpty()) return null;
+    private Set<Long> getSetCatId(String categoryId) {
+        if (categoryId == null || categoryId.isEmpty()) return null;
 
         Set<Long> longSet = new HashSet<>();
 
-        categoryIds.forEach(item -> {
-            try {
-                Category category = categoryRepository.findById(Long.parseLong(item)).orElse(null);
-                if (category != null) {
-                    longSet.add(category.getId());
-                    if (category.getCategory() == null) {
-                        longSet.addAll(categoryRepository.findAllCatIdOfParent(category.getId()));
-                    }
-                }
-            } catch (Exception ignored) {
+        try {
+            Category category = categoryRepository.findById(Long.parseLong(categoryId)).orElse(null);
 
+            if (category != null) {
+                longSet.add(category.getId());
+                if (category.getCategory() == null) {
+                    longSet.addAll(categoryRepository.findAllCatIdOfParent(category.getId()));
+                }
             }
-        });
+        }catch (Exception ignored){
+            return null;
+        }
+
         if (longSet.isEmpty()) return null;
         return longSet;
     }
