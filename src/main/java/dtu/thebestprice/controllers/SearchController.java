@@ -1,6 +1,7 @@
 package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.payload.request.FilterRequest;
+import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.services.SearchService;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +28,13 @@ public class SearchController {
     public ResponseEntity<Object> filter(
             @RequestBody FilterRequest filterRequest,
             @PageableDefault(size = 6) Pageable pageable
-    ){
-        return ResponseEntity.ok(productService.filter(filterRequest, pageable));
+    ) {
+
+        try {
+            return ResponseEntity.ok(productService.filter(filterRequest, pageable));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ApiResponse(false, "Nhập id danh mục không hợp lệ!"));
+        }
     }
 
 }

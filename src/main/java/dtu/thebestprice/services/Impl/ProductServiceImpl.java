@@ -9,12 +9,14 @@ import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.specifications.ProductSpecification;
+import org.hibernate.service.NullServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.management.RuntimeErrorException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     CategoryRepository categoryRepository;
 
     @Override
-    public Page<LongProductResponse> filter(FilterRequest filterRequest, Pageable pageable) {
+    public Page<LongProductResponse> filter(FilterRequest filterRequest, Pageable pageable) throws NumberFormatException {
 
         Specification specification = Specification
                 .where(
@@ -42,25 +44,16 @@ public class ProductServiceImpl implements ProductService {
         return productPage.map(product -> productConverter.toLongProductResponse(product));
     }
 
-    private Set<Long> getSetCatId(String categoryId) {
-        if (categoryId == null || categoryId.isEmpty()) return null;
-
+    private Set<Long> getSetCatId(String categoryId) throws NumberFormatException {
+        if (categoryId == null) return null;
         Set<Long> longSet = new HashSet<>();
-
-        try {
-            Category category = categoryRepository.findById(Long.parseLong(categoryId)).orElse(null);
-
-            if (category != null) {
-                longSet.add(category.getId());
-                if (category.getCategory() == null) {
-                    longSet.addAll(categoryRepository.findAllCatIdOfParent(category.getId()));
-                }
+        Category category = categoryRepository.findById(Long.parseLong(categoryId)).orElse(null);
+        if (category != null) {
+            longSet.add(category.getId());
+            if (category.getCategory() == null) {
+                longSet.addAll(categoryRepository.findAllCatIdOfParent(category.getId()));
             }
-        }catch (Exception ignored){
-            return null;
         }
-
-        if (longSet.isEmpty()) return null;
         return longSet;
     }
 }
