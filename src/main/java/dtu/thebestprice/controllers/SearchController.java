@@ -6,6 +6,7 @@ import dtu.thebestprice.services.SearchService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ public class SearchController {
     @PostMapping(value = "/v1/filter")
     public ResponseEntity<Object> filter(
             @RequestBody FilterRequest filterRequest,
-            Pageable pageable
+            @PageableDefault(size = 6) Pageable pageable
     ){
         return ResponseEntity.ok(productService.filter(filterRequest, pageable));
     }
