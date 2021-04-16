@@ -19,5 +19,5 @@ public class LongProductResponse {
     private List<String> images;
     private Long lowestPrice;
     private Long highestPrice;
-    private List<ProductRetailerResponse> listStores;
+    private List<ProductRetailerResponse> prices;
 }

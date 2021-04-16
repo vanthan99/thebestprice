@@ -97,6 +97,23 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
+
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.hibernate/hibernate-search-orm &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate</groupId>-->
+<!--            <artifactId>hibernate-search-orm</artifactId>-->
+<!--            <version>5.11.8.Final</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.hibernate/hibernate-search-elasticsearch &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate</groupId>-->
+<!--            <artifactId>hibernate-search-elasticsearch</artifactId>-->
+<!--            <version>5.11.8.Final</version>-->
+<!--        </dependency>-->
+
+
+
     </dependencies>
 
     <build>

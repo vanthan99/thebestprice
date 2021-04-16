@@ -14,5 +14,4 @@ public class RetailerConverter {
                 retailer.getLogoImage()
         );
     }
-
 }

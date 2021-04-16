@@ -56,7 +56,7 @@ public class ProductConverter {
         // set product retailer response
         List<ProductRetailer> productRetailers = productRetailerRepository.findByProductAndDeleteFlgFalse(product);
         List<ProductRetailerResponse> productRetailerResponseList = productRetailerConverter.toProductRetailerResponseList(productRetailers);
-        longProductResponse.setListStores(productRetailerResponseList);
+        longProductResponse.setPrices(productRetailerResponseList);
 
         // set lowest and highest price
         LongSummaryStatistics statistics = this.summaryStatisticsPrice(productRetailerResponseList);

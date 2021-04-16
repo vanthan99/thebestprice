@@ -62,94 +62,110 @@ public class initData {
 
     private void initManyProductRetailer() {
         List<Product> productList = productRepository.findAll();
-        initProductRetailerForXuanVinh(
+        Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
+
+        initProductRetailer(
                 productList.get(0),
-                9890000L,
-                "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt"
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
+                9890000L
         );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(1),
-                9990000L,
-                "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb",
+                9990000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(2),
-                10000000L,
-                "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw",
+                10000000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(3),
-                11900000L,
-                "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt",
+                11900000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(4),
-                11950000L,
-                "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt",
+                11950000L
 
-        initProductRetailerForXuanVinh(
+        );
+
+        initProductRetailer(
                 productList.get(5),
-                12890000L,
-                "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt",
+                12890000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(6),
-                13900000L,
-                "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt",
+                13900000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(7),
-                16990000L,
-                "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang",
+                16990000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(8),
-                17290000L,
-                "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang",
+                17290000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(9),
-                17500000L,
-                "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt",
+                17500000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(10),
-                18500000L,
-                "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw",
+                18500000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(11),
-                18900000L,
-                "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw",
+                18900000L
+        );
 
-        initProductRetailerForXuanVinh(
+        initProductRetailer(
                 productList.get(12),
-                19800000L,
-                "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10"
-                );
+                xuanVinhRetailer,
+                "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10",
+                19800000L
+        );
     }
 
-    private void initProductRetailerForXuanVinh(Product product,Long price, String url){
-        Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
+    private void initProductRetailerForXuanVinh(Product product, Long price, String url) {
+        Retailer xuanVinhRetailer = retailerRepository.findByName("Xuân Vinh");
         ProductRetailer productRetailer = new ProductRetailer();
 
         productRetailer.setUrl(url);
         productRetailer.setProduct(product);
         productRetailer.setRetailer(xuanVinhRetailer);
         productRetailerRepository.save(productRetailer);
-        initPrice(productRetailer,price);
+        initPrice(productRetailer, price);
     }
 
     private void initProduct() {
@@ -426,7 +442,7 @@ public class initData {
                 brandAcer,
                 "https://philong.com.vn/media/product/24207-1.jpg",
                 phiLongRetailer,
-"https://philong.com.vn/laptop-acer-aspire-3-a315-56-502x-i5-1035g1-ram-4gb-ssd-256gb-man-hinh-15.6quot-fhd-win-10.html",
+                "https://philong.com.vn/laptop-acer-aspire-3-a315-56-502x-i5-1035g1-ram-4gb-ssd-256gb-man-hinh-15.6quot-fhd-win-10.html",
                 12990000L
         );
 
@@ -478,7 +494,7 @@ public class initData {
                 brandAcer,
                 "https://philong.com.vn/media/product/24205-1.png",
                 phiLongRetailer,
-"https://philong.com.vn/laptop-acer-aspire-7-a715-42g-r4st-ryzen-5-5500u-ram-8gb-ssd-256gb-vga-gtx1650-4gb-man-hinh-15.6quot-fhd-win-10.html",
+                "https://philong.com.vn/laptop-acer-aspire-7-a715-42g-r4st-ryzen-5-5500u-ram-8gb-ssd-256gb-vga-gtx1650-4gb-man-hinh-15.6quot-fhd-win-10.html",
                 18490000L
         );
 
@@ -569,8 +585,8 @@ public class initData {
                 categoryLaptopAcer,
                 brandAcer,
                 "https://philong.com.vn/media/product/24202-191084.jpg",
-phiLongRetailer,
-"https://philong.com.vn/laptop-acer-aspire-a514-54-540f-core-i5-1135g7ram-8gbssd-512gbman-hinh-14quot-fhdwin-10silver.html",
+                phiLongRetailer,
+                "https://philong.com.vn/laptop-acer-aspire-a514-54-540f-core-i5-1135g7ram-8gbssd-512gbman-hinh-14quot-fhdwin-10silver.html",
                 17690000L
         );
 
@@ -626,7 +642,7 @@ phiLongRetailer,
                 brandAcer,
                 "https://philong.com.vn/media/product/23826-13.png",
                 phiLongRetailer,
-"https://philong.com.vn/laptop-acer-aspire-a515-56g-51yl-core-i5-1135g7-ram-8gb-ssd-512gb-man-hinh-15.6inch-full-hd-vga-mx350-2gb-win-10.html",
+                "https://philong.com.vn/laptop-acer-aspire-a515-56g-51yl-core-i5-1135g7-ram-8gb-ssd-512gb-man-hinh-15.6inch-full-hd-vga-mx350-2gb-win-10.html",
                 18690000L
         );
 
@@ -801,7 +817,7 @@ phiLongRetailer,
                 categoryLaptopAcer,
                 brandAcer,
                 "https://philong.com.vn/media/product/23723-1.png",
-phiLongRetailer,
+                phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-aspire-a514-54-39ku-core-i3-1115g4ram-4gbssd-256gbman-hinh-14quot-fhdwin-10silver.html",
                 12990000L
         );
@@ -856,7 +872,7 @@ phiLongRetailer,
                 brandAcer,
                 "https://philong.com.vn/media/product/23664-6.jpg",
                 phiLongRetailer,
-"https://philong.com.vn/laptop-acer-swift-5-sf514-55t-51nz-i5-1135g7-ram-8gb-ssd-512gb-intel-iris-xe-graphics-man-hinh-14-fhd-touch-win-10.html",
+                "https://philong.com.vn/laptop-acer-swift-5-sf514-55t-51nz-i5-1135g7-ram-8gb-ssd-512gb-intel-iris-xe-graphics-man-hinh-14-fhd-touch-win-10.html",
                 23990000L
         );
 
@@ -943,7 +959,7 @@ phiLongRetailer,
                 categoryLaptopAcer,
                 brandAcer,
                 "https://philong.com.vn/media/product/23659-thumb650_acer_aspire_5_a514-54_silver_1.jpg",
-phiLongRetailer,
+                phiLongRetailer,
                 "https://philong.com.vn/laptop-acer-aspire-a514-54-51vt-core-i5-1135g7ram-8gbssd-512gbman-hinh-14quot-fhdwin-10siver.html",
                 15990000L
         );
@@ -1034,7 +1050,7 @@ phiLongRetailer,
                 brandAcer,
                 "https://philong.com.vn/media/product/23658-5925_35205_1.jpg",
                 phiLongRetailer,
-"https://philong.com.vn/laptop-acer-aspire-a514-54-51rb-core-i5-1135g7ram-8gbssd-256gbman-hinh-14quot-fhdwin-10gold.html",
+                "https://philong.com.vn/laptop-acer-aspire-a514-54-51rb-core-i5-1135g7ram-8gbssd-256gbman-hinh-14quot-fhdwin-10gold.html",
                 15490000L
         );
 
@@ -1122,7 +1138,7 @@ phiLongRetailer,
                 brandAcer,
                 "https://philong.com.vn/media/product/23259-5774_aspire7_a715_75g_41g_black_01.png",
                 phiLongRetailer,
-"https://philong.com.vn/laptop-acer-aspire-7-a715-41g-r150-r7-3750hram-8gbssd-512gbman-hinh-15.6quot-fhdvga-1650ti-4gwin-10.html",
+                "https://philong.com.vn/laptop-acer-aspire-7-a715-41g-r150-r7-3750hram-8gbssd-512gbman-hinh-15.6quot-fhdvga-1650ti-4gwin-10.html",
                 18090000L
         );
 
@@ -1237,20 +1253,20 @@ phiLongRetailer,
         productRepository.save(product);
         imageRepository.save(new Image(image, product));
 
-        initProductRetailer(product,retailer,url,price);
+        initProductRetailer(product, retailer, url, price);
     }
 
-    private void initProductRetailer(Product product,Retailer retailer, String url, Long price){
+    private void initProductRetailer(Product product, Retailer retailer, String url, Long price) {
         ProductRetailer productRetailer = new ProductRetailer();
         productRetailer.setProduct(product);
         productRetailer.setRetailer(retailer);
         productRetailer.setUrl(url);
         productRetailerRepository.save(productRetailer);
 
-        initPrice(productRetailer,price);
+        initPrice(productRetailer, price);
     }
 
-    private void initPrice(ProductRetailer productRetailer,Long p) {
+    private void initPrice(ProductRetailer productRetailer, Long p) {
         Price price = new Price();
         price.setPrice(p);
         price.setProductRetailer(productRetailer);
@@ -1333,6 +1349,14 @@ phiLongRetailer,
                 "https://philong.com.vn/",
                 "https://philong.com.vn/media/banner/logo_PHILONG-LOGO-min-cn.png"
         ));
+
+        retailerRepository.save(new Retailer(
+                "Xuân Vinh",
+                "Trang web công ty Xuân Vinh",
+                "http://xuanvinh.vn/",
+                "http://xuanvinh.vn/uploads/logo3.png"
+        ));
+
 
     }
 

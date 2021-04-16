@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -38,6 +39,9 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "product")
+    private Set<ProductRetailer> productRetailers;
 
     @Column
     private Long viewCount = 0L;

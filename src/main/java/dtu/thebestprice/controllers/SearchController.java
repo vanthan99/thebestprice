@@ -2,6 +2,7 @@ package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.services.ProductService;
+import dtu.thebestprice.services.SearchService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,16 @@ public class SearchController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    SearchService searchService;
+
     @ApiOperation(value = "Lọc sản phẩm")
     @PostMapping(value = "/v1/filter")
     public ResponseEntity<Object> filter(
             @RequestBody FilterRequest filterRequest,
             Pageable pageable
     ){
-        return ResponseEntity.ok(productService.filter(filterRequest.getKeyword(), filterRequest.getCatId(), pageable));
+        return ResponseEntity.ok(productService.filter(filterRequest, pageable));
     }
 
 }

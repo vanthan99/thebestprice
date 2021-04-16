@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface RetailerRepository extends JpaRepository<Retailer, Long> {
     Retailer findByHomePage(String homePage);
+
+    Retailer findByName(String name);
 }
