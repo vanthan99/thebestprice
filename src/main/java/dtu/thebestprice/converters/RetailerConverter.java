@@ -9,6 +9,7 @@ public class RetailerConverter {
     public RetailerResponse toRetailerResponse(Retailer retailer){
         return new RetailerResponse(
                 retailer.getId(),
+                retailer.getName(),
                 retailer.getDescription(),
                 retailer.getHomePage(),
                 retailer.getLogoImage()

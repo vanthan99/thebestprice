@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RetailerResponse {
     private Long id;
+    private String name;
     private String description;
     private String homePage;
     private String logoImage;
