@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,16 +60,6 @@ public class ProductServiceImpl implements ProductService {
             } catch (Exception ignored) {
 
             }
-
-
-//            if (category != null) {
-//                longSet.add(category.getId());
-//                if (!category.getCategories().isEmpty())
-//                    category.getCategories().forEach(i -> {
-//                        longSet.add(i.getId());
-//                    });
-//            }
-
         });
         if (longSet.isEmpty()) return null;
         return longSet;

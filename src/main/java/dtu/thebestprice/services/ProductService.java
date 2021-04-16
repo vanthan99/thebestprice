@@ -1,6 +1,5 @@
 package dtu.thebestprice.services;
 
-import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import org.springframework.data.domain.Page;
