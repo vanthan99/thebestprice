@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,7 @@ public class SearchController {
         try {
             return ResponseEntity.ok(productService.filter(filterRequest, pageable));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ApiResponse(false, "Nhập id danh mục không hợp lệ!"));
+            return new ResponseEntity<>(new ApiResponse(false, "Nhập id danh mục không hợp lệ!"),HttpStatus.NOT_FOUND);
         }
     }
 
