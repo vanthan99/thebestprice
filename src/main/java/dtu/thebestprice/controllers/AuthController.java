@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +52,7 @@ public class AuthController {
                             loginRequest.getPassword()
                     ));
         } catch (AuthenticationException e) {
-            return ResponseEntity.ok(new ApiResponse(false, "Username hoặc password không đúng"));
+            return new ResponseEntity<>(new ApiResponse(false, "Username hoặc password không đúng"),HttpStatus.UNAUTHORIZED);
         }
 
         // Nếu không xảy ra exception tức là thông tin hợp lệ

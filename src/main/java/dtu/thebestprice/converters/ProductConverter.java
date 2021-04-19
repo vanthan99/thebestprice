@@ -6,6 +6,7 @@ import dtu.thebestprice.payload.response.LongProductResponse;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
 import dtu.thebestprice.repositories.ImageRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
+import dtu.thebestprice.repositories.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,9 @@ public class ProductConverter {
     @Autowired
     ProductRetailerConverter productRetailerConverter;
 
+    @Autowired
+    RatingRepository ratingRepository;
+
 
     public LongProductResponse toLongProductResponse(Product product){
         LongProductResponse longProductResponse = new LongProductResponse();
@@ -51,6 +55,9 @@ public class ProductConverter {
             images.add(image.getUrl());
         });
         longProductResponse.setImages(images);
+
+        // set Rating
+        longProductResponse.setRate(ratingRepository.getRateByProduct(product.getId()));
 
 
         // set product retailer response

@@ -9,20 +9,20 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
+@Table
 @Getter
 @Setter
-@Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductRetailer extends BaseEntity {
+public class Rating extends BaseEntity {
     @Column
-    private String url;
+    private Long rate = 0L;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "retailer_id")
-    private Retailer retailer;
+    @JoinColumn(name = "userId")
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "productId")
     private Product product;
 }
