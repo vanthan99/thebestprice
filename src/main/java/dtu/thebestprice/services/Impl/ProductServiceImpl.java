@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<LongProductResponse> findByCategoryId(Pageable pageable, String catId) throws Exception {
+    public Page<LongProductResponse> findByCategoryId(Pageable pageable, String catId) throws Exception  {
         Set<Long> setIds = getSetCatId(catId);
         if (setIds == null) throw new Exception("Mã danh mục trống");
         Specification specification = Specification.where(

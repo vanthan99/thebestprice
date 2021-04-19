@@ -35,7 +35,7 @@ public class ProductConverter {
     RatingRepository ratingRepository;
 
 
-    public LongProductResponse toLongProductResponse(Product product){
+    public LongProductResponse toLongProductResponse(Product product) {
         LongProductResponse longProductResponse = new LongProductResponse();
 
         longProductResponse.setId(product.getId());
@@ -67,8 +67,8 @@ public class ProductConverter {
 
         // set lowest and highest price
         LongSummaryStatistics statistics = this.summaryStatisticsPrice(productRetailerResponseList);
-        longProductResponse.setLowestPrice(statistics.getMin());
-        longProductResponse.setHighestPrice(statistics.getMax());
+        longProductResponse.setLowestPrice(statistics.getCount() != 0 ? statistics.getMin() : 0);
+        longProductResponse.setHighestPrice(statistics.getCount() != 0 ? statistics.getMax() : 0);
 
 
         return longProductResponse;
@@ -76,17 +76,19 @@ public class ProductConverter {
 
 
     /*
-    * Thống kê
-    *
-    * Trong Product Retailer Response có 1 thuộc tính price
-    * trả về thống kê từ danh sách Product Retailer Response truyền vào.
-    * */
-    private LongSummaryStatistics summaryStatisticsPrice(List<ProductRetailerResponse> productRetailerResponses){
+     * Thống kê
+     *
+     * Trong Product Retailer Response có 1 thuộc tính price
+     * trả về thống kê từ danh sách Product Retailer Response truyền vào.
+     * */
+    private LongSummaryStatistics summaryStatisticsPrice(List<ProductRetailerResponse> productRetailerResponses) {
         List<Long> prices = new ArrayList<>();
 
         productRetailerResponses.forEach(item -> {
-            if (item != null){
-                prices.add(item.getPrice());
+            if (item != null) {
+                if (item.getPrice() != null) {
+                    prices.add(item.getPrice());
+                }
             }
         });
         return prices.stream().mapToLong(Long::new).summaryStatistics();
