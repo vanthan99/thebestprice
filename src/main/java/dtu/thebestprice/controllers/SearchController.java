@@ -34,7 +34,7 @@ public class SearchController {
         try {
             return ResponseEntity.ok(productService.filter(filterRequest, pageable));
         } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, "Nhập id danh mục không hợp lệ!"),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()),HttpStatus.NOT_FOUND);
         }
     }
 
