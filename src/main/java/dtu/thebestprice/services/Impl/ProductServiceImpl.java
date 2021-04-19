@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -38,10 +39,20 @@ public class ProductServiceImpl implements ProductService {
                 .where(
                         ProductSpecification.categoryIs(getSetCatId(filterRequest.getCatId()))
                                 .and(ProductSpecification.titleContaining(filterRequest.getKeyword()))
+                        .and(ProductSpecification.retailerIdIn(convertListRetailerId(filterRequest.getRetailerIds())))
+
                 );
 
         Page<Product> productPage = productRepository.findAll(specification, pageable);
         return productPage.map(product -> productConverter.toLongProductResponse(product));
+    }
+
+    private Set<Long> convertListRetailerId(List<String> retailerIds) throws  NumberFormatException {
+        Set<Long> set = new HashSet<>();
+        retailerIds.forEach(s -> {
+            set.add(Long.parseLong(s));
+        });
+        return set;
     }
 
     private Set<Long> getSetCatId(String categoryId) throws NumberFormatException {

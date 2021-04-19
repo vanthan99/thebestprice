@@ -1,10 +1,12 @@
 package dtu.thebestprice.specifications;
 
 import dtu.thebestprice.entities.Product;
+import dtu.thebestprice.entities.ProductRetailer;
 import dtu.thebestprice.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.SetJoin;
 import java.util.Set;
 
 public final class ProductSpecification {
@@ -31,7 +33,8 @@ public final class ProductSpecification {
         return (root, criteriaQuery, criteriaBuilder) -> {
             if (ids == null)
                 return criteriaBuilder.conjunction();
-            return root.join("productRetailer").get("retailer").get("id").in(ids);
+            SetJoin<Product, ProductRetailer> setJoin = root.joinSet("productRetailers");
+            return setJoin.join("retailer").get("id").in(ids);
         };
     }
 }
