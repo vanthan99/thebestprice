@@ -16,6 +16,17 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<Object> findById(
+            @PathVariable(name = "productId") String productId
+    ){
+        try {
+            return ResponseEntity.ok(productService.findById(productId));
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ApiResponse(false,e.getMessage()),HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/catId/{catId}")
     public ResponseEntity<Object> findByCategoryId(
             Pageable pageable,

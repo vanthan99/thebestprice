@@ -58,6 +58,20 @@ public class ProductServiceImpl implements ProductService {
         return productPage.map(product -> productConverter.toLongProductResponse(product));
     }
 
+    @Override
+    public LongProductResponse findById(String productId) throws Exception {
+        long id ;
+        try {
+            id = Long.parseLong(productId);
+        }catch (Exception e){
+            throw new Exception("id sản phẩm không đúng định dạng");
+        }
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new Exception("id của sản phẩm không tồn tại"));
+
+        return productConverter.toLongProductResponse(product);
+    }
+
     private Set<Long> convertListRetailerId(List<String> retailerIds) throws Exception {
         if (retailerIds == null) return null;
         Set<Long> set = new HashSet<>();
