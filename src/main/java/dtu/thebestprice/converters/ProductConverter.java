@@ -3,6 +3,7 @@ package dtu.thebestprice.converters;
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
 import dtu.thebestprice.payload.response.LongProductResponse;
+import dtu.thebestprice.payload.response.ProductItem;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
 import dtu.thebestprice.repositories.ImageRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
@@ -74,6 +75,21 @@ public class ProductConverter {
         return longProductResponse;
     }
 
+    public ProductItem toProductItem(Product product){
+        ProductItem productItem = new ProductItem();
+        productItem.setTitle(product.getTitle());
+        productItem.setId(product.getId());
+
+        /**/
+        List<ProductRetailer> productRetailers = productRetailerRepository.findByProductAndDeleteFlgFalse(product);
+        List<ProductRetailerResponse> productRetailerResponseList = productRetailerConverter.toProductRetailerResponseList(productRetailers);
+        LongSummaryStatistics statistics = this.summaryStatisticsPrice(productRetailerResponseList);
+
+        productItem.setPrice(statistics.getCount() != 0 ? statistics.getMin() : 0);
+
+        productItem.setTotalStore((long) productRetailers.size());
+        return productItem;
+    }
 
     /*
      * Thống kê
