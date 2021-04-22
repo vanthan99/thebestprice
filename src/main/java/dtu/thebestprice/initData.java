@@ -10,10 +10,12 @@ import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.AuthService;
 import dtu.thebestprice.services.CategoryService;
+import dtu.thebestprice.services.IndexingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +65,9 @@ public class initData {
 
     @Autowired
     RatingRepository ratingRepository;
+
+    @Autowired
+    IndexingService indexingService;
 
     private final String PHILONG_LAPTOP_ACER = "https://philong.com.vn/laptop-acer.html";
     private final String PHILONG_LAPTOP_ASUS = "https://philong.com.vn/laptop-asus.html";
