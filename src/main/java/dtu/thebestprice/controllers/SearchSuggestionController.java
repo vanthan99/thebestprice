@@ -33,9 +33,6 @@ public class SearchSuggestionController {
     public ResponseEntity<Object> searchV2(
             @PathVariable("keyword") String keyword
     ) {
-        if (keyword.trim().length() > 1) {
-            return ResponseEntity.ok(searchSuggestionService.findByKeywordV2(keyword));
-        }
-        return new ResponseEntity<>(new ApiResponse(false, "Không ký tự trắng và phải nhập trên 3 ký tự"), HttpStatus.LENGTH_REQUIRED);
+            return ResponseEntity.ok(searchSuggestionService.findByKeywordV2(keyword.trim()));
     }
 }
