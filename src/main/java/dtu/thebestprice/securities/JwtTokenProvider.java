@@ -2,6 +2,8 @@ package dtu.thebestprice.securities;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -10,6 +12,9 @@ import java.util.Map;
 @Component
 @Slf4j
 public class JwtTokenProvider {
+    @Autowired
+    RedisTemplate template;
+
     // Đoạn JWT_SECRET này là bí mật, chỉ có phía server biết
     public static final String JWT_SECRET = "thebestprice";
 
@@ -28,11 +33,11 @@ public class JwtTokenProvider {
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
 
-                .claim("username",userDetails.getUsername())
-                .claim("full name",userDetails.getFullName())
-                .claim("role",userDetails.getRoles())
-                .claim("address",userDetails.getAddress())
-                .claim("phone number",userDetails.getPhoneNumber())
+                .claim("username", userDetails.getUsername())
+                .claim("full name", userDetails.getFullName())
+                .claim("role", userDetails.getRoles())
+                .claim("address", userDetails.getAddress())
+                .claim("phone number", userDetails.getPhoneNumber())
                 .compact();
     }
 
@@ -47,12 +52,17 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
-            return true;
+            if (template.hasKey(authToken)) {
+                Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
+                return true;
+            } else log.error("Phiên đăng nhập đã hết hạn.Vui lòng đăng nhập lại");
+
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
+//            log.error("Invalid JWT token");
+            log.error("Chuỗi token không hợp lệ");
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+//            log.error("Expired JWT token");
+            log.error("Chuỗi token đã hết hạn");
         } catch (UnsupportedJwtException ex) {
             log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {

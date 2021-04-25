@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.Set;
 @Indexed
 public class Product extends BaseEntity {
     @Column
-    @Field(name = "title")
+    @Field(name = "title",index = Index.YES,store = Store.YES,analyze = Analyze.YES)
     private String title;
 
     @Column(columnDefinition = "TEXT")
