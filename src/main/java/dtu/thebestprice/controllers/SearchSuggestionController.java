@@ -29,9 +29,9 @@ public class SearchSuggestionController {
     }
 
     @ApiOperation(value = "Gợi ý sản phẩm tìm kiếm (Sử dụng hibernate search)")
-    @GetMapping(value = "/api/v2/suggestion/{keyword}")
+    @GetMapping(value = "/api/v2/suggestion")
     public ResponseEntity<Object> searchV2(
-            @PathVariable("keyword") String keyword
+            @RequestParam("keyword") String keyword
     ) {
             return ResponseEntity.ok(searchSuggestionService.findByKeywordV2(keyword.trim()));
     }

@@ -1,13 +1,16 @@
 package dtu.thebestprice.controllers;
 
+import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.services.RetailerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Api
 @RestController
@@ -18,7 +21,20 @@ public class RetailerController {
 
     @ApiOperation(value = "Danh sách nhà bán lẻ")
     @GetMapping
-    public ResponseEntity<Object> findAll(){
+    public ResponseEntity<Object> findAll() {
         return ResponseEntity.ok(retailerService.findAll());
+    }
+
+    @PostMapping
+    @ApiOperation(value = "Thêm hoặc cập nhật nhà bán lẽ")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    public ResponseEntity<Object> save(@RequestBody @Valid RetailerRequest retailerRequest) {
+        return retailerService.save(retailerRequest);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    public ResponseEntity<Object> deleteById(@RequestParam("id") String id) {
+        return retailerService.deleteById(id);
     }
 }
