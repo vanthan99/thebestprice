@@ -21,7 +21,7 @@ import java.util.Set;
 @Indexed
 public class Product extends BaseEntity {
     @Column
-    @Field(name = "title",index = Index.YES,store = Store.YES,analyze = Analyze.YES)
+    @Field
     private String title;
 
     @Column(columnDefinition = "TEXT")

@@ -34,6 +34,7 @@ public class RetailerController {
 
     @DeleteMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    @ApiOperation(value = "Xóa nhà cung cấp")
     public ResponseEntity<Object> deleteById(@RequestParam("id") String id) {
         return retailerService.deleteById(id);
     }

@@ -17,19 +17,19 @@ public class SearchSuggestionController {
     @Autowired
     SearchSuggestionService searchSuggestionService;
 
-    @GetMapping(value = "/api/v1/suggestion/{keyword}")
-    public ResponseEntity<Object> search(
-            @PageableDefault(size = 5) Pageable pageable,
-            @PathVariable("keyword") String keyword
-    ) {
-        if (keyword.trim().length() > 1) {
-            return ResponseEntity.ok(searchSuggestionService.findByKeyword(keyword, pageable));
-        }
-        return new ResponseEntity<>(new ApiResponse(false, "Không ký tự trắng và phải nhập trên 3 ký tự"), HttpStatus.LENGTH_REQUIRED);
-    }
+//    @GetMapping(value = "/api/v1/suggestion/{keyword}")
+//    public ResponseEntity<Object> search(
+//            @PageableDefault(size = 5) Pageable pageable,
+//            @PathVariable("keyword") String keyword
+//    ) {
+//        if (keyword.trim().length() > 1) {
+//            return ResponseEntity.ok(searchSuggestionService.findByKeyword(keyword, pageable));
+//        }
+//        return new ResponseEntity<>(new ApiResponse(false, "Không ký tự trắng và phải nhập trên 3 ký tự"), HttpStatus.LENGTH_REQUIRED);
+//    }
 
     @ApiOperation(value = "Gợi ý sản phẩm tìm kiếm (Sử dụng hibernate search)")
-    @GetMapping(value = "/api/v2/suggestion")
+    @GetMapping(value = "/api/v1/suggestion")
     public ResponseEntity<Object> searchV2(
             @RequestParam("keyword") String keyword
     ) {
