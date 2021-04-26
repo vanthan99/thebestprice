@@ -90,21 +90,21 @@ public class SearchServiceImpl implements SearchService {
 
 
         List<Product> productList = fullTextQuery
-//                .setMaxResults(pageable.getPageSize())
-//                .setFirstResult(((pageable.getPageNumber() - 1) * pageable.getPageSize()) + 1)
                 .getResultList();
 
-        int size = fullTextQuery.getResultList().size();
+        int totalElements = fullTextQuery.getResultList().size();
+        int start = ((pageable.getPageNumber() - 1) * pageable.getPageSize());
+        int end = pageable.getPageNumber()*pageable.getPageSize() - 1;
 
         page.setContent(productList
-                .subList(((pageable.getPageNumber() - 1) * pageable.getPageSize()), pageable.getPageNumber()*size - 1)
+                .subList(start, end)
                 .stream()
                 .map(product -> productConverter.toLongProductResponse(product))
                 .collect(Collectors.toList()));
-        page.setTotalElements(size);
+        page.setTotalElements(totalElements);
         page.setSize(pageable.getPageSize());
         page.setCurrentPage(pageable.getPageNumber());
-        page.setTotalPages((int) Math.ceil((double) size / page.getSize()));
+        page.setTotalPages((int) Math.ceil((double) totalElements / page.getSize()));
 
         return page;
     }
