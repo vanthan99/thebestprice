@@ -51,6 +51,7 @@ public class SearchServiceImpl implements SearchService {
                 .buildQueryBuilder()
                 .forEntity(Product.class)
                 .get();
+
         BooleanJunction<?> boolForWholeQuery = queryBuilder.bool();
         TermTermination termTermination;
 
@@ -76,17 +77,15 @@ public class SearchServiceImpl implements SearchService {
         }
 
         if (filterRequest.getRetailerIds() != null && filterRequest.getRetailerIds().size() != 0) {
-            List<Long> retailerIds = filterRequest.getRetailerIds().stream().map((s) -> Long.parseLong(s)).collect(Collectors.toList());
-
-
-            for (Long id : retailerIds) {
-                BooleanJunction<?> boolForRetailerIds = queryBuilder.bool();
+            BooleanJunction<?> boolForRetailerIds = queryBuilder.bool();
+            for (String id : filterRequest.getRetailerIds()) {
                 boolForRetailerIds
                         .should(queryBuilder.keyword()
                                 .onField("productRetailers.retailer.id")
                                 .matching(id).createQuery());
-                boolForWholeQuery.must(boolForRetailerIds.createQuery());
+
             }
+            boolForWholeQuery.must(boolForRetailerIds.createQuery());
         }
 
 
