@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class SearchSuggestionServiceImpl implements SearchSuggestionService {
     @Override
     @Transactional
     public List<ProductItem> findByKeywordV2(String keyword) {
+        if (keyword == null || keyword.isEmpty()) return new ArrayList<>();
         FullTextEntityManager fullTextEntityManager =
                 Search.getFullTextEntityManager(entityManager);
 
