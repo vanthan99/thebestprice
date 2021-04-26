@@ -54,7 +54,7 @@ public class SearchServiceImpl implements SearchService {
 
                 termTermination = queryBuilder.keyword()
                         .fuzzy().withEditDistanceUpTo(1)
-                    .onFields("title","category.title","shortDescription","longDescription")
+                    .onFields("title","category.title","longDescription")
                     .matching(filterRequest.getKeyword());
                 boolForWholeQuery.must(termTermination.createQuery());
             } else {
