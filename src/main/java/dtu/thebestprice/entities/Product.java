@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 
@@ -20,15 +22,24 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Indexed
+@AnalyzerDef(name = "vietnameseAnalyzer", tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class), filters = {
+        @TokenFilterDef(factory = StandardFilterFactory.class),
+        @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+})
 public class Product extends BaseEntity {
     @Column
-    @Field
+    @Field(index = Index.YES, analyze = Analyze.YES)
+    @Analyzer(definition = "vietnameseAnalyzer")
     private String title;
 
     @Column(columnDefinition = "TEXT")
+    @Field(index = Index.YES, analyze = Analyze.YES)
+    @Analyzer(definition = "vietnameseAnalyzer")
     private String shortDescription;
 
     @Column(columnDefinition = "TEXT")
+    @Field(index = Index.YES, analyze = Analyze.YES)
+    @Analyzer(definition = "vietnameseAnalyzer")
     private String longDescription;
 
     // map to Image table
