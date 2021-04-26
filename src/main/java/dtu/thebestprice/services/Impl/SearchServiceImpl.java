@@ -56,11 +56,16 @@ public class SearchServiceImpl implements SearchService {
         TermTermination termTermination;
 
         try {
+            if (filterRequest.getKeyword() != "") {
 
-            termTermination = queryBuilder.keyword()
+                termTermination = queryBuilder.keyword()
                     .onFields("title","category.title","shortDescription","longDescription")
                     .matching(filterRequest.getKeyword());
-            boolForWholeQuery.must(termTermination.createQuery());
+                boolForWholeQuery.must(termTermination.createQuery());
+            } else {
+                boolForWholeQuery.must(queryBuilder.all().createQuery());
+            }
+
         } catch (Exception e) {
             page.setContent(new ArrayList<>());
             return page;
