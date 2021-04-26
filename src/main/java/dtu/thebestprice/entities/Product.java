@@ -23,7 +23,6 @@ import java.util.Set;
 public class Product extends BaseEntity {
     @Column
     @Field
-    @Analyzer(impl = KeywordAnalyzer.class)
     private String title;
 
     @Column(columnDefinition = "TEXT")

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 @RestController
 @Api
 public class SearchSuggestionController {
@@ -33,6 +35,10 @@ public class SearchSuggestionController {
     public ResponseEntity<Object> searchV2(
             @RequestParam("keyword") String keyword
     ) {
+        try {
             return ResponseEntity.ok(searchSuggestionService.findByKeywordV2(keyword.trim()));
+        }catch (Exception e){
+            return ResponseEntity.ok(new ArrayList<>());
+        }
     }
 }

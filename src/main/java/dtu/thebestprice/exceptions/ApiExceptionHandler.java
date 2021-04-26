@@ -15,7 +15,6 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(Exception ex) {
-        System.out.println(" =ex " +ex.toString());
         // quá trình kiểm soat lỗi diễn ra ở đây
         return ResponseEntity.status(400).body(new ApiResponse(false, ex.getLocalizedMessage()));
     }
