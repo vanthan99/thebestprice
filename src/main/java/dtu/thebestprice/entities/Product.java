@@ -39,7 +39,7 @@ public class Product extends BaseEntity {
     // map to Categories table
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includeEmbeddedObjectId = true)
     private Category category;
 
     // map to Brand table;
@@ -48,6 +48,7 @@ public class Product extends BaseEntity {
     private Brand brand;
 
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "product")
+    @IndexedEmbedded(includeEmbeddedObjectId = true)
     private Set<ProductRetailer> productRetailers;
 
     @Column

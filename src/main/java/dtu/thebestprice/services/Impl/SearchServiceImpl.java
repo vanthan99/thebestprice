@@ -8,13 +8,16 @@ import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.services.SearchService;
 import org.apache.lucene.search.Query;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.TermTermination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,67 +43,66 @@ public class SearchServiceImpl implements SearchService {
     public PageCustom filter(FilterRequest filterRequest, Pageable pageable) {
         PageCustom page = new PageCustom();
 
-
         FullTextEntityManager fullTextEntityManager =
                 Search.getFullTextEntityManager(entityManager);
-        Session session = entityManager.unwrap(Session.class);
-
-        FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(session);
 
         QueryBuilder queryBuilder = fullTextEntityManager
                 .getSearchFactory()
                 .buildQueryBuilder()
                 .forEntity(Product.class)
                 .get();
-
-        Query query;
+        BooleanJunction<?> boolForWholeQuery = queryBuilder.bool();
+        TermTermination termTermination;
 
         try {
-            query = queryBuilder.keyword()
+
+            termTermination = queryBuilder.keyword()
                     .onFields("title","category.title","shortDescription","longDescription")
-                    .matching(filterRequest.getKeyword())
-                    .createQuery();
+                    .matching(filterRequest.getKeyword());
+            boolForWholeQuery.must(termTermination.createQuery());
         } catch (Exception e) {
             page.setContent(new ArrayList<>());
             return page;
         }
 
 
-        Criteria criteria = fullTextSession.createCriteria(Product.class)
-                .createAlias("productRetailers.retailer", "retailer");
-
-
         if (filterRequest.getCatId() != null) {
-            criteria.add(
-                    Restrictions.in("category.id", Arrays.asList(Long.parseLong(filterRequest.getCatId())))
-            );
+            BooleanJunction<?> boolForCategoryIds = queryBuilder.bool();
+            boolForCategoryIds
+                    .should(queryBuilder.keyword()
+                            .onField("category.id")
+                            .matching(filterRequest.getCatId()).createQuery());
+            boolForWholeQuery.must(boolForCategoryIds.createQuery());
         }
 
         if (filterRequest.getRetailerIds() != null && filterRequest.getRetailerIds().size() != 0) {
             List<Long> retailerIds = filterRequest.getRetailerIds().stream().map((s) -> Long.parseLong(s)).collect(Collectors.toList());
-            criteria.add(
-                    Restrictions.in("retailer.id", retailerIds)
-            );
+
+
+            for (Long id : retailerIds) {
+                BooleanJunction<?> boolForRetailerIds = queryBuilder.bool();
+                boolForRetailerIds
+                        .should(queryBuilder.keyword()
+                                .onField("productRetailers.retailer.id")
+                                .matching(id).createQuery());
+                boolForWholeQuery.must(boolForRetailerIds.createQuery());
+            }
         }
 
+
         FullTextQuery fullTextQuery = fullTextEntityManager
-                .createFullTextQuery(query, Product.class).setCriteriaQuery(criteria);
+                .createFullTextQuery(boolForWholeQuery.createQuery(), Product.class);
 
+        int totalElements = fullTextQuery.getResultList().size();
 
-
+        fullTextQuery.setMaxResults(pageable.getPageSize());
+        fullTextQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
 
         List<Product> productList = fullTextQuery
                 .getResultList();
 
-        int totalElements = fullTextQuery.getResultList().size();
-        int start = ((pageable.getPageNumber() - 1) * pageable.getPageSize());
-        int end = totalElements > pageable.getPageSize() ? pageable.getPageNumber()*pageable.getPageSize() - 1 : totalElements - 1;
 
-        page.setContent(productList
-                .subList(start, end)
-                .stream()
-                .map(product -> productConverter.toLongProductResponse(product))
-                .collect(Collectors.toList()));
+        page.setContent(productList.stream().map(product -> productConverter.toLongProductResponse(product)).collect(Collectors.toList()));
         page.setTotalElements(totalElements);
         page.setSize(pageable.getPageSize());
         page.setCurrentPage(pageable.getPageNumber());
