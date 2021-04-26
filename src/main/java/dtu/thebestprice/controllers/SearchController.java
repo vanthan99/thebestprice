@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping(value = "/api")
 public class SearchController {
@@ -34,8 +36,17 @@ public class SearchController {
         try {
             return ResponseEntity.ok(productService.filter(filterRequest, pageable));
         } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value = "/v1/filterV2")
+    @ApiOperation(value = "Lọc sản phẩm V2 (Sử dụng hibernate search)")
+    public ResponseEntity<Object> filterV2(
+            @RequestBody FilterRequest filterRequest,
+            @PageableDefault(page = 1) Pageable pageable
+    ) {
+        return ResponseEntity.ok(searchService.filter(filterRequest, pageable));
     }
 
 }

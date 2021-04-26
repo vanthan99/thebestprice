@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.standard.StandardFilterFactory;
-import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 
@@ -22,24 +19,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Indexed
-@AnalyzerDef(name = "vietnameseAnalyzer", tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class), filters = {
-        @TokenFilterDef(factory = StandardFilterFactory.class),
-        @TokenFilterDef(factory = LowerCaseFilterFactory.class),
-})
 public class Product extends BaseEntity {
     @Column
-    @Field(index = Index.YES, analyze = Analyze.YES)
-    @Analyzer(definition = "vietnameseAnalyzer")
+    @Field
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    @Field(index = Index.YES, analyze = Analyze.YES)
-    @Analyzer(definition = "vietnameseAnalyzer")
+    @Field
     private String shortDescription;
 
     @Column(columnDefinition = "TEXT")
-    @Field(index = Index.YES, analyze = Analyze.YES)
-    @Analyzer(definition = "vietnameseAnalyzer")
+    @Field
     private String longDescription;
 
     // map to Image table
@@ -49,6 +39,7 @@ public class Product extends BaseEntity {
     // map to Categories table
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
+    @IndexedEmbedded
     private Category category;
 
     // map to Brand table;
@@ -60,5 +51,6 @@ public class Product extends BaseEntity {
     private Set<ProductRetailer> productRetailers;
 
     @Column
+    @Field(index = Index.NO)
     private Long viewCount = 0L;
 }
