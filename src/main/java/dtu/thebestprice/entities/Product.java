@@ -26,9 +26,11 @@ public class Product extends BaseEntity {
     private String title;
 
     @Column(columnDefinition = "TEXT")
+    @Field
     private String shortDescription;
 
     @Column(columnDefinition = "TEXT")
+    @Field
     private String longDescription;
 
     // map to Image table
@@ -38,6 +40,7 @@ public class Product extends BaseEntity {
     // map to Categories table
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
+    @IndexedEmbedded
     private Category category;
 
     // map to Brand table;
@@ -49,5 +52,6 @@ public class Product extends BaseEntity {
     private Set<ProductRetailer> productRetailers;
 
     @Column
+    @Field(index = Index.NO)
     private Long viewCount = 0L;
 }
