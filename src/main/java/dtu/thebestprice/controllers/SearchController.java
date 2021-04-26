@@ -44,7 +44,7 @@ public class SearchController {
     @ApiOperation(value = "Lọc sản phẩm V2 (Sử dụng hibernate search)")
     public ResponseEntity<Object> filterV2(
             @RequestBody FilterRequest filterRequest,
-            Pageable pageable
+            @PageableDefault(page = 1) Pageable pageable
     ) {
         return ResponseEntity.ok(searchService.filter(filterRequest, pageable));
     }
