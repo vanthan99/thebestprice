@@ -59,6 +59,7 @@ public class SearchServiceImpl implements SearchService {
             if (filterRequest.getKeyword() != "") {
 
                 termTermination = queryBuilder.keyword()
+                        .fuzzy().withEditDistanceUpTo(1)
                     .onFields("title","category.title","shortDescription","longDescription")
                     .matching(filterRequest.getKeyword());
                 boolForWholeQuery.must(termTermination.createQuery());
@@ -111,6 +112,8 @@ public class SearchServiceImpl implements SearchService {
         page.setSize(pageable.getPageSize());
         page.setCurrentPage(pageable.getPageNumber());
         page.setTotalPages((int) Math.ceil((double) totalElements / page.getSize()));
+        page.setFirst(page.getCurrentPage() == 0);
+        page.setLast(page.getTotalPages() - 1 == page.getCurrentPage());
 
         return page;
     }

@@ -11,4 +11,6 @@ public class PageCustom {
     private int totalPages = 0;
     private int totalElements = 0;
     private int size = 0;
+    private boolean first;
+    private boolean last;
 }
