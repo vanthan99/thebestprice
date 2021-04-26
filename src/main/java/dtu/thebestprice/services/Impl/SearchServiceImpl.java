@@ -94,7 +94,7 @@ public class SearchServiceImpl implements SearchService {
 
         int totalElements = fullTextQuery.getResultList().size();
         int start = ((pageable.getPageNumber() - 1) * pageable.getPageSize());
-        int end = pageable.getPageNumber()*pageable.getPageSize() - 1;
+        int end = totalElements > pageable.getPageSize() ? pageable.getPageNumber()*pageable.getPageSize() - 1 : totalElements - 1;
 
         page.setContent(productList
                 .subList(start, end)
