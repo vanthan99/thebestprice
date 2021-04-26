@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 
@@ -22,6 +23,7 @@ import java.util.Set;
 public class Product extends BaseEntity {
     @Column
     @Field
+    @Analyzer(impl = KeywordAnalyzer.class)
     private String title;
 
     @Column(columnDefinition = "TEXT")
