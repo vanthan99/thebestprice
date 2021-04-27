@@ -13,4 +13,5 @@ public class PageCustom {
     private int size = 0;
     private boolean first;
     private boolean last;
+    private boolean empty;
 }

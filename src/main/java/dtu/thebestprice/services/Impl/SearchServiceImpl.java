@@ -108,6 +108,7 @@ public class SearchServiceImpl implements SearchService {
         page.setTotalPages((int) Math.ceil((double) totalElements / page.getSize()));
         page.setFirst(page.getCurrentPage() == 0);
         page.setLast(page.getTotalPages() - 1 == page.getCurrentPage());
+        page.setEmpty(page.getContent().size()==0);
 
         return page;
     }
