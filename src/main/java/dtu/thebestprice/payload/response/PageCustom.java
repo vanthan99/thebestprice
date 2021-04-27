@@ -14,5 +14,5 @@ public class PageCustom {
     private boolean first;
     private boolean last;
     private boolean empty;
-    private int totalOfElements;
+    private int numberOfElements;
 }

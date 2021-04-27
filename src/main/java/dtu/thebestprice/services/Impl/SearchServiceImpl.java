@@ -122,7 +122,7 @@ public class SearchServiceImpl implements SearchService {
         page.setFirst(page.getNumber() == 0);
         page.setLast(page.getTotalPages() - 1 == page.getNumber());
         page.setEmpty(page.getContent().size() == 0);
-        page.setTotalOfElements(page.getContent().size());
+        page.setNumberOfElements(page.getContent().size());
 
         return page;
     }
