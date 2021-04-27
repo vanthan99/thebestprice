@@ -21,15 +21,15 @@ import java.util.Set;
 @Indexed
 public class Product extends BaseEntity {
     @Column
-    @Field
+    @Field(store = Store.YES)
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    @Field
+    @Field(store = Store.YES)
     private String shortDescription;
 
     @Column(columnDefinition = "TEXT")
-    @Field
+    @Field(store = Store.YES)
     private String longDescription;
 
     // map to Image table
@@ -45,6 +45,7 @@ public class Product extends BaseEntity {
     // map to Brand table;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id")
+    @IndexedEmbedded(includeEmbeddedObjectId = true)
     private Brand brand;
 
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "product")
@@ -52,6 +53,6 @@ public class Product extends BaseEntity {
     private Set<ProductRetailer> productRetailers;
 
     @Column
-    @Field(index = Index.NO)
+    @Field(index = Index.NO,store = Store.YES)
     private Long viewCount = 0L;
 }
