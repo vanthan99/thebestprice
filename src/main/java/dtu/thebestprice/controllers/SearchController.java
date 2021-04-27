@@ -27,7 +27,7 @@ public class SearchController {
     SearchService searchService;
 
     @ApiOperation(value = "Lọc sản phẩm")
-    @PostMapping(value = "/v1/filter")
+    @PostMapping(value = "/v1/filterV2")
     public ResponseEntity<Object> filter(
             @RequestBody FilterRequest filterRequest,
             @PageableDefault(size = 6) Pageable pageable
@@ -40,11 +40,11 @@ public class SearchController {
         }
     }
 
-    @PostMapping(value = "/v1/filterV2")
+    @PostMapping(value = "/v1/filter")
     @ApiOperation(value = "Lọc sản phẩm V2 (Sử dụng hibernate search)")
     public ResponseEntity<Object> filterV2(
             @RequestBody FilterRequest filterRequest,
-            Pageable pageable
+            @PageableDefault(size = 9) Pageable pageable
     ) {
         return ResponseEntity.ok(searchService.filter(filterRequest, pageable));
     }

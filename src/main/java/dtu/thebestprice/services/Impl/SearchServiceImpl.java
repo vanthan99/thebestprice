@@ -1,11 +1,14 @@
 package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.converters.ProductConverter;
+import dtu.thebestprice.entities.Category;
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.response.PageCustom;
+import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.services.SearchService;
+import lombok.SneakyThrows;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -14,6 +17,7 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.TermTermination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -32,6 +36,10 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     EntityManager entityManager;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @SneakyThrows
     @Override
     @Transactional
     public PageCustom filter(FilterRequest filterRequest, Pageable pageable) {
@@ -50,12 +58,12 @@ public class SearchServiceImpl implements SearchService {
         TermTermination termTermination;
 
         try {
-            if (filterRequest.getKeyword() != "") {
+            if (filterRequest.getKeyword() != null && filterRequest.getKeyword() != "") {
 
                 termTermination = queryBuilder.keyword()
                         .fuzzy().withEditDistanceUpTo(1)
-                    .onFields("title","category.title","longDescription")
-                    .matching(filterRequest.getKeyword());
+                        .onFields("title", "category.title", "longDescription")
+                        .matching(filterRequest.getKeyword());
                 boolForWholeQuery.must(termTermination.createQuery());
             } else {
                 boolForWholeQuery.must(queryBuilder.all().createQuery());
@@ -69,10 +77,15 @@ public class SearchServiceImpl implements SearchService {
 
         if (filterRequest.getCatId() != null) {
             BooleanJunction<?> boolForCategoryIds = queryBuilder.bool();
-            boolForCategoryIds
-                    .should(queryBuilder.keyword()
-                            .onField("category.id")
-                            .matching(filterRequest.getCatId()).createQuery());
+
+            List<String> catIds = getListCatId(filterRequest.getCatId());
+
+            for (String id : catIds) {
+                boolForCategoryIds
+                        .should(queryBuilder.keyword()
+                                .onField("category.id")
+                                .matching(id).createQuery());
+            }
             boolForWholeQuery.must(boolForCategoryIds.createQuery());
         }
 
@@ -104,12 +117,32 @@ public class SearchServiceImpl implements SearchService {
         page.setContent(productList.stream().map(product -> productConverter.toLongProductResponse(product)).collect(Collectors.toList()));
         page.setTotalElements(totalElements);
         page.setSize(pageable.getPageSize());
-        page.setCurrentPage(pageable.getPageNumber());
+        page.setNumber(pageable.getPageNumber());
         page.setTotalPages((int) Math.ceil((double) totalElements / page.getSize()));
-        page.setFirst(page.getCurrentPage() == 0);
-        page.setLast(page.getTotalPages() - 1 == page.getCurrentPage());
-        page.setEmpty(page.getContent().size()==0);
+        page.setFirst(page.getNumber() == 0);
+        page.setLast(page.getTotalPages() - 1 == page.getNumber());
+        page.setEmpty(page.getContent().size() == 0);
+        page.setTotalOfElements(page.getContent().size());
 
         return page;
+    }
+
+    private List<String> getListCatId(String categoryId) throws Exception {
+        if (categoryId == null) return null;
+        List<String> longSet = new ArrayList<>();
+        Category category;
+        try {
+            category = categoryRepository.findById(Long.parseLong(categoryId)).orElse(null);
+        } catch (Exception e) {
+            throw new Exception("Mã danh mục không đúng định dạng");
+        }
+
+        if (category != null) {
+            longSet.add(category.getId().toString());
+            if (category.getCategory() == null) {
+                longSet.addAll(categoryRepository.findAllCatIdOfParent(category.getId()).stream().map(aLong -> aLong.toString()).collect(Collectors.toList()));
+            }
+        } else throw new Exception("Không tồn tại id danh mục");
+        return longSet;
     }
 }
