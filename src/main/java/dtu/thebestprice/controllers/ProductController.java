@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,12 +48,14 @@ public class ProductController {
 
     @PostMapping
     @ApiOperation(value = "Thêm mới hoặc cập nhật sản phẩm")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> save(@RequestBody @Valid ProductRequest productRequest){
         return productService.save(productRequest);
     }
 
     @DeleteMapping
     @ApiOperation(value = "Xóa sản phẩm theo id")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteById(@RequestParam("id") Long id){
         return productService.deleteById(id);
     }

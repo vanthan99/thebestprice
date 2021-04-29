@@ -27,13 +27,13 @@ public class RetailerController {
 
     @PostMapping
     @ApiOperation(value = "Thêm hoặc cập nhật nhà bán lẽ")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> save(@RequestBody @Valid RetailerRequest retailerRequest) {
         return retailerService.save(retailerRequest);
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Xóa nhà cung cấp")
     public ResponseEntity<Object> deleteById(@RequestParam("id") String id) {
         return retailerService.deleteById(id);

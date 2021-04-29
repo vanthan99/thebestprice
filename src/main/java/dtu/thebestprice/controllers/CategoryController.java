@@ -7,6 +7,7 @@ import dtu.thebestprice.services.CategoryService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class CategoryController {
     }
 
     @PostMapping("/parent")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Thêm mới hoặc chỉnh sửa danh mục cha")
     public ResponseEntity<Object> saveParentCategory(
             @RequestBody @Valid CategoryParentRequest request
@@ -35,6 +37,7 @@ public class CategoryController {
     }
 
     @PostMapping("/child")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Thêm mới hoặc chỉnh sửa danh mục con")
     public ResponseEntity<Object> saveChildCategory(
             @RequestBody @Valid CategoryChildRequest request
@@ -44,6 +47,7 @@ public class CategoryController {
 
     @DeleteMapping
     @ApiOperation(value = "Xóa danh mục")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteById(@RequestParam("id") Long categoryId) {
         return categoryService.deleteById(categoryId);
     }
