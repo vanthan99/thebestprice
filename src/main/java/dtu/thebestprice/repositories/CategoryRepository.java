@@ -8,9 +8,38 @@ import java.util.List;
 import java.util.Set;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    boolean existsByTitleAndCategory(String title,Category category);
-    Category findByTitleAndCategory(String title,Category category);
+
+    Category findByTitleAndCategory(String title, Category category);
+
+    // Danh sách danh mục cha đang hoạt động
+    List<Category> findByCategoryIsNullAndDeleteFlgFalse();
+
+    // danh sách các danh mục con có cùng 1 danh mục cha truyền vào
+    List<Category> findByCategoryAndDeleteFlgFalse(Category parentCategory);
+
     Category findByTitle(String title);
+
+    // kiểm tra id truyền vào có phải là danh mục con hay không?
+    boolean existsByIdAndCategoryIsNotNull(Long id);
+
+    /*
+    * Kiểm tra id truyền vào có phải là danh mục cha hay khôgn */
+    boolean existsByIdAndCategoryIsNull(Long id);
+
+    /*
+     * Kiểm tra danh sách con có tồn tại titleInput hay chưa?
+     * */
+    boolean existsByTitleAndCategory(String titleInput, Category category);
+
+    /*
+     * Kiểm tra xem danh sách danh mục cha có tồn tại titleInput hay chưa?
+     * */
+    boolean existsByTitleAndCategoryIsNull(String titleInput);
+
+    /*
+     * Tìm danh mục cha có Id truyền vào và đang hoạt động
+     * */
+    Category findByIdAndCategoryIsNull(Long categoryId);
 
     /*
      * Lấy tất cả category id con khi truyền vào id của cat cha.

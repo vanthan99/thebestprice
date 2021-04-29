@@ -10,9 +10,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryResponse {
-    private UUID id;
+public class ParentCategoryResponse {
+    private Long id;
     private String title;
     private String description;
-    private List<CategoryResponse> categoryResponses;
+    private List<ChildCategoryResponse> categories;
 }

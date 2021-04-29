@@ -2,12 +2,11 @@ package dtu.thebestprice.converters;
 
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
+import dtu.thebestprice.payload.request.ProductRequest;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import dtu.thebestprice.payload.response.ProductItem;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
-import dtu.thebestprice.repositories.ImageRepository;
-import dtu.thebestprice.repositories.ProductRetailerRepository;
-import dtu.thebestprice.repositories.RatingRepository;
+import dtu.thebestprice.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +33,57 @@ public class ProductConverter {
 
     @Autowired
     RatingRepository ratingRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    BrandRepository brandRepository;
+
+    // mapping product request to product entity
+    public Product toEntity(ProductRequest productRequest) {
+        Product product = new Product();
+
+
+        
+        product.setId(productRequest.getId());
+        product.setTitle(productRequest.getTitle());
+        product.setLongDescription(productRequest.getLongDescription());
+        product.setShortDescription(productRequest.getShortDescription());
+
+        // set category
+        product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
+
+        // set brand
+        product.setBrand(brandRepository.findById(productRequest.getBrandId()).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
+        return product;
+    }
+
+    public Product toEntity(ProductRequest productRequest, Product product) {
+
+        /*
+        * Trường nào có giá trị thì mới cập nhật
+        * */
+
+        if (productRequest.getTitle() != null && !productRequest.getTitle().trim().equalsIgnoreCase(""))
+            product.setTitle(productRequest.getTitle());
+
+        if (productRequest.getLongDescription() != null && !productRequest.getLongDescription().trim().equalsIgnoreCase(""))
+            product.setLongDescription(productRequest.getLongDescription());
+
+        if (productRequest.getShortDescription() != null && !productRequest.getShortDescription().trim().equalsIgnoreCase(""))
+            product.setShortDescription(productRequest.getShortDescription());
+
+        // set category
+        if (productRequest.getCategoryId() != null)
+            product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
+
+        // set brand
+        if (productRequest.getBrandId() != null)
+            product.setBrand(brandRepository.findById(productRequest.getBrandId()).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
+
+        return product;
+    }
 
 
     public LongProductResponse toLongProductResponse(Product product) {
@@ -75,7 +125,7 @@ public class ProductConverter {
         return longProductResponse;
     }
 
-    public ProductItem toProductItem(Product product){
+    public ProductItem toProductItem(Product product) {
         ProductItem productItem = new ProductItem();
         productItem.setTitle(product.getTitle());
         productItem.setId(product.getId());
