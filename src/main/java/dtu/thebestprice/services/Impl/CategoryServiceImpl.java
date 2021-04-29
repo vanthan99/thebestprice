@@ -10,13 +10,17 @@ import dtu.thebestprice.payload.response.ParentCategoryResponse;
 import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryRepository categoryRepository;
@@ -175,6 +179,18 @@ public class CategoryServiceImpl implements CategoryService {
         });
 
         return list;
+    }
+
+    @Override
+    public ResponseEntity<Object> deleteById(Long id) {
+        Category category = categoryRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Id danh mục không tồn tại"));
+
+        category.setDeleteFlg(true);
+        categoryRepository.save(category);
+
+        return ResponseEntity.ok(new ApiResponse(true,"Xóa danh mục thành công"));
     }
 
     public Category toEntity(CategoryRequest categoryRequest) throws IllegalArgumentException {

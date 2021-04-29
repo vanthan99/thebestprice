@@ -5,11 +5,9 @@ import dtu.thebestprice.payload.request.CategoryParentRequest;
 import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.services.CategoryService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.security.pkcs11.P11Util;
 
 import javax.validation.Valid;
 
@@ -24,7 +22,7 @@ public class CategoryController {
 
     @ApiOperation(value = "Danh sách tất cả danh mục")
     @GetMapping
-    public ResponseEntity<Object> findAll(){
+    public ResponseEntity<Object> findAll() {
         return ResponseEntity.ok(categoryService.listCategoryIsActive());
     }
 
@@ -32,7 +30,7 @@ public class CategoryController {
     @ApiOperation(value = "Thêm mới hoặc chỉnh sửa danh mục cha")
     public ResponseEntity<Object> saveParentCategory(
             @RequestBody @Valid CategoryParentRequest request
-            ){
+    ) {
         return categoryService.saveParentCategory(request);
     }
 
@@ -40,8 +38,14 @@ public class CategoryController {
     @ApiOperation(value = "Thêm mới hoặc chỉnh sửa danh mục con")
     public ResponseEntity<Object> saveChildCategory(
             @RequestBody @Valid CategoryChildRequest request
-    ){
+    ) {
         return categoryService.saveChildCategory(request);
+    }
+
+    @DeleteMapping
+    @ApiOperation(value = "Xóa danh mục")
+    public ResponseEntity<Object> deleteById(@RequestParam("id") Long categoryId) {
+        return categoryService.deleteById(categoryId);
     }
 
 }

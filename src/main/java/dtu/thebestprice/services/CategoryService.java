@@ -19,4 +19,6 @@ public interface CategoryService {
     ResponseEntity<Object> saveChildCategory(CategoryChildRequest request);
 
     List<ParentCategoryResponse> listCategoryIsActive();
+
+    ResponseEntity<Object> deleteById(Long id);
 }
