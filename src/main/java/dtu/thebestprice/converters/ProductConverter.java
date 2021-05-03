@@ -44,9 +44,6 @@ public class ProductConverter {
     public Product toEntity(ProductRequest productRequest) {
         Product product = new Product();
 
-
-        
-        product.setId(productRequest.getId());
         product.setTitle(productRequest.getTitle());
         product.setLongDescription(productRequest.getLongDescription());
         product.setShortDescription(productRequest.getShortDescription());

@@ -9,8 +9,6 @@ import javax.validation.constraints.Size;
 
 @Data
 public class RetailerRequest {
-    private String id;
-
     @Size(message = "tên nhà cung cấp không quá 50 ký tự",max = 50,min = 5)
     @NotBlank(message = "Không được để trống tên")
     private String name;

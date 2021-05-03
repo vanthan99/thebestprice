@@ -28,7 +28,6 @@ public class CategoryConverter {
     public Category toCategoryParent(CategoryParentRequest categoryParentRequest) {
         Category category = new Category();
 
-        category.setId(categoryParentRequest.getId());
         category.setTitle(categoryParentRequest.getTitle());
         category.setDescription(categoryParentRequest.getDescription());
 
@@ -46,7 +45,6 @@ public class CategoryConverter {
     public Category toCategoryChild(CategoryChildRequest categoryChildRequest) {
         Category category = new Category();
 
-        category.setId(categoryChildRequest.getId());
         category.setTitle(categoryChildRequest.getTitle());
         category.setDescription(categoryChildRequest.getDescription());
 

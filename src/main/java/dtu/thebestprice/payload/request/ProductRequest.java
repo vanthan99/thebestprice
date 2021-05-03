@@ -11,8 +11,6 @@ import java.util.List;
 
 @Data
 public class ProductRequest {
-    private Long id;
-
     @NotBlank(message = "Không được để trống tiêu đề")
     @Size(min = 10,max = 255,message = "Tiêu đề nằm trong khoảng 10 - 255 ký tự")
     private String title;

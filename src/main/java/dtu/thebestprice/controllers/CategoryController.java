@@ -29,20 +29,40 @@ public class CategoryController {
 
     @PostMapping("/parent")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Thêm mới hoặc chỉnh sửa danh mục cha")
-    public ResponseEntity<Object> saveParentCategory(
+    @ApiOperation(value = "Thêm mới danh mục cha")
+    public ResponseEntity<Object> createParentCategory(
             @RequestBody @Valid CategoryParentRequest request
     ) {
-        return categoryService.saveParentCategory(request);
+        return categoryService.createParentCategory(request);
+    }
+
+    @PutMapping("/parent/{parentCatId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Chỉnh sửa danh mục cha")
+    public ResponseEntity<Object> updateParentCategory(
+            @RequestBody @Valid CategoryParentRequest request,
+            @PathVariable("parentCatId") Long parentId
+    ) {
+        return categoryService.updateParentCategory(request, parentId);
     }
 
     @PostMapping("/child")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Thêm mới hoặc chỉnh sửa danh mục con")
-    public ResponseEntity<Object> saveChildCategory(
+    @ApiOperation(value = "Thêm mới sửa danh mục con")
+    public ResponseEntity<Object> createChildCategory(
             @RequestBody @Valid CategoryChildRequest request
     ) {
-        return categoryService.saveChildCategory(request);
+        return categoryService.createChildCategory(request);
+    }
+
+    @PutMapping("/child/{childCatId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Chỉnh sửa danh mục con")
+    public ResponseEntity<Object> updateChildCategory(
+            @RequestBody @Valid CategoryChildRequest request,
+            @PathVariable("childCatId") Long childId
+    ) {
+        return categoryService.updateChildCategory(request, childId);
     }
 
     @DeleteMapping

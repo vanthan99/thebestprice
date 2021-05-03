@@ -75,95 +75,91 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<Object> saveParentCategory(CategoryParentRequest request) {
-        // Trường hợp thêm mới category cha
-        if (request.getId() == null) {
+    public ResponseEntity<Object> createChildCategory(CategoryChildRequest request) {
+        if (!categoryRepository.existsByIdAndCategoryIsNull(request.getParentId()))
+            throw new RuntimeException("Id parent không phải là danh mục cha");
 
-            // kiểm tra xem tên của danh mục có bị trùng với những danh mục cùng cấp khác?
-            if (categoryRepository.existsByTitleAndCategoryIsNull(request.getTitle().trim()))
-                throw new RuntimeException("Đã bị trùng tên với một tên danh mục cùng cấp khác");
+        Category parentCategory = categoryRepository.getOne(request.getParentId());
+        if (categoryRepository.existsByTitleAndCategory(request.getTitle(), parentCategory))
+            throw new RuntimeException("Đã tồn tại tiêu đề danh mục cùng cấp.");
 
-            Category category = categoryConverter.toCategoryParent(request);
-            categoryRepository.save(category);
+        Category category = categoryConverter.toCategoryChild(request);
+        categoryRepository.save(category);
 
-            return ResponseEntity.ok(new ApiResponse(true, "Thêm mới danh mục cha thành công"));
-        } else {
-            // trường hợp cập nhật category cha
-
-            // kiểm tra nếu id truyền vào thuộc danh mục con?
-            if (categoryRepository.existsByIdAndCategoryIsNotNull(request.getId()))
-                throw new RuntimeException("Id danh mục cần cập nhật thuộc vào danh mục con.");
-
-            Category currentCategory = categoryRepository
-                    .findById(request.getId())
-                    .orElseThrow(() -> new RuntimeException("Không tồn tại id danh mục"));
-
-            // kiểm tra xem tên sau khi thay đổi có bị trùng với danh mục cùng cấp không?
-            if (categoryRepository.existsByTitleAndCategoryIsNull(request.getTitle().trim())
-                    && !currentCategory.getTitle().equalsIgnoreCase(request.getTitle()))
-                throw new RuntimeException("Têu đề danh mục mới đã bị trùng với những danh mục khác.");
-
-            Category newCategory = categoryConverter.toCategoryParent(request, currentCategory);
-            categoryRepository.save(newCategory);
-            return ResponseEntity.ok(new ApiResponse(true, "Cập nhật danh mục cha thành công"));
-        }
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới danh mục con thành công"));
     }
 
     @Override
-    public ResponseEntity<Object> saveChildCategory(CategoryChildRequest request) {
-        if (request.getId() == null) {
-            // trường hợp thêm mới
+    public ResponseEntity<Object> updateChildCategory(CategoryChildRequest request, Long childCategoryId) {
+        if (categoryRepository.existsByIdAndCategoryIsNull(childCategoryId))
+            throw new RuntimeException("Id Không phải là danh mục con.");
 
-            if (!categoryRepository.existsByIdAndCategoryIsNull(request.getParentId()))
-                throw new RuntimeException("Id parent không phải là danh mục cha");
+        if (categoryRepository.existsByIdAndCategoryIsNotNull(request.getParentId()))
+            throw new RuntimeException("Id parent không phải là danh mục cha");
 
-            Category parentCategory = categoryRepository.getOne(request.getParentId());
-            if (categoryRepository.existsByTitleAndCategory(request.getTitle(), parentCategory))
-                throw new RuntimeException("Đã tồn tại tiêu đề danh mục cùng cấp.");
+        Category currentCategory = categoryRepository
+                .findById(childCategoryId)
+                .orElseThrow(() -> new RuntimeException("id không tồn tại"));
 
-            Category category = categoryConverter.toCategoryChild(request);
-            categoryRepository.save(category);
 
-            return ResponseEntity.ok(new ApiResponse(true, "Thêm mới danh mục con thành công"));
+        // truong hop update category parent
+        if (currentCategory.getCategory().getId() != request.getParentId()) {
+
+            // kiểm tra title có bị trùng khi có cùng danh mục cha
+            if (categoryRepository.existsByTitleAndCategory(
+                    request.getTitle(),
+                    categoryRepository.getOne(request.getParentId())
+            ))
+                throw new RuntimeException("Tiêu đề đã bị trùng khi chuyển sang danh mục cha khác.");
         }
 
-        // Trường hợp cập nhật
-        else {
-            if (categoryRepository.existsByIdAndCategoryIsNull(request.getId()))
-                throw new RuntimeException("Id Không phải là danh mục con.");
+        Category parentCategory = categoryRepository.getOne(request.getParentId());
+        // kiểm tra tiêu đề danh mục có bị trung nếu trường hợp cập nhật tiêu đề
+        if (categoryRepository.existsByTitleAndCategory(request.getTitle(), parentCategory)
+                && !currentCategory.getTitle().equalsIgnoreCase(request.getTitle())
+        )
+            throw new RuntimeException("Tiêu đề đã bị trùng.");
 
-            if (categoryRepository.existsByIdAndCategoryIsNotNull(request.getParentId()))
-                throw new RuntimeException("Id parent không phải là danh mục cha");
+        Category newCategory = categoryConverter.toCategoryChild(request, currentCategory);
 
-            Category currentCategory = categoryRepository
-                    .findById(request.getId())
-                    .orElseThrow(() -> new RuntimeException("id không tồn tại"));
+        categoryRepository.save(newCategory);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Cập nhật danh mục con thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> createParentCategory(CategoryParentRequest request) {
+        // kiểm tra xem tên của danh mục có bị trùng với những danh mục cùng cấp khác?
+        if (categoryRepository.existsByTitleAndCategoryIsNull(request.getTitle().trim()))
+            throw new RuntimeException("Đã bị trùng tên với một tên danh mục cùng cấp khác");
+
+        Category category = categoryConverter.toCategoryParent(request);
+        categoryRepository.save(category);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới danh mục cha thành công"));
+    }
 
 
-            // truong hop update category parent
-            if (currentCategory.getCategory().getId() != request.getParentId()) {
+    @Override
+    public ResponseEntity<Object> updateParentCategory(CategoryParentRequest request, Long parentCategoryId) {
+        // trường hợp cập nhật category cha
 
-                // kiểm tra title có bị trùng khi có cùng danh mục cha
-                if (categoryRepository.existsByTitleAndCategory(
-                        request.getTitle(),
-                        categoryRepository.getOne(request.getParentId())
-                ))
-                    throw new RuntimeException("Tiêu đề đã bị trùng khi chuyển sang danh mục cha khác.");
-            }
+        // kiểm tra nếu id truyền vào thuộc danh mục con?
+        if (categoryRepository.existsByIdAndCategoryIsNotNull(parentCategoryId))
+            throw new RuntimeException("Id danh mục cần cập nhật thuộc vào danh mục con.");
 
-            Category parentCategory = categoryRepository.getOne(request.getParentId());
-            // kiểm tra tiêu đề danh mục có bị trung nếu trường hợp cập nhật tiêu đề
-            if (categoryRepository.existsByTitleAndCategory(request.getTitle(), parentCategory)
-                    && !currentCategory.getTitle().equalsIgnoreCase(request.getTitle())
-            )
-                throw new RuntimeException("Tiêu đề đã bị trùng.");
+        Category currentCategory = categoryRepository
+                .findById(parentCategoryId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại id danh mục"));
 
-            Category newCategory = categoryConverter.toCategoryChild(request, currentCategory);
+        // kiểm tra xem tên sau khi thay đổi có bị trùng với danh mục cùng cấp không?
+        if (categoryRepository.existsByTitleAndCategoryIsNull(request.getTitle().trim())
+                && !currentCategory.getTitle().equalsIgnoreCase(request.getTitle()))
+            throw new RuntimeException("Têu đề danh mục mới đã bị trùng với những danh mục khác.");
 
-            categoryRepository.save(newCategory);
-
-            return ResponseEntity.ok(new ApiResponse(true, "Cập nhật danh mục con thành công"));
-        }
+        Category newCategory = categoryConverter.toCategoryParent(request, currentCategory);
+        categoryRepository.save(newCategory);
+        return ResponseEntity.ok(new ApiResponse(true, "Cập nhật danh mục cha thành công"));
     }
 
     @Override
@@ -190,7 +186,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setDeleteFlg(true);
         categoryRepository.save(category);
 
-        return ResponseEntity.ok(new ApiResponse(true,"Xóa danh mục thành công"));
+        return ResponseEntity.ok(new ApiResponse(true, "Xóa danh mục thành công"));
     }
 
     public Category toEntity(CategoryRequest categoryRequest) throws IllegalArgumentException {

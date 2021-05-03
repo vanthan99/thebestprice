@@ -14,7 +14,9 @@ public interface ProductService {
 
     LongProductResponse findById(String productId) throws Exception;
 
-    ResponseEntity<Object> save(ProductRequest productRequest);
+    ResponseEntity<Object> create(ProductRequest productRequest);
+
+    ResponseEntity<Object> update(ProductRequest productRequest, Long productId);
 
     ResponseEntity<Object> deleteById(Long id);
 }

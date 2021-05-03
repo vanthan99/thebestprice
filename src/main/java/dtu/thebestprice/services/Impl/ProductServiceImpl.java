@@ -84,57 +84,53 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ResponseEntity<Object> save(ProductRequest productRequest) {
+    public ResponseEntity<Object> create(ProductRequest productRequest) {
+        if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
+            throw new RuntimeException("id danh mục phải là danh mục con");
+        Product product = productConverter.toEntity(productRequest);
 
-        // nếu id product request = null => trường hơp thêm mới
-        if (productRequest.getId() == null) {
-            if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
-                throw new RuntimeException("id danh mục phải là danh mục con");
-            Product product = productConverter.toEntity(productRequest);
+        productRepository.save(product);
 
-            productRepository.save(product);
+        // save hình ảnh
+        List<String> images = productRequest.getImages();
+        if (images != null && images.size() > 0) {
+            images.forEach(imageItem -> {
+                if (!imageItem.trim().equalsIgnoreCase("")) {
+                    saveImage(product, imageItem);
+                }
+            });
 
-            // save hình ảnh
-            List<String> images = productRequest.getImages();
-            if (images != null && images.size() > 0) {
-                images.forEach(imageItem -> {
-                    if (!imageItem.trim().equalsIgnoreCase("")) {
-                        saveImage(product, imageItem);
-                    }
-                });
-
-            }
-
-            return ResponseEntity.ok(new ApiResponse(true, "Thêm mới sản phẩm thành công"));
         }
 
-        // ngược lại. nếu id product request != null. => trường hợp cập nhật;
-        else {
-            if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
-                throw new RuntimeException("id danh mục phải là danh mục con");
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới sản phẩm thành công"));
+    }
 
-            Product currentProduct = productRepository.findById(productRequest.getId()).orElseThrow(() -> new RuntimeException("id sản phẩm không tồn tại"));
+    @Override
+    public ResponseEntity<Object> update(ProductRequest productRequest, Long productId) {
+        if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
+            throw new RuntimeException("id danh mục phải là danh mục con");
 
-            Product newProduct = productConverter.toEntity(productRequest, currentProduct);
+        Product currentProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("id sản phẩm không tồn tại"));
 
-            productRepository.save(newProduct);
+        Product newProduct = productConverter.toEntity(productRequest, currentProduct);
 
-            // save image
-            List<String> images = productRequest.getImages();
-            if (images != null && images.size() > 0) {
-                images.forEach(imageUrl -> {
+        productRepository.save(newProduct);
 
-                    /*
-                     * Kiểm tra nếu sản phẩm đã có hình ảnh này thì bỏ qua
-                     * nếu sản phẩm chưa có hình ảnh này thì thêm vào
-                     * */
-                    if (!imageRepository.existsByProductAndUrlAndDeleteFlgFalse(newProduct, imageUrl)) {
-                        saveImage(newProduct, imageUrl);
-                    }
-                });
-            }
-            return ResponseEntity.ok(new ApiResponse(true, "Cập nhật sản phẩm thành công"));
+        // save image
+        List<String> images = productRequest.getImages();
+        if (images != null && images.size() > 0) {
+            images.forEach(imageUrl -> {
+
+                /*
+                 * Kiểm tra nếu sản phẩm đã có hình ảnh này thì bỏ qua
+                 * nếu sản phẩm chưa có hình ảnh này thì thêm vào
+                 * */
+                if (!imageRepository.existsByProductAndUrlAndDeleteFlgFalse(newProduct, imageUrl)) {
+                    saveImage(newProduct, imageUrl);
+                }
+            });
         }
+        return ResponseEntity.ok(new ApiResponse(true, "Cập nhật sản phẩm thành công"));
     }
 
     @Override
@@ -145,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
 
-        return ResponseEntity.ok(new ApiResponse(true,"Xóa sản phẩm thành công"));
+        return ResponseEntity.ok(new ApiResponse(true, "Xóa sản phẩm thành công"));
     }
 
     private void saveImage(Product product, String imageItem) {

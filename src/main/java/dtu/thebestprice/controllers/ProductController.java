@@ -47,11 +47,23 @@ public class ProductController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Thêm mới hoặc cập nhật sản phẩm")
+    @ApiOperation(value = "Thêm mới sản phẩm")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> save(@RequestBody @Valid ProductRequest productRequest){
-        return productService.save(productRequest);
+    public ResponseEntity<Object> createProduct(@RequestBody @Valid ProductRequest productRequest){
+        return productService.create(productRequest);
     }
+
+    @PutMapping("/{productId}")
+    @ApiOperation(value = "Cập nhật sản phẩm")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> updateProduct(
+            @RequestBody @Valid ProductRequest productRequest,
+            @PathVariable("productId") Long productId
+
+    ){
+        return productService.update(productRequest,productId);
+    }
+
 
     @DeleteMapping
     @ApiOperation(value = "Xóa sản phẩm theo id")

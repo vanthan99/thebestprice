@@ -14,9 +14,13 @@ public interface CategoryService {
 
     ApiResponse update(CategoryRequest categoryRequest, Long categoryId);
 
-    ResponseEntity<Object> saveParentCategory(CategoryParentRequest request);
+    ResponseEntity<Object> createChildCategory(CategoryChildRequest request);
 
-    ResponseEntity<Object> saveChildCategory(CategoryChildRequest request);
+    ResponseEntity<Object> updateChildCategory(CategoryChildRequest request, Long childCategoryId);
+
+    ResponseEntity<Object> createParentCategory(CategoryParentRequest request);
+
+    ResponseEntity<Object> updateParentCategory(CategoryParentRequest request, Long parentCategoryId);
 
     List<ParentCategoryResponse> listCategoryIsActive();
 

@@ -26,10 +26,20 @@ public class RetailerController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Thêm hoặc cập nhật nhà bán lẽ")
+    @ApiOperation(value = "Thêm mới nhà bán lẽ")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> save(@RequestBody @Valid RetailerRequest retailerRequest) {
-        return retailerService.save(retailerRequest);
+    public ResponseEntity<Object> createRetailer(@RequestBody @Valid RetailerRequest retailerRequest) {
+        return retailerService.create(retailerRequest);
+    }
+
+    @PutMapping("/{retailerId}")
+    @ApiOperation(value = "Cập nhật nhà bán lẽ")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> updateREtailer(
+            @RequestBody @Valid RetailerRequest retailerRequest,
+            @PathVariable("retailerId") Long retailerId
+    ) {
+        return retailerService.update(retailerRequest, retailerId);
     }
 
     @DeleteMapping

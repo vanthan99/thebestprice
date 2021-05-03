@@ -12,8 +12,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryChildRequest {
-    private Long id;
-
     @NotBlank(message = "Không được để trống tên danh mục")
     @Size(min = 5,max = 50,message = "Tiêu đề từ 5-50 ký tự")
     private String title;
