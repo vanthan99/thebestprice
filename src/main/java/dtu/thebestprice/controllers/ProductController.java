@@ -58,9 +58,17 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> updateProduct(
             @RequestBody @Valid ProductRequest productRequest,
-            @PathVariable("productId") Long productId
+            @PathVariable("productId") String strProductId
 
     ){
+        Long productId;
+        try {
+            if (strProductId.trim().equalsIgnoreCase(""))
+                throw new RuntimeException("Không được để trống id");
+            productId = Long.parseLong(strProductId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id phải là số nguyên");
+        }
         return productService.update(productRequest,productId);
     }
 

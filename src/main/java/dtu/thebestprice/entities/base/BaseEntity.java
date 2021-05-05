@@ -43,10 +43,10 @@ public abstract class BaseEntity {
     @Column
     private boolean deleteFlg = false;
 
-    @CreatedBy
+    @Column
     private String createdBy;
 
-    @LastModifiedBy
+    @Column
     private String updatedBy;
 
     @PrePersist
@@ -64,6 +64,6 @@ public abstract class BaseEntity {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "unknown";
         }
-        return ((MyUserDetails) authentication.getPrincipal()).getUsername();
+        return authentication.getName();
     }
 }

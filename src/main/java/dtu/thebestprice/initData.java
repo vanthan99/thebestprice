@@ -12,11 +12,12 @@ import dtu.thebestprice.services.AuthService;
 import dtu.thebestprice.services.CategoryService;
 import dtu.thebestprice.services.IndexingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -67,7 +68,14 @@ public class initData {
     RatingRepository ratingRepository;
 
     @Autowired
-    IndexingService indexingService;
+    SearchRepository searchRepository;
+
+    @Autowired
+    SearchStatisticRepository searchStatisticRepository;
+
+    @Autowired
+    ViewCountStatisticRepository viewCountStatisticRepository;
+
 
     private final String PHILONG_LAPTOP_ACER = "https://philong.com.vn/laptop-acer.html";
     private final String PHILONG_LAPTOP_ASUS = "https://philong.com.vn/laptop-asus.html";
@@ -147,31 +155,29 @@ public class initData {
     private final String SHUPDUNK_IPHONE11 = "https://shopdunk.com/iphone-11/";
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
-
-
 //    @PostConstruct
     public void init() {
-        System.out.println("Bắt đầu lưu role");
-        initRole();
-
-        System.out.println("Bắt đầu lưu user");
-        initUser();
-
-        System.out.println("Bắt đầu lưu category");
-        initCategory();
-
-        System.out.println("Bắt đầu lưu retailer");
-        initRetailer();
-
-        System.out.println("Bắt đầu lưu brand");
-        initBrand();
-
-        long start = System.currentTimeMillis();
-        System.out.println("Bắt đầu lưu sản phẩm");
-        initProductV2();
-        System.out.println("Lưu xong sản phẩm");
-        long end = System.currentTimeMillis();
-        System.out.println("end-start = " + (end - start) / 1000);
+//        System.out.println("Bắt đầu lưu role");
+//        initRole();
+//
+//        System.out.println("Bắt đầu lưu user");
+//        initUser();
+//
+//        System.out.println("Bắt đầu lưu category");
+//        initCategory();
+//
+//        System.out.println("Bắt đầu lưu retailer");
+//        initRetailer();
+//
+//        System.out.println("Bắt đầu lưu brand");
+//        initBrand();
+//
+//        long start = System.currentTimeMillis();
+//        System.out.println("Bắt đầu lưu sản phẩm");
+//        initProductV2();
+//        System.out.println("Lưu xong sản phẩm");
+//        long end = System.currentTimeMillis();
+//        System.out.println("end-start = " + (end - start) / 1000);
 //        initProduct();
 //        initManyProductRetailer();
     }
@@ -2294,7 +2300,7 @@ public class initData {
                 "nhung",
                 "Nguyễn Thị Nhung",
                 "Triệu Phong - Quảng Trị",
-                "0723423603"
+                "0949620461"
 
         ), ERole.ROLE_GUEST);
     }

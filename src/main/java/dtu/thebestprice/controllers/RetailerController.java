@@ -37,8 +37,16 @@ public class RetailerController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> updateREtailer(
             @RequestBody @Valid RetailerRequest retailerRequest,
-            @PathVariable("retailerId") Long retailerId
+            @PathVariable("retailerId") String trRetailerId
     ) {
+        Long retailerId;
+        try {
+            if (trRetailerId.trim().equalsIgnoreCase(""))
+                throw new RuntimeException("Không được để trống id");
+            retailerId = Long.parseLong(trRetailerId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id phải là số nguyên");
+        }
         return retailerService.update(retailerRequest, retailerId);
     }
 

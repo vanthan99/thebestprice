@@ -3,6 +3,7 @@ package dtu.thebestprice.exceptions;
 import dtu.thebestprice.payload.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,6 +23,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> undeclaredThrowableException(RuntimeException e){
         return ResponseEntity.status(400).body(new ApiResponse(false, e.getMessage()));
+    }
+
+    // lỗi 403
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedEx(AccessDeniedException ex) {
+        return ResponseEntity.status(403).body(new ApiResponse(false,"Truy cập bị từ chối. bạn không đủ quyền"));
     }
 
 

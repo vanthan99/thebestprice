@@ -12,9 +12,9 @@ public interface SearchRepository extends JpaRepository<Search, Long> {
     // update số lượt tìm kiếm từ khóa lên 1
     @Modifying
     @Transactional
-    @Query("UPDATE Search s SET s.totalOfSearch = (s.totalOfSearch + 1)" +
+    @Query("UPDATE Search s SET s.numberOfSearch = (s.numberOfSearch + 1)" +
             " WHERE s.id =:searchId ")
-    void updateTotalOfSearch(Long searchId);
+    void updateNumberOfSearch(Long searchId);
 
     // lấy danh sách các từ khóa đã được tìm kiếm
     @Query("SELECT s.keyword FROM Search s")

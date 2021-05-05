@@ -1,25 +1,27 @@
 package dtu.thebestprice.entities;
 
-import dtu.thebestprice.entities.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.Year;
-import java.time.YearMonth;
+import java.time.LocalDate;
 
 @Entity
 @Table
 @Getter
 @Setter
-public class SearchStatisticYear extends BaseEntity {
+public class SearchStatistic {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "searchId")
     private Search search;
 
     @Column
-    private int statisticYear;
+    private Long numberOfSearch;
 
     @Column
-    private Long totalOfSearch = 1L;
+    private LocalDate statisticDay;
 }

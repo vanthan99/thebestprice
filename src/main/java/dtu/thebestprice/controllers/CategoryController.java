@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping(value = "/api/v1/category")
@@ -41,14 +42,22 @@ public class CategoryController {
     @ApiOperation(value = "Chỉnh sửa danh mục cha")
     public ResponseEntity<Object> updateParentCategory(
             @RequestBody @Valid CategoryParentRequest request,
-            @PathVariable("parentCatId") Long parentId
+            @PathVariable("parentCatId") String strParentId
     ) {
+        Long parentId;
+        try {
+            if (strParentId.trim().equalsIgnoreCase(""))
+                throw new RuntimeException("Không được để trống id");
+            parentId = Long.parseLong(strParentId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id phải là số nguyên");
+        }
         return categoryService.updateParentCategory(request, parentId);
     }
 
     @PostMapping("/child")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Thêm mới sửa danh mục con")
+    @ApiOperation(value = "Thêm mới danh mục con")
     public ResponseEntity<Object> createChildCategory(
             @RequestBody @Valid CategoryChildRequest request
     ) {
@@ -60,9 +69,18 @@ public class CategoryController {
     @ApiOperation(value = "Chỉnh sửa danh mục con")
     public ResponseEntity<Object> updateChildCategory(
             @RequestBody @Valid CategoryChildRequest request,
-            @PathVariable("childCatId") Long childId
+            @PathVariable("childCatId") String strChildId
     ) {
+        Long childId;
+        try {
+            if (strChildId.trim().equalsIgnoreCase(""))
+                throw new RuntimeException("Không được để trống id");
+            childId = Long.parseLong(strChildId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id phải là số nguyên");
+        }
         return categoryService.updateChildCategory(request, childId);
+
     }
 
     @DeleteMapping
