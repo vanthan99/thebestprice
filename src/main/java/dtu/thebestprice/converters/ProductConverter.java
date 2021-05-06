@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LongSummaryStatistics;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductConverter {
@@ -59,8 +60,8 @@ public class ProductConverter {
     public Product toEntity(ProductRequest productRequest, Product product) {
 
         /*
-        * Trường nào có giá trị thì mới cập nhật
-        * */
+         * Trường nào có giá trị thì mới cập nhật
+         * */
 
         if (productRequest.getTitle() != null && !productRequest.getTitle().trim().equalsIgnoreCase(""))
             product.setTitle(productRequest.getTitle());
@@ -110,7 +111,14 @@ public class ProductConverter {
 
         // set product retailer response
         List<ProductRetailer> productRetailers = productRetailerRepository.findByProductAndDeleteFlgFalse(product);
-        List<ProductRetailerResponse> productRetailerResponseList = productRetailerConverter.toProductRetailerResponseList(productRetailers);
+        List<ProductRetailerResponse> productRetailerResponseList =
+                productRetailerConverter.toProductRetailerResponseList(productRetailers)
+                        .stream()
+                        .filter(productRetailerResponse -> productRetailerResponse.getPrice() != null)
+                        .filter(productRetailerResponse -> productRetailerResponse.getPrice() != 0)
+                        .collect(Collectors.toList());
+        ;
+
         longProductResponse.setPrices(productRetailerResponseList);
 
         // set lowest and highest price
