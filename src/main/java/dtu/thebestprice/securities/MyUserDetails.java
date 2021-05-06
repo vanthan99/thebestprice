@@ -56,19 +56,27 @@ public class MyUserDetails implements UserDetails {
         return !user.isDeleteFlg() && user.getUserType().equals(EUserStatusType.ACTIVE);
     }
 
-    public String getFullName(){
+    public String getFullName() {
         return user.getFullName();
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return user.getAddress();
     }
 
-    public String getPhoneNumber(){
+    public String getPhoneNumber() {
         return user.getPhoneNumber();
     }
 
-    public Set<String> getRoles(){
+    public Set<String> getRoles() {
         return user.getRoles().stream().map(role -> role.getName().name()).collect(Collectors.toSet());
+    }
+
+    public int getStatus() {
+        if (user.getUserType().equals(EUserStatusType.WATING))
+            return 0;
+        else if (user.getUserType().equals(EUserStatusType.ACTIVE))
+            return 1;
+        else return 2;
     }
 }

@@ -14,9 +14,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class RegisterRequest {
     @NotBlank(message = "tên đăng nhập không được để trống")
+    @Size(min = 8,max = 16,message = "Tên đăng nhập từ 8-16 ký tự")
     private String username;
 
     @NotBlank(message = "mật khẩu không được để trống")
+    @Size(min = 8,max = 16,message = "Mật khẩu từ 8-16 ký tự")
     private String password;
 
     @NotBlank(message = "tên đầy đủ không được để trống")

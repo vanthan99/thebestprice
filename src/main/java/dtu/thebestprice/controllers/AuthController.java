@@ -8,10 +8,15 @@ import dtu.thebestprice.payload.response.LoginResponse;
 import dtu.thebestprice.securities.JwtTokenProvider;
 import dtu.thebestprice.securities.MyUserDetails;
 import dtu.thebestprice.services.AuthService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +51,7 @@ public class AuthController {
     @ApiOperation(value = "Đăng nhập")
     public ResponseEntity<Object> login(
             @ApiParam(value = "Tài khoản đăng nhâp", required = true)
-            @RequestBody LoginRequest loginRequest
+            @RequestBody @Valid LoginRequest loginRequest
     ) {
         Authentication authentication;
         try {
@@ -56,7 +61,7 @@ public class AuthController {
                             loginRequest.getPassword()
                     ));
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>(new ApiResponse(false, "Username hoặc password không đúng"),HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ApiResponse(false, "Username hoặc password không đúng"), HttpStatus.UNAUTHORIZED);
         }
 
         // Nếu không xảy ra exception tức là thông tin hợp lệ
@@ -67,7 +72,7 @@ public class AuthController {
         // Trả về jwt cho người dùng.
         String jwt = jwtTokenProvider.generateToken((MyUserDetails) authentication.getPrincipal());
 
-        template.opsForValue().set(jwt,jwt);
+        template.opsForValue().set(jwt, jwt);
 
         return ResponseEntity.ok().body(new LoginResponse(jwt));
     }
@@ -81,7 +86,7 @@ public class AuthController {
 
     @PostMapping(value = "/registerRetailer")
     @ApiParam(value = "Đăng ký tài khoản Nhà bán lẽ")
-    public ResponseEntity<Object> registerRetailerAccount(@RequestBody @Valid RegisterRequest registerRequest){
+    public ResponseEntity<Object> registerRetailerAccount(@RequestBody @Valid RegisterRequest registerRequest) {
         return ResponseEntity.ok(authService.register(registerRequest, ERole.ROLE_RETAILER));
     }
 
@@ -89,13 +94,43 @@ public class AuthController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_GUEST')")
     @ApiOperation(value = "Đăng xuất")
     public ResponseEntity<Object> logout(
-            @RequestHeader("Authorization") String token
-    ){
+            @RequestHeader(value = "Authorization", required = false) String token
+    ) {
 
-        if (template.hasKey(token.substring(7))){
+        if (template.hasKey(token.substring(7))) {
             template.delete(token.substring(7));
-            return ResponseEntity.ok(new ApiResponse(true,"Đăng xuất thành công"));
-        }
-        else return new ResponseEntity<>(new ApiResponse(false,"Bạn chưa đăng đăng nhập vào hệ thống"),HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.ok(new ApiResponse(true, "Đăng xuất thành công"));
+        } else
+            return new ResponseEntity<>(new ApiResponse(false, "Bạn chưa đăng đăng nhập vào hệ thống"), HttpStatus.UNAUTHORIZED);
     }
+
+    @PostMapping("/validateToken")
+    @ApiOperation(value = "Kiểm tra token")
+    public ResponseEntity<Object> validateToken(
+            @RequestHeader(value = "Authorization", required = false) String token
+    ) {
+
+        if (token == null)
+            throw new RuntimeException("Không tồn tại token");
+
+        try {
+            if (template.hasKey(token.substring(7))) {
+                Jwts.parser().setSigningKey("thebestprice").parseClaimsJws(token.substring(7));
+                return ResponseEntity.ok().build();
+            }else {
+                throw new RuntimeException("Token không hợp lệ");
+            }
+
+        } catch (MalformedJwtException ex) {
+            throw new RuntimeException("Chuỗi token không hợp lệ");
+        } catch (ExpiredJwtException ex) {
+            throw new RuntimeException("Chuỗi token đã hết hạn");
+        } catch (UnsupportedJwtException ex) {
+            throw new RuntimeException("Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException("JWT claims string is empty.");
+        }
+    }
+
+
 }

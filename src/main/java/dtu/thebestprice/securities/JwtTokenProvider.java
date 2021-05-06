@@ -34,10 +34,11 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
 
                 .claim("username", userDetails.getUsername())
-                .claim("full name", userDetails.getFullName())
+                .claim("fullName", userDetails.getFullName())
                 .claim("role", userDetails.getRoles())
                 .claim("address", userDetails.getAddress())
-                .claim("phone number", userDetails.getPhoneNumber())
+                .claim("phoneNumber", userDetails.getPhoneNumber())
+                .claim("status",userDetails.getStatus())
                 .compact();
     }
 
