@@ -23,6 +23,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @Api
 @RequestMapping(value = "/api/v1/auth")
@@ -73,13 +75,13 @@ public class AuthController {
 
     @PostMapping(value = "/registerGuest")
     @ApiParam(value = "Đăng ký tài khoản guest")
-    public ResponseEntity<Object> registerGuestAccount(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<Object> registerGuestAccount(@RequestBody @Valid RegisterRequest registerRequest) {
         return ResponseEntity.ok(authService.register(registerRequest, ERole.ROLE_GUEST));
     }
 
     @PostMapping(value = "/registerRetailer")
     @ApiParam(value = "Đăng ký tài khoản Nhà bán lẽ")
-    public ResponseEntity<Object> registerRetailerAccount(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<Object> registerRetailerAccount(@RequestBody @Valid RegisterRequest registerRequest){
         return ResponseEntity.ok(authService.register(registerRequest, ERole.ROLE_RETAILER));
     }
 

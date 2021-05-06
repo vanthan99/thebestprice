@@ -37,7 +37,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResponse register(RegisterRequest registerRequest, ERole eRole) {
         if (userRepository.existsByUsername(registerRequest.getUsername()))
-            return new ApiResponse(false, "Tên đăng nhập đã tồn tại");
+            throw new RuntimeException("Tên đăng nhập đã tồn tại");
+
+        if (userRepository.existsByEmail(registerRequest.getEmail()))
+            throw new RuntimeException("Email đã tồn tại");
+
+        try {
+            int phoneNumberTemp = Integer.parseInt(registerRequest.getPhoneNumber());
+        } catch (Exception e) {
+            throw new RuntimeException("Số điên thoại không đúng định dạng.  số điện thoại chỉ bao gồm số từ 0 đến 9");
+        }
+
         User user = toEntity(registerRequest);
 
         Role role = roleRepository.findByName(eRole);
@@ -49,17 +59,6 @@ public class AuthServiceImpl implements AuthService {
         return new ApiResponse(true, "Đăng ký thành công");
     }
 
-    @Override
-    public ApiResponse logout(String token) {
-        String jwt = token.replace("Bearer ","");
-        final Date now = new Date();
-        final Claims claims = Jwts.parser()
-                .setSigningKey(JwtTokenProvider.JWT_SECRET)
-                .parseClaimsJws(jwt).getBody();
-        claims.setExpiration(now);
-        Jwts.builder().setClaims(claims).compact();
-        return new ApiResponse(true,"Đăng xuất thành công");
-    }
 
     private User toEntity(RegisterRequest registerRequest) {
         User user = new User();
@@ -68,6 +67,7 @@ public class AuthServiceImpl implements AuthService {
         user.setFullName(registerRequest.getFullName());
         user.setAddress(registerRequest.getAddress());
         user.setPhoneNumber(registerRequest.getPhoneNumber());
+        user.setEmail(registerRequest.getEmail());
         return user;
     }
 }

@@ -2282,6 +2282,7 @@ public class initData {
                 "vanthan",
                 "than",
                 "Trương Văn Thân",
+                "vanthan.ad.it@gmail.com",
                 "Triệu Phong - Quảng Trị",
                 "0365843463"
         ), ERole.ROLE_ADMIN);
@@ -2290,6 +2291,7 @@ public class initData {
                 "huutho",
                 "tho",
                 "Nguyễn Hữu Thọ",
+                "nguyenhuytho@gmail.com",
                 "Hải Lăng - Quảng Trị",
                 "0723423643"
 
@@ -2299,6 +2301,7 @@ public class initData {
                 "nhungnguyen",
                 "nhung",
                 "Nguyễn Thị Nhung",
+                "nhungngyen@gmail.com",
                 "Triệu Phong - Quảng Trị",
                 "0949620461"
 

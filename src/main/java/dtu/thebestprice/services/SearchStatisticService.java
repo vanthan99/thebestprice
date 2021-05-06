@@ -23,12 +23,20 @@ public interface SearchStatisticService {
     // thống kê từ khóa theo tháng
     ResponseEntity<Object> statisticMonthBetween(int startMonth, int startYear, int endMonth, int endYear, Pageable pageable);
 
+    // thống kê từ khóa theo quý
+    ResponseEntity<Object> statisticByQuarter(int quarter, int year, Pageable pageable);
+
     // thống kê từ khóa theo năm
     ResponseEntity<Object> statisticYearBetween(int startYear, int endYear, Pageable pageable);
 
     // thống kê số lượt tìm kiếm theo ngày
     ResponseEntity<Object> countSearchByBetweenDay(LocalDate startDay, LocalDate endDay);
 
+    // thống kê số lượt tìm kiếm theo quý
+    ResponseEntity<Object> countSearchByQuarter(int quarter, int year, Pageable pageable);
+
     // thống kê số lượt tìm kiếm theo năm
     ResponseEntity<Object> countSearchByBetweenYear(int startYear, int endYear);
+
+
 }

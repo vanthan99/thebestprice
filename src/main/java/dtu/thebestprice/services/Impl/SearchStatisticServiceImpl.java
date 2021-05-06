@@ -75,6 +75,11 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
     }
 
     @Override
+    public ResponseEntity<Object> statisticByQuarter(int quarter, int year, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public ResponseEntity<Object> statisticYearBetween(int startYear, int endYear, Pageable pageable) {
         Query query = entityManager
@@ -128,6 +133,11 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                 .setParameter(2,endDay);
 
         return ResponseEntity.ok(query.getResultList());
+    }
+
+    @Override
+    public ResponseEntity<Object> countSearchByQuarter(int quarter, int year, Pageable pageable) {
+        return null;
     }
 
     @Override

@@ -6,5 +6,4 @@ import dtu.thebestprice.payload.response.ApiResponse;
 
 public interface AuthService {
     ApiResponse register(RegisterRequest registerRequest, ERole role);
-    ApiResponse logout(String token);
 }
