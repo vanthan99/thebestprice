@@ -28,6 +28,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 @RestController
@@ -46,6 +47,19 @@ public class AuthController {
 
     @Autowired
     RedisTemplate template;
+
+//    @PostConstruct
+//    public void initUser(){
+//        authService.register(new RegisterRequest(
+//                "vanthan123",
+//                "thanthan",
+//                "Trương Văn Thân",
+//                "vanthan.ad.it@gmail.com",
+//                "Triệu Phong - Quảng Trị",
+//                "0365843463"
+//        ), ERole.ROLE_ADMIN);
+//
+//    }
 
     @PostMapping("/login")
     @ApiOperation(value = "Đăng nhập")
