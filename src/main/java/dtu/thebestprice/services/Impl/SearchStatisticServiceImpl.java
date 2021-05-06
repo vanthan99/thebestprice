@@ -1,8 +1,9 @@
 package dtu.thebestprice.services.Impl;
 
+import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.PageCustom;
+import dtu.thebestprice.payload.response.query.StatisticCountSearchByQuarterModel;
 import dtu.thebestprice.payload.response.query.StatisticSearchModel;
-import dtu.thebestprice.payload.response.query.ViewCountModel;
 import dtu.thebestprice.repositories.SearchStatisticRepository;
 import dtu.thebestprice.services.SearchStatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+
+;
 
 @Service
 public class SearchStatisticServiceImpl implements SearchStatisticService {
@@ -52,7 +55,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                 .setParameter(1, startDay)
                 .setParameter(2, endDay);
 
-        return getResult(query,pageable);
+        return getResult(query, pageable);
     }
 
     @Override
@@ -70,13 +73,60 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                 .setParameter(3, endMonth)
                 .setParameter(4, endYear);
 
-        return getResult(query,pageable);
+        return getResult(query, pageable);
 
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Object> statisticByQuarter(int quarter, int year, Pageable pageable) {
-        return null;
+        Query query;
+
+
+        switch (quarter) {
+            case 1:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND  MONTH(s.statisticDay) BETWEEN  1 AND 3 " +
+                                "GROUP BY s.search " +
+                                "ORDER BY number desc "
+                        ).setParameter(1, year);
+                break;
+            case 2:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND  MONTH(s.statisticDay) BETWEEN  4 AND 6 " +
+                                "GROUP BY s.search " +
+                                "ORDER BY number desc "
+                        ).setParameter(1, year);
+                break;
+            case 3:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND  MONTH(s.statisticDay) BETWEEN  7 AND 9 " +
+                                "GROUP BY s.search " +
+                                "ORDER BY number desc "
+                        ).setParameter(1, year);
+                break;
+            case 4:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND  MONTH(s.statisticDay) BETWEEN  10 AND 12 " +
+                                "GROUP BY s.search " +
+                                "ORDER BY number desc "
+                        ).setParameter(1, year);
+                break;
+
+            default:
+                throw new RuntimeException("Quý nhập vào không hợp lệ. quý là số nguyên. có giá trị từ 1 cho tới 4");
+        }
+
+
+        return getResult(query, pageable);
     }
 
     @Override
@@ -91,7 +141,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                 .setParameter(1, startYear)
                 .setParameter(2, endYear);
 
-        return getResult(query,pageable);
+        return getResult(query, pageable);
     }
 
     @Transactional
@@ -129,15 +179,61 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                                 "GROUP BY s.statisticDay " +
                                 "ORDER BY s.statisticDay"
                 )
-                .setParameter(1,startDay)
-                .setParameter(2,endDay);
+                        .setParameter(1, startDay)
+                        .setParameter(2, endDay);
 
         return ResponseEntity.ok(query.getResultList());
     }
 
     @Override
-    public ResponseEntity<Object> countSearchByQuarter(int quarter, int year, Pageable pageable) {
-        return null;
+    public ResponseEntity<Object> countSearchByQuarter(int quarter, int year) {
+
+        Query query;
+        switch (quarter) {
+            case 1:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticCountSearchByQuarterModel(YEAR(s.statisticDay), 1,sum(s.numberOfSearch)) " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 1 and 3 " +
+                                "GROUP BY YEAR(s.statisticDay) "
+                        ).setParameter(1, year);
+                break;
+            case 2:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticCountSearchByQuarterModel( YEAR(s.statisticDay), 2,sum(s.numberOfSearch)) " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 4 and 6 " +
+                                "GROUP BY YEAR(s.statisticDay) "
+                        ).setParameter(1, year);
+                break;
+            case 3:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticCountSearchByQuarterModel(YEAR(s.statisticDay), 3,sum(s.numberOfSearch)) " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 7 and 9 " +
+                                "GROUP BY YEAR(s.statisticDay) "
+                        ).setParameter(1, year);
+                break;
+            case 4:
+                query = entityManager
+                        .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticCountSearchByQuarterModel(YEAR(s.statisticDay), 4,sum(s.numberOfSearch)) " +
+                                "FROM SearchStatistic s " +
+                                "WHERE YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 10 and 12 " +
+                                "GROUP BY YEAR(s.statisticDay) "
+                        ).setParameter(1, year);
+                break;
+
+            default:
+                throw new RuntimeException("Quý nhập vào không hợp lệ. quý là số nguyên. có giá trị từ 1 cho tới 4");
+        }
+        try {
+            return ResponseEntity.ok(query.getSingleResult());
+
+        } catch (Exception e){
+            return ResponseEntity.status(404).body(new ApiResponse(false,"Không có dữ liệu cho quý "+ quarter +" Năm "+year));
+        }
+
+
     }
 
     @Override
@@ -150,8 +246,8 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                                 "GROUP BY YEAR(s.statisticDay) " +
                                 "ORDER BY yearStatistic desc"
                 )
-                        .setParameter(1,startYear)
-                        .setParameter(2,endYear);
+                        .setParameter(1, startYear)
+                        .setParameter(2, endYear);
 
         return ResponseEntity.ok(query.getResultList());
     }

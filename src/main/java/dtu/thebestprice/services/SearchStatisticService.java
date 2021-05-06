@@ -33,7 +33,7 @@ public interface SearchStatisticService {
     ResponseEntity<Object> countSearchByBetweenDay(LocalDate startDay, LocalDate endDay);
 
     // thống kê số lượt tìm kiếm theo quý
-    ResponseEntity<Object> countSearchByQuarter(int quarter, int year, Pageable pageable);
+    ResponseEntity<Object> countSearchByQuarter(int quarter, int year);
 
     // thống kê số lượt tìm kiếm theo năm
     ResponseEntity<Object> countSearchByBetweenYear(int startYear, int endYear);

@@ -1,6 +1,7 @@
 package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.converters.DateConverter;
+import dtu.thebestprice.payload.request.QuarterRequest;
 import dtu.thebestprice.payload.request.StatisticBetweenDayRequest;
 import dtu.thebestprice.payload.request.StatisticBetweenYearRequest;
 import dtu.thebestprice.services.SearchStatisticService;
@@ -46,6 +47,17 @@ public class SearchStatisticController {
 
     }
 
+    @PostMapping("/quarter")
+    @ApiOperation(value = "Thống kê những từ được tìm kiếm theo quý")
+    public ResponseEntity<Object> quarter(
+            @RequestBody @Valid QuarterRequest request,
+            Pageable pageable
+    ) {
+        int quarter = dateConverter.toQuarter(request.getQuarter());
+        int year = dateConverter.toYear(request.getYear());
+        return statisticService.statisticByQuarter(quarter,year,pageable);
+    }
+
     @PostMapping("/betweenYear")
     @ApiOperation(value = "Thống kê những từ được tìm kiếm theo từ năm bắt đầu tới năm kết thúc")
     public ResponseEntity<Object> betweenYear(
@@ -74,6 +86,17 @@ public class SearchStatisticController {
             throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
 
         return statisticService.countSearchByBetweenDay(startDay, endDay);
+    }
+
+    @ApiOperation(value = "Thống kê số lần tìm kiếm theo quý")
+    @PostMapping("/searchCountByQuarter")
+    public ResponseEntity<Object> searchCountByQuarter(
+            @RequestBody @Valid QuarterRequest request
+    ) {
+        int quarter = dateConverter.toQuarter(request.getQuarter());
+        int year = dateConverter.toYear(request.getYear());
+
+        return statisticService.countSearchByQuarter(quarter, year);
     }
 
     @ApiOperation(value = "Thống kê số lần tìm kiếm từ năm bắt đầu tới năm kết thúc")

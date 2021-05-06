@@ -64,4 +64,32 @@ public class DateConverter {
         }
         return year;
     }
+
+    public int toQuarter(String strQuarter) {
+        int quarter;
+
+        try {
+            quarter = Integer.parseInt(strQuarter);
+
+            if (quarter < 1 || quarter > 4)
+                throw new RuntimeException("Quý chỉ được nằm trong khoảng từ 1 tới 4");
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("quý phải là số nguyên");
+        }
+        return quarter;
+    }
+
+    public int toYear(String strYear) {
+        int year;
+
+        try {
+            year = Integer.parseInt(strYear);
+
+            if (year <= 2020 || year > 2050)
+                throw new RuntimeException("Năm phải lớn hơn 2020 và bé hơn 2050");
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Năm là số nguyên");
+        }
+        return year;
+    }
 }

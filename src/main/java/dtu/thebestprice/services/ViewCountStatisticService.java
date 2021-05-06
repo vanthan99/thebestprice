@@ -8,6 +8,8 @@ import java.time.LocalDate;
 public interface ViewCountStatisticService {
     ResponseEntity<Object> statisticBetweenDay(LocalDate startDay, LocalDate endDay, Pageable pageable);
 
+    ResponseEntity<Object> statisticByQuarter(int year, int quarter, Pageable pageable);
+
     ResponseEntity<Object> statisticBetweenYear(int startYear, int endYear, Pageable pageable);
 
     ResponseEntity<Object> top20ProductViewedMostByDateDay(LocalDate nowDay);

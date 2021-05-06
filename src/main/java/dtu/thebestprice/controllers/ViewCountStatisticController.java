@@ -1,6 +1,7 @@
 package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.converters.DateConverter;
+import dtu.thebestprice.payload.request.QuarterRequest;
 import dtu.thebestprice.payload.request.StatisticBetweenDayRequest;
 import dtu.thebestprice.payload.request.StatisticBetweenYearRequest;
 import dtu.thebestprice.services.ViewCountStatisticService;
@@ -39,6 +40,20 @@ public class ViewCountStatisticController {
             throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
 
         return viewCountStatisticService.statisticBetweenDay(startDay, endDay, pageable);
+    }
+
+    @PostMapping("/quarter")
+    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất theo quý")
+    public ResponseEntity<Object> statisticByQuarter(
+            @RequestBody @Valid QuarterRequest request,
+            Pageable pageable
+    ) {
+        int quarter = dateConverter.toQuarter(request.getQuarter());
+        int year = dateConverter.toYear(request.getYear());
+
+
+
+        return viewCountStatisticService.statisticByQuarter(year, quarter, pageable);
     }
 
     @PostMapping("/betweenYear")

@@ -45,6 +45,57 @@ public class ViewCountStatisticServiceImpl implements dtu.thebestprice.services.
 
     @Override
     @Transactional
+    public ResponseEntity<Object> statisticByQuarter(int year, int quarter, Pageable pageable) {
+        Query query;
+
+
+        switch (quarter) {
+            case 1:
+                query = entityManager
+                        .createQuery("select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                                "from ViewCountStatistic s " +
+                                "where YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 1 and 3 " +
+                                "group by s.product " +
+                                "order by viewcount desc"
+                        ).setParameter(1, year);
+                break;
+            case 2:
+                query = entityManager
+                        .createQuery("select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                                "from ViewCountStatistic s " +
+                                "where YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 4 and 6 " +
+                                "group by s.product " +
+                                "order by viewcount desc"
+                        ).setParameter(1, year);
+                break;
+            case 3:
+                query = entityManager
+                        .createQuery("select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                                "from ViewCountStatistic s " +
+                                "where YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between 7 and 9 " +
+                                "group by s.product " +
+                                "order by viewcount desc"
+                        ).setParameter(1, year);
+                break;
+            case 4:
+                query = entityManager
+                        .createQuery("select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                                "from ViewCountStatistic s " +
+                                "where YEAR(s.statisticDay) = ?1 AND MONTH(s.statisticDay) between ?10 and ?12 " +
+                                "group by s.product " +
+                                "order by viewcount desc"
+                        ).setParameter(1, year);
+                break;
+
+            default:
+                throw new RuntimeException("Quý nhập vào không hợp lệ. quý là số nguyên. có giá trị từ 1 cho tới 4");
+        }
+
+        return getResult(query,pageable);
+    }
+
+    @Override
+    @Transactional
     public ResponseEntity<Object> statisticBetweenYear(int startYear, int endYear, Pageable pageable) {
         Query query = entityManager.createQuery(
                 "select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
