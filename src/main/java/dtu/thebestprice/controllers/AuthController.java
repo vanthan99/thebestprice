@@ -1,10 +1,6 @@
 package dtu.thebestprice.controllers;
 
-import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
-import dtu.thebestprice.entities.User;
-import dtu.thebestprice.entities.VerificationToken;
 import dtu.thebestprice.entities.enums.ERole;
-import dtu.thebestprice.entities.enums.EUserStatusType;
 import dtu.thebestprice.payload.request.LoginRequest;
 import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
@@ -20,7 +16,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +27,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.util.Calendar;
 
 @RestController
 @Api
