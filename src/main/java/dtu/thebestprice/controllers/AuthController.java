@@ -56,7 +56,7 @@ public class AuthController {
 //    @PostConstruct
 //    public void initUser(){
 //        authService.register(new RegisterRequest(
-//                "vanthan123",
+//                "truongvanthan",
 //                "thanthan",
 //                "Trương Văn Thân",
 //                "vanthan.ad.it@gmail.com",
