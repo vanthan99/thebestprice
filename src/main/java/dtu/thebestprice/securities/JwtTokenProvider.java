@@ -38,7 +38,7 @@ public class JwtTokenProvider {
                 .claim("role", userDetails.getRoles())
                 .claim("address", userDetails.getAddress())
                 .claim("phoneNumber", userDetails.getPhoneNumber())
-                .claim("status",userDetails.getStatus())
+                .claim("status", userDetails.getStatus())
                 .compact();
     }
 
@@ -52,12 +52,15 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String authToken) {
-        try {
-            if (template.hasKey(authToken)) {
-                Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
-                return true;
-            } else log.error("Phiên đăng nhập đã hết hạn.Vui lòng đăng nhập lại");
 
+        if (!template.hasKey(authToken)) {
+            log.error("Phiên đăng nhập đã hết hạn");
+            return false;
+        }
+
+        try {
+            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
+            return true;
         } catch (MalformedJwtException ex) {
 //            log.error("Invalid JWT token");
             log.error("Chuỗi token không hợp lệ");

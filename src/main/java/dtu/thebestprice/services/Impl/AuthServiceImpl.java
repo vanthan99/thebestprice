@@ -139,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
         MimeMessageHelper helper = new MimeMessageHelper(message, multipart, "utf-8");
         String htmlMsg = "<h3>Hi!</h3>"
                 + "<h3>Chào mừng đến với thebestprice. Để hoàn tất quá trình đăng ký, vui lòng nhấn vào đường link bên dưới" +
-                "\r\n" + "https://thebestpricedtu.herokuapp.com/" + confirmationUrl;
+                "\r\n" + "https://thebestpricedtu.herokuapp.com" + confirmationUrl;
         message.setContent(htmlMsg, "text/html; charset=UTF-8");
         helper.setTo(user.getEmail());
         helper.setSubject("Thông báo từ thebestprice");

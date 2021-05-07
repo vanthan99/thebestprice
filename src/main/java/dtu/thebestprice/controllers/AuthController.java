@@ -1,10 +1,12 @@
 package dtu.thebestprice.controllers;
 
+import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.LoginRequest;
 import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.LoginResponse;
+import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.securities.JwtTokenProvider;
 import dtu.thebestprice.securities.MyUserDetails;
 import dtu.thebestprice.services.AuthService;
@@ -24,9 +26,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 @RestController
@@ -42,6 +46,9 @@ public class AuthController {
 
     @Autowired
     AuthService authService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     RedisTemplate template;
@@ -119,20 +126,34 @@ public class AuthController {
     @PostMapping("/validateToken")
     @ApiOperation(value = "Kiểm tra token")
     public ResponseEntity<Object> validateToken(
-            @RequestHeader(value = "Authorization", required = false) String token
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
+        if (token == null)
+            throw new RuntimeException("Token không tồn tại");
+
+        if (myUserDetails == null)
+            throw new RuntimeException("Token không hợp lệ");
+
+        User user = userRepository
+                .findByUsername(myUserDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
+
+        if (user.isDeleteFlg())
+            throw new RuntimeException("Tài khoản đã bị xóa");
+        if (!user.isEnable() || !user.isApprove())
+            throw new RuntimeException("Tài khoản không còn hoạt động");
 
         if (token == null)
             throw new RuntimeException("Không tồn tại token");
 
-        try {
-            if (template.hasKey(token.substring(7))) {
-                Jwts.parser().setSigningKey("thebestprice").parseClaimsJws(token.substring(7));
-                return ResponseEntity.ok().build();
-            } else {
-                throw new RuntimeException("Token không hợp lệ");
-            }
+        if (!template.hasKey(token.substring(7))) {
+            throw new RuntimeException("Phiên đăng nhập đã hết hạn");
+        }
 
+        try {
+            Jwts.parser().setSigningKey("thebestprice").parseClaimsJws(token.substring(7));
+            return ResponseEntity.ok().build();
         } catch (MalformedJwtException ex) {
             throw new RuntimeException("Chuỗi token không hợp lệ");
         } catch (ExpiredJwtException ex) {
@@ -142,6 +163,7 @@ public class AuthController {
         } catch (IllegalArgumentException ex) {
             throw new RuntimeException("JWT claims string is empty.");
         }
+
     }
 
 
