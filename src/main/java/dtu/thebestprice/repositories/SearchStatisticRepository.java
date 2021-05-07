@@ -17,4 +17,11 @@ public interface SearchStatisticRepository extends JpaRepository<SearchStatistic
     @Query("UPDATE SearchStatistic s SET s.numberOfSearch = (s.numberOfSearch + 1)" +
             " WHERE s.search.id = :searchId AND s.statisticDay = :statisticDay ")
     void updateNumberOfSearch(Long searchId, LocalDate statisticDay);
+
+    // đếm số lượt tìm kiếm theo tháng
+    @Query("select sum(s.numberOfSearch)" +
+            " from SearchStatistic s " +
+            "where year(s.statisticDay) = :year" +
+            " and month(s.statisticDay) = :month ")
+    Long countByMonth(int year, int month);
 }

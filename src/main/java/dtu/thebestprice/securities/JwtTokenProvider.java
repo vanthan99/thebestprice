@@ -35,7 +35,7 @@ public class JwtTokenProvider {
 
                 .claim("username", userDetails.getUsername())
                 .claim("fullName", userDetails.getFullName())
-                .claim("role", userDetails.getRoles())
+                .claim("role", userDetails.getRole())
                 .claim("address", userDetails.getAddress())
                 .claim("phoneNumber", userDetails.getPhoneNumber())
                 .claim("status", userDetails.getStatus())

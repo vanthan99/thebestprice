@@ -35,13 +35,12 @@ public class LevenshteinDistance {
     }
 
     public static void main(String[] args) {
-        String s1 = "iphone xs";
-        String s2 = "xr";
+        String s1 = "LaptopAsusZenBookUM425UA-AM501T";
+        String s2 = "LaptopASUSZENBOOKUM425UA-AM501C";
 
         JaroWinkler jw = new JaroWinkler();
-        System.out.println(jw.similarity(s2, s1) * 100);
-        if (s1.trim().length() == s2.trim().length() && jw.similarity(s1, s2) * 100 > 99)
-            System.out.println("Trung lap");
-        else System.out.println("Không trung lặp");
+        System.out.println("tỷ lệ trung: " + jw.similarity(s1, s2) * 100);
+
+
     }
 }

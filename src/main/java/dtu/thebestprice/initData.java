@@ -10,12 +10,9 @@ import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.AuthService;
 import dtu.thebestprice.services.CategoryService;
-import dtu.thebestprice.services.IndexingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -40,8 +37,6 @@ public class initData {
     @Autowired
     BrandRepository brandRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -75,6 +70,9 @@ public class initData {
 
     @Autowired
     ViewCountStatisticRepository viewCountStatisticRepository;
+
+    @Autowired
+    StatisticAccessRepository statisticAccessRepository;
 
 
     private final String PHILONG_LAPTOP_ACER = "https://philong.com.vn/laptop-acer.html";
@@ -155,7 +153,8 @@ public class initData {
     private final String SHUPDUNK_IPHONE11 = "https://shopdunk.com/iphone-11/";
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
-//    @PostConstruct
+
+    //    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu role");
 //        initRole();
@@ -182,40 +181,110 @@ public class initData {
 //        initManyProductRetailer();
     }
 
+//    @PostConstruct
+    public void initSoluottruycap() {
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 1, 15),
+                true,
+                700L
+        ));
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 1, 15),
+                false,
+                500L
+        ));
+
+
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 2, 15),
+                true,
+                800L
+        ));
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 2, 15),
+                false,
+                400L
+        ));
+
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 3, 15),
+                true,
+                550L
+        ));
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 3, 15),
+                false,
+                500L
+        ));
+
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 4, 15),
+                true,
+                780L
+        ));
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 4, 15),
+                false,
+                450L
+        ));
+
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 5, 15),
+                true,
+                900L
+        ));
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 5, 15),
+                false,
+                700L
+        ));
+
+    }
+
+    //    @PostConstruct
     private void initManyProductRetailer() {
-        List<Product> productList = productRepository.findAll();
         Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
 
         initProductRetailer(
-                productList.get(0),
+                productRepository.getOne(1421L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
                 9890000L
         );
 
         initProductRetailer(
-                productList.get(1),
+                productRepository.getOne(1422L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb",
                 9990000L
         );
 
         initProductRetailer(
-                productList.get(2),
+                productRepository.getOne(1423L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw",
                 10000000L
         );
 
         initProductRetailer(
-                productList.get(3),
+                productRepository.getOne(1424L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt",
                 11900000L
         );
 
         initProductRetailer(
-                productList.get(4),
+                productRepository.getOne(1425L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt",
                 11950000L
@@ -223,56 +292,56 @@ public class initData {
         );
 
         initProductRetailer(
-                productList.get(5),
+                productRepository.getOne(1426L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt",
                 12890000L
         );
 
         initProductRetailer(
-                productList.get(6),
+                productRepository.getOne(1427L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt",
                 13900000L
         );
 
         initProductRetailer(
-                productList.get(7),
+                productRepository.getOne(1428L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang",
                 16990000L
         );
 
         initProductRetailer(
-                productList.get(8),
+                productRepository.getOne(1429L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang",
                 17290000L
         );
 
         initProductRetailer(
-                productList.get(9),
+                productRepository.getOne(1430L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt",
                 17500000L
         );
 
         initProductRetailer(
-                productList.get(10),
+                productRepository.getOne(1431L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw",
                 18500000L
         );
 
         initProductRetailer(
-                productList.get(11),
+                productRepository.getOne(1432L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw",
                 18900000L
         );
 
         initProductRetailer(
-                productList.get(12),
+                productRepository.getOne(1433L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10",
                 19800000L
@@ -1835,17 +1904,6 @@ public class initData {
         priceRepository.save(price);
     }
 
-    private void initRole() {
-        Role roleAdmin = new Role();
-        Role roleRetailer = new Role();
-        Role roleGuest = new Role();
-        roleAdmin.setName(ERole.ROLE_ADMIN);
-        roleRetailer.setName(ERole.ROLE_RETAILER);
-        roleGuest.setName(ERole.ROLE_GUEST);
-        roleRepository.save(roleAdmin);
-        roleRepository.save(roleRetailer);
-        roleRepository.save(roleGuest);
-    }
 
     private void initBrand() {
         List<String> listBrand = Arrays.asList(

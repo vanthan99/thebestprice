@@ -1,6 +1,8 @@
 package dtu.thebestprice.repositories;
 
 import dtu.thebestprice.entities.Search;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +25,6 @@ public interface SearchRepository extends JpaRepository<Search, Long> {
     Search findByKeyword(String keyword);
 
     boolean existsByKeyword(String keyword);
+
+    Page<Search> findByOrderByNumberOfSearchDesc(Pageable pageable);
 }

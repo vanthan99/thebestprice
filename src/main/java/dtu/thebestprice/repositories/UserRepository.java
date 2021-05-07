@@ -1,6 +1,7 @@
 package dtu.thebestprice.repositories;
 
 import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.enums.ERole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // danh sách tài khoản chưa phê duyệt sắp xếp theo ngày
     Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveFalseOrderByCreatedAtDesc(Pageable pageable);
+
+    Long countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole role);
 }

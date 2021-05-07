@@ -1,12 +1,10 @@
 package dtu.thebestprice.services.Impl;
 
-import dtu.thebestprice.entities.Role;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.VerificationToken;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
-import dtu.thebestprice.repositories.RoleRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.repositories.VerificationTokenRepository;
 import dtu.thebestprice.services.AuthService;
@@ -21,10 +19,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -34,14 +29,48 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    RoleRepository roleRepository;
 
     @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
+
+//    @PostConstruct
+//    public void init() {
+//        RegisterRequest request = new RegisterRequest();
+//        request.setUsername("truongvanthan");
+//        request.setPassword("thanthan");
+//        request.setEmail("vanthan.ad.it@gmail.com");
+//        request.setPhoneNumber("0238472393");
+//        request.setFullName("Trương Văn Thân");
+//        request.setAddress("Quảng Trị");
+//
+//        User user = this.toEntity(request);
+//        user.setEnable(true);
+//        user.setApprove(true);
+//        user.setRole(ERole.ROLE_ADMIN);
+//
+//        userRepository.save(user);
+//
+//
+//        RegisterRequest request2 = new RegisterRequest();
+//        request2.setUsername("truongvanthan2");
+//        request2.setPassword("thanthan2");
+//        request2.setEmail("vanthan.ad.it2@gmail.com");
+//        request2.setPhoneNumber("0238472393");
+//        request2.setFullName("Trương Văn Thân");
+//        request2.setAddress("Quảng Trị");
+//
+//        User user2 = this.toEntity(request2);
+//        user2.setEnable(true);
+//        user2.setApprove(true);
+//        user2.setRole(ERole.ROLE_RETAILER);
+//
+//        userRepository.save(user2);
+//
+//
+//    }
 
 
     @SneakyThrows
@@ -61,10 +90,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = toEntity(registerRequest);
 
-        Role role = roleRepository.findByName(eRole);
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        user.setRoles(roles);
+        user.setRole(eRole);
 
         userRepository.save(user);
 
@@ -94,8 +120,7 @@ public class AuthServiceImpl implements AuthService {
             return "Token đã hết hạn";
         }
 
-        Set<ERole> roles = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
-        if (roles.contains(ERole.ROLE_GUEST)) {
+        if (user.getRole().equals(ERole.ROLE_GUEST)) {
             user.setEnable(true);
             user.setApprove(true);
             userRepository.save(user);
@@ -107,8 +132,6 @@ public class AuthServiceImpl implements AuthService {
             return "Xác nhận email thành công. Chúng tối sẽ gửi 1 email thông báo đến bạn ngay sau khi tài khoản được quản trị viên phê duyệt";
         }
     }
-
-
 
 
     private User toEntity(RegisterRequest registerRequest) {

@@ -1,6 +1,7 @@
 package dtu.thebestprice.entities;
 
 import dtu.thebestprice.entities.base.BaseEntity;
+import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.entities.enums.EUserStatusType;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Setter
 public class User extends BaseEntity {
 
-    @Column(unique = true,length = 50)
+    @Column(unique = true, length = 50)
     private String username;
 
     @Column(length = 60)
@@ -38,11 +39,7 @@ public class User extends BaseEntity {
     @Column
     private boolean approve = false;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id",nullable = false,updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "role_id",nullable = false,updatable = false)}
-    )
-    private Set<Role> roles;
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private ERole role;
 }
