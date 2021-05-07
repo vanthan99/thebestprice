@@ -1,6 +1,10 @@
 package dtu.thebestprice.controllers;
 
+import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
+import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.VerificationToken;
 import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.entities.enums.EUserStatusType;
 import dtu.thebestprice.payload.request.LoginRequest;
 import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.util.Calendar;
 
 @RestController
 @Api
@@ -131,7 +136,7 @@ public class AuthController {
             if (template.hasKey(token.substring(7))) {
                 Jwts.parser().setSigningKey("thebestprice").parseClaimsJws(token.substring(7));
                 return ResponseEntity.ok().build();
-            }else {
+            } else {
                 throw new RuntimeException("Token không hợp lệ");
             }
 

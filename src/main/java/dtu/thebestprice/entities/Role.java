@@ -17,7 +17,4 @@ public class Role extends BaseEntity {
     @Column(length = 15)
     @Enumerated(EnumType.STRING)
     private ERole name;
-
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "roles")
-    private Set<User> users;
 }

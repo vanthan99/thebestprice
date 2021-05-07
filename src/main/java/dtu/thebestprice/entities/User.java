@@ -33,8 +33,10 @@ public class User extends BaseEntity {
     private String phoneNumber;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private EUserStatusType userType = EUserStatusType.WATING;
+    private boolean enable = false;
+
+    @Column
+    private boolean approve = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

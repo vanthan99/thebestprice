@@ -53,7 +53,9 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !user.isDeleteFlg() && user.getUserType().equals(EUserStatusType.ACTIVE);
+        if (!user.isEnable()) throw new RuntimeException("Tài khoản không hoạt động");
+        if (!user.isApprove()) throw new RuntimeException("Tài khoản chưa được phê duyệt");
+        return !user.isDeleteFlg() && user.isEnable() && user.isApprove();
     }
 
     public String getFullName() {
@@ -72,11 +74,7 @@ public class MyUserDetails implements UserDetails {
         return user.getRoles().stream().map(role -> role.getName().name()).collect(Collectors.toSet());
     }
 
-    public int getStatus() {
-        if (user.getUserType().equals(EUserStatusType.WATING))
-            return 0;
-        else if (user.getUserType().equals(EUserStatusType.ACTIVE))
-            return 1;
-        else return 2;
+    public boolean getStatus() {
+        return user.isEnable() && user.isApprove();
     }
 }
