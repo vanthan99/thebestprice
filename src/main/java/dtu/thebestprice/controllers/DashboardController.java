@@ -63,11 +63,11 @@ public class DashboardController {
 //        return dashBoardService.rateUser();
 //    }
 //
-//    @GetMapping("/statisticKeyword")
-//    @ApiOperation(value = "Thống kê số lượt tìm kiếm từ trước đến nay")
-//    public ResponseEntity<Object> statisticKeyword(
-//            @PageableDefault(size = 15) Pageable pageable
-//    ) {
-//        return dashBoardService.statisticKeyword(pageable);
-//    }
+    @GetMapping("/statisticKeyword")
+    @ApiOperation(value = "Thống kê số lượt tìm kiếm từ trước đến nay")
+    public ResponseEntity<Object> statisticKeyword(
+            @PageableDefault(size = 15) Pageable pageable
+    ) {
+        return dashBoardService.statisticKeyword(pageable);
+    }
 }
