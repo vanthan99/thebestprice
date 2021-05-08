@@ -182,6 +182,18 @@ public class initData {
 //        initManyProductRetailer();
     }
 
+    @PostConstruct
+    public void intSoluotTimKiem() {
+        Search search = new Search("Máy tính asus s340", 600L);
+        searchRepository.save(search);
+        searchStatisticRepository.save(new SearchStatistic(null, search, 100L, LocalDate.of(2021, 1, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 150L, LocalDate.of(2021, 2, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 140L, LocalDate.of(2021, 3, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 101L, LocalDate.of(2021, 4, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 100L, LocalDate.of(2021, 5, 15)));
+
+    }
+
 //    @PostConstruct
     public void initSoluottruycap() {
         statisticAccessRepository.save(new StatisticAccess(
@@ -252,7 +264,7 @@ public class initData {
 
     }
 
-//        @PostConstruct
+    //        @PostConstruct
     private void initManyProductRetailer() {
         Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
 

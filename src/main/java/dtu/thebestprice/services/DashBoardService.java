@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 public interface DashBoardService {
     ResponseEntity<Object> overView();
 
+    ResponseEntity<Object> dashBoard(String type);
+
     // tổng quan lượt truy cập
     ResponseEntity<Object> statisticAccess();
 
@@ -13,9 +15,10 @@ public interface DashBoardService {
     ResponseEntity<Object> statisticSearch();
 
     // tỷ lệ người dùng truy cập có hay không có tài khoản
-
+    ResponseEntity<Object> rateUser();
 
     // thống kê từ khóa được tìm kiếm
     ResponseEntity<Object> statisticKeyword(Pageable pageable);
 
+    ResponseEntity<Object> statisticAccessByQuarter();
 }

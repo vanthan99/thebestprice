@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,23 +28,46 @@ public class DashboardController {
         return dashBoardService.overView();
     }
 
-    @GetMapping("/statisticAccess")
-    @ApiOperation(value = "Thống kê số lượt truy cập của tháng hiện tại")
-    public ResponseEntity<Object> statisticAccess() {
-        return dashBoardService.statisticAccess();
-    }
-
-    @GetMapping("/statisticSearch")
-    @ApiOperation(value = "Thống kê số lượt tìm kiếm của tháng hiện tại")
-    public ResponseEntity<Object> statisticSearch() {
-        return dashBoardService.statisticSearch();
-    }
-
-    @GetMapping("/statisticKeyword")
-    @ApiOperation(value = "Thống kê số lượt tìm kiếm")
-    public ResponseEntity<Object> statisticKeyword(
-            @PageableDefault(size = 15) Pageable pageable
+    @GetMapping("/statistic")
+    @ApiOperation(value = "Thống kê số lượt truy cập, số lượt tìm kiếm và phân loại user")
+    public ResponseEntity<Object> statistic(
+            @RequestParam(value = "type", required = false) String type
     ) {
-        return dashBoardService.statisticKeyword(pageable);
+        if (type == null) {
+            throw new RuntimeException("Không được để trống loại thống kê");
+        }
+        return dashBoardService.dashBoard(type);
     }
+
+//    @GetMapping("/statisticAccess")
+//    @ApiOperation(value = "Thống kê số lượt truy cập theo từng tháng")
+//    public ResponseEntity<Object> statisticAccess() {
+//        return dashBoardService.statisticAccess();
+//    }
+//
+//    @GetMapping("/statisticAccessByQuarter")
+//    @ApiOperation(value = "Thống kê số lượt truy cập theo từng quý")
+//    public ResponseEntity<Object> statisticAccessByQuarter() {
+//        return dashBoardService.statisticAccessByQuarter();
+//    }
+//
+//    @GetMapping("/statisticSearch")
+//    @ApiOperation(value = "Thống kê số lượt tìm kiếm của tháng hiện tại")
+//    public ResponseEntity<Object> statisticSearch() {
+//        return dashBoardService.statisticSearch();
+//    }
+//
+//    @GetMapping("/statisticRateUser")
+//    @ApiOperation(value = "Thống kê tỷ lệ người dùng sử dụng hệ thống. tỷ lệ người dùng đã đăng nhập và chưa")
+//    public ResponseEntity<Object> rateUser() {
+//        return dashBoardService.rateUser();
+//    }
+//
+//    @GetMapping("/statisticKeyword")
+//    @ApiOperation(value = "Thống kê số lượt tìm kiếm từ trước đến nay")
+//    public ResponseEntity<Object> statisticKeyword(
+//            @PageableDefault(size = 15) Pageable pageable
+//    ) {
+//        return dashBoardService.statisticKeyword(pageable);
+//    }
 }
