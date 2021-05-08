@@ -1,6 +1,5 @@
 package dtu.thebestprice.services.Impl;
 
-import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
 import dtu.thebestprice.entities.Search;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.response.ApiResponse;
