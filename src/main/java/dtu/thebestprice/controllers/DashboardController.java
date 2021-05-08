@@ -29,15 +29,19 @@ public class DashboardController {
 
     @GetMapping("/statisticAccess")
     @ApiOperation(value = "Thống kê số lượt truy cập của tháng hiện tại")
-    public ResponseEntity<Object> statisticAccess(
-
-    ) {
+    public ResponseEntity<Object> statisticAccess() {
         return dashBoardService.statisticAccess();
     }
 
     @GetMapping("/statisticSearch")
+    @ApiOperation(value = "Thống kê số lượt tìm kiếm của tháng hiện tại")
+    public ResponseEntity<Object> statisticSearch() {
+        return dashBoardService.statisticSearch();
+    }
+
+    @GetMapping("/statisticKeyword")
     @ApiOperation(value = "Thống kê số lượt tìm kiếm")
-    public ResponseEntity<Object> statisticSearch(
+    public ResponseEntity<Object> statisticKeyword(
             @PageableDefault(size = 15) Pageable pageable
     ) {
         return dashBoardService.statisticKeyword(pageable);

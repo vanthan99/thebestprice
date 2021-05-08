@@ -68,6 +68,19 @@ public class DashBoardServiceImpl implements DashBoardService {
     }
 
     @Override
+    public ResponseEntity<Object> statisticSearch() {
+        List<Long> result = new ArrayList<>();
+        LocalDate nowDate = LocalDate.now();
+        int month = nowDate.getMonthValue();
+        int year = nowDate.getYear();
+
+        for (int i = 1; i <= month; i++) {
+            result.add(searchStatisticRepository.countByMonth(year, i));
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @Override
     public ResponseEntity<Object> statisticKeyword(Pageable pageable) {
         Page<SearchResponse> result =
                 searchRepository

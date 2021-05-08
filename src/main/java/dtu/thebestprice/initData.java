@@ -13,6 +13,7 @@ import dtu.thebestprice.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -251,7 +252,7 @@ public class initData {
 
     }
 
-    //    @PostConstruct
+//        @PostConstruct
     private void initManyProductRetailer() {
         Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
 
