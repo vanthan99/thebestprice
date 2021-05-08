@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,11 +50,11 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         return listResult;
     }
 
-    private ProductCrawler getProductDetail(String s) throws Exception {
+    // chỉ cào cho laptop của philong
+    public ProductCrawler getProductDetail(String s) throws Exception {
         System.out.println("Đã vào " + s);
         try {
             document = Jsoup.connect(s).get();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,10 +68,15 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         Elements listImageElement = document.select("#sync2 a");
 
         List<String> images = new ArrayList<>();
-        if (listImageElement != null || listImageElement.size() > 0) {
+        if (listImageElement.size() > 0) {
             listImageElement.forEach(element -> {
                 images.add("https://philong.com.vn" + element.attr("href"));
             });
+        } else {
+            listImageElement = document.select("#Zoomer");
+            if (listImageElement.size() > 0)
+                images.add("https://philong.com.vn" + listImageElement.first().attr("href"));
+            else images.add("https://dummyimage.com/380x380/fff/333333.png&text=%C4%90ang+c%E1%BA%ADp+nh%E1%BA%ADt");
         }
 
         Elements shortDescElements = document.select(".pro-info p");
@@ -125,6 +131,8 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         product.setTitle(title);
         product.setShortDescription(shortDesc.toString().replaceAll("&nbsp;", ""));
         product.setLongDescription(longDesc.toString());
+
+
 
         return new ProductCrawler(product, price, images, s);
 

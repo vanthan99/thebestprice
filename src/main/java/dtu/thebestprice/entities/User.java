@@ -3,7 +3,9 @@ package dtu.thebestprice.entities;
 import dtu.thebestprice.entities.base.BaseEntity;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.entities.enums.EUserStatusType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,6 +15,8 @@ import java.util.Set;
 @Table
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseEntity {
 
     @Column(unique = true, length = 50)

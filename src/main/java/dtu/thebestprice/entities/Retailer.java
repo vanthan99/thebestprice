@@ -30,4 +30,7 @@ public class Retailer extends BaseEntity {
 
     @Column
     private String logoImage;
+
+    @Column
+    private boolean approve = false;
 }

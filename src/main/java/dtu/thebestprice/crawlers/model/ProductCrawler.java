@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 /*
-* Class lấy dữ liệu thô trực tiếp từ trang web
-*
-* */
+ * Class lấy dữ liệu thô trực tiếp từ trang web
+ *
+ * */
 public class ProductCrawler {
     private Product product;
     private Long price;

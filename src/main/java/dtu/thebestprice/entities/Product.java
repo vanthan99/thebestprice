@@ -55,4 +55,7 @@ public class Product extends BaseEntity {
     @Column
     @Field(index = Index.NO,store = Store.YES)
     private Long viewCount = 0L;
+
+    @Column
+    private boolean approve = false;
 }

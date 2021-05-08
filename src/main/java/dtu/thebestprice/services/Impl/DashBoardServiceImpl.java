@@ -64,7 +64,9 @@ public class DashBoardServiceImpl implements DashBoardService {
         Long anonymous = statisticAccessRepository.countByYearAndAuthFalse(year);
 
         User userRate = new User();
-        userRate.setAuth(((1.0) * auth / (auth + anonymous)) * 100);
+
+
+        userRate.setAuth((double) Math.round(((1.0) * auth / (auth + anonymous)) * 100 * 100) / 100);
         userRate.setAnonymous(100 - userRate.getAuth());
 
 

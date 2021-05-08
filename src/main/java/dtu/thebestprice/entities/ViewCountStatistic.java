@@ -1,7 +1,9 @@
 package dtu.thebestprice.entities;
 
 import dtu.thebestprice.entities.base.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -12,6 +14,8 @@ import java.time.LocalDate;
 @Table
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ViewCountStatistic extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productId")

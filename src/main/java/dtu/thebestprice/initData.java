@@ -11,6 +11,7 @@ import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.AuthService;
 import dtu.thebestprice.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -74,6 +75,9 @@ public class initData {
 
     @Autowired
     StatisticAccessRepository statisticAccessRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     private final String PHILONG_LAPTOP_ACER = "https://philong.com.vn/laptop-acer.html";
@@ -155,14 +159,12 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-    //    @PostConstruct
+
+    //        @PostConstruct
     public void init() {
-//        System.out.println("Bắt đầu lưu role");
-//        initRole();
-//
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
-//
+
 //        System.out.println("Bắt đầu lưu category");
 //        initCategory();
 //
@@ -172,35 +174,148 @@ public class initData {
 //        System.out.println("Bắt đầu lưu brand");
 //        initBrand();
 //
-//        long start = System.currentTimeMillis();
 //        System.out.println("Bắt đầu lưu sản phẩm");
 //        initProductV2();
-//        System.out.println("Lưu xong sản phẩm");
-//        long end = System.currentTimeMillis();
-//        System.out.println("end-start = " + (end - start) / 1000);
-//        initProduct();
+//
+////        initProduct();
 //        initManyProductRetailer();
-    }
-
-    @PostConstruct
-    public void intSoluotTimKiem() {
-        Search search = new Search("Máy tính asus s340", 600L);
-        searchRepository.save(search);
-        searchStatisticRepository.save(new SearchStatistic(null, search, 100L, LocalDate.of(2021, 1, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 150L, LocalDate.of(2021, 2, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 140L, LocalDate.of(2021, 3, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 101L, LocalDate.of(2021, 4, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 100L, LocalDate.of(2021, 5, 15)));
-
+//
+//        initSoluottruycap();
+//        initViewCount();
+//        initSoluotTimKiem();
     }
 
 //    @PostConstruct
+    public void initSoluotTimKiem() {
+        Search search = new Search("Máy tính asus s340", 600L);
+        searchRepository.save(search);
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1200L, LocalDate.of(2021, 1, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1150L, LocalDate.of(2021, 2, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1000L, LocalDate.of(2021, 3, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1130L, LocalDate.of(2021, 4, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1550L, LocalDate.of(2021, 5, 15)));
+
+    }
+
+    //    @PostConstruct
+    public void initViewCount() {
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1L),
+                LocalDate.now(),
+                50L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(12L),
+                LocalDate.now(),
+                60L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(3L),
+                LocalDate.now(),
+                80L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(4L),
+                LocalDate.now(),
+                40L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(5L),
+                LocalDate.now(),
+                85L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(6L),
+                LocalDate.now(),
+                78L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(7L),
+                LocalDate.now(),
+                96L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(9L),
+                LocalDate.now(),
+                89L
+        ));
+
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1421L),
+                LocalDate.now(),
+                80L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1422L),
+                LocalDate.now(),
+                50L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1423L),
+                LocalDate.now(),
+                80L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1521L),
+                LocalDate.now(),
+                30L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1533L),
+                LocalDate.now(),
+                100L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1534L),
+                LocalDate.now(),
+                400L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1535L),
+                LocalDate.now(),
+                90L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1536L),
+                LocalDate.now(),
+                80L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1539L),
+                LocalDate.now(),
+                120L
+        ));
+
+        viewCountStatisticRepository.save(new ViewCountStatistic(
+                productRepository.getOne(1540L),
+                LocalDate.now(),
+                290L
+        ));
+    }
+
+    //    @PostConstruct
     public void initSoluottruycap() {
         statisticAccessRepository.save(new StatisticAccess(
                 null,
                 LocalDate.of(2021, 1, 15),
                 true,
-                700L
+                750L
         ));
         statisticAccessRepository.save(new StatisticAccess(
                 null,
@@ -264,12 +379,11 @@ public class initData {
 
     }
 
-    //        @PostConstruct
+    //    @PostConstruct
     private void initManyProductRetailer() {
         Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
-
         initProductRetailer(
-                productRepository.getOne(1421L),
+                productRepository.getOne(1422L),
                 xuanVinhRetailer,
                 "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
                 9890000L
@@ -362,12 +476,16 @@ public class initData {
     }
 
     private void saveProductV2(Set<ProductCrawler> productCrawlers, Category category, Brand brand, Retailer retailer) {
+        // danh muc laptop
+
+
         productCrawlers.forEach(productCrawler -> {
             System.out.println("Đang lưu " + productCrawler.getUrl());
             Product product = productCrawler.getProduct();
             product.setCategory(category);
             product.setBrand(brand);
-            productRepository.save(product);
+            product.setApprove(true);
+
 
             // save product retailer
             ProductRetailer productRetailer = new ProductRetailer();
@@ -381,11 +499,6 @@ public class initData {
 
             // save Images
             productCrawler.getImages().forEach(s -> imageRepository.save(new Image(s, product)));
-
-            // save Rating
-            User vanthanUser = userRepository.findByUsername("vanthan").orElse(null);
-            Rating rating = new Rating(randomRate(), vanthanUser, product);
-            ratingRepository.save(rating);
         });
     }
 
@@ -483,7 +596,7 @@ public class initData {
         Retailer phiLongretailer = retailerRepository.findByHomePage("https://philong.com.vn/");
         Retailer shopDunkRetailer = retailerRepository.findByHomePage("https://shopdunk.com/");
 
-
+// list dien thoai
         try {
             Set<ProductCrawler> listDienThoai11 = shopDunkCrawler.getListIphoneByUrl(SHUPDUNK_IPHONE11);
             saveProductV2(listDienThoai11, appleCategory, appleBrand, shopDunkRetailer);
@@ -536,7 +649,7 @@ public class initData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//
+
 //        // linh kien may tinh - psu
         try {
             Set<ProductCrawler> listPsuAsus = phiLongCrawler.getProductByURL(PHILONG_PSU_ASUS);
@@ -553,9 +666,9 @@ public class initData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//
+
 //        // linh kien may tinh - case
-//
+
         try {
             Set<ProductCrawler> listCaseGigabyte = phiLongCrawler.getProductByURL(PHILONG_CASE_GIGABYTE);
             saveProductV2(listCaseGigabyte, caseCategory, gigabyteBrand, phiLongretailer);
@@ -563,8 +676,7 @@ public class initData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//
-//
+
         // linh kien may tinh - ssd
         try {
             Set<ProductCrawler> listSSDCorsair = phiLongCrawler.getProductByURL(PHILONG_SSD_CORSAIR);
@@ -2032,28 +2144,32 @@ public class initData {
                 "didongdanang.com",
                 "Siêu thị điện thoại - phụ kiện - linh kiện chính hãng",
                 "https://didongdanang.com/",
-                "https://didongdanang.com/wp-content/uploads/2020/02/bi-logo1.jpg"
+                "https://didongdanang.com/wp-content/uploads/2020/02/bi-logo1.jpg",
+                true
         ));
 
         retailerRepository.save(new Retailer(
                 "SHOPDUNK",
                 "ShopDuck Đại lý ủy quyền Apple",
                 "https://shopdunk.com/",
-                "https://shopdunk.com/wp-content/uploads/2020/12/logo-white.png"
+                "https://shopdunk.com/wp-content/uploads/2018/03/logo-shopdunk.png",
+                true
         ));
 
         retailerRepository.save(new Retailer(
                 "PhiLong Techology",
                 "Trang web công ty Phi Long",
                 "https://philong.com.vn/",
-                "https://philong.com.vn/media/banner/logo_PHILONG-LOGO-min-cn.png"
+                "https://philong.com.vn/media/banner/logo_PHILONG-LOGO-min-cn.png",
+                true
         ));
 
         retailerRepository.save(new Retailer(
                 "Xuân Vinh",
                 "Trang web công ty Xuân Vinh",
                 "http://xuanvinh.vn/",
-                "http://xuanvinh.vn/uploads/logo3.png"
+                "https://lh3.googleusercontent.com/proxy/3yyyEz2uBXpUlctOdxSsSEPTv_BRIvfHXdrw1A2Q2KQDf7NMDWlVCLFgp4diTxStJv8DDllQPO7seH_duSUCmsOxv8DfBS5Xyd2thwY0",
+                true
         ));
 
 
@@ -2347,35 +2463,164 @@ public class initData {
 
     }
 
+
     public void initUser() {
 
-        authService.register(new RegisterRequest(
-                "vanthan",
-                "than",
-                "Trương Văn Thân",
-                "vanthan.ad.it@gmail.com",
-                "Triệu Phong - Quảng Trị",
-                "0365843463"
-        ), ERole.ROLE_ADMIN);
 
-        authService.register(new RegisterRequest(
-                "huutho",
-                "tho",
-                "Nguyễn Hữu Thọ",
-                "nguyenhuytho@gmail.com",
-                "Hải Lăng - Quảng Trị",
-                "0723423643"
+        userRepository.save(
+                new User(
+                        "truongvanthan",
+                        passwordEncoder.encode("thanthan"),
+                        "Trương Văn Thân",
+                        "Quảng Trị",
+                        "vanthan.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_ADMIN
+                )
+        );
 
-        ), ERole.ROLE_RETAILER);
+        userRepository.save(
+                new User(
+                        "nguyenhuutho",
+                        passwordEncoder.encode("thotho"),
+                        "Nguyễn Hữu Thọ",
+                        "Quảng Trị",
+                        "huutho.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_RETAILER
+                )
+        );
 
-        authService.register(new RegisterRequest(
-                "nhungnguyen",
-                "nhung",
-                "Nguyễn Thị Nhung",
-                "nhungngyen@gmail.com",
-                "Triệu Phong - Quảng Trị",
-                "0949620461"
 
-        ), ERole.ROLE_GUEST);
+        userRepository.save(
+                new User(
+                        "nguyenthinhung",
+                        passwordEncoder.encode("nhungnhung"),
+                        "Nguyễn Thị Nhung",
+                        "Quảng Trị",
+                        "nhungnhung.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung1",
+                        passwordEncoder.encode("nhungnhung1"),
+                        "Nguyễn Thị Nhung",
+                        "Quảng Trị",
+                        "nhungnhung1.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung2",
+                        passwordEncoder.encode("nhungnhung2"),
+                        "Nguyễn Thị Nhung2",
+                        "Quảng Trị",
+                        "nhungnhung2.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung3",
+                        passwordEncoder.encode("nhungnhung3"),
+                        "Nguyễn Thị Nhung3",
+                        "Quảng Trị",
+                        "nhungnhung3.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung4",
+                        passwordEncoder.encode("nhungnhung4"),
+                        "Nguyễn Thị Nhung4",
+                        "Quảng Trị",
+                        "nhungnhung4.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung5",
+                        passwordEncoder.encode("nhungnhung5"),
+                        "Nguyễn Thị Nhung5",
+                        "Quảng Trị",
+                        "nhungnhung5.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung6",
+                        passwordEncoder.encode("nhungnhung6"),
+                        "Nguyễn Thị Nhung6",
+                        "Quảng Trị",
+                        "nhungnhung6.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung7",
+                        passwordEncoder.encode("nhungnhung7"),
+                        "Nguyễn Thị Nhung7",
+                        "Quảng Trị",
+                        "nhungnhung7.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "nguyenthinhung8",
+                        passwordEncoder.encode("nhungnhung8"),
+                        "Nguyễn Thị Nhung8",
+                        "Quảng Trị",
+                        "nhungnhung8.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_GUEST
+                )
+        );
+
     }
 }

@@ -21,60 +21,60 @@ import java.time.LocalDate;
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 @Api
 public class ViewCountStatisticController {
-    @Autowired
-    ViewCountStatisticService viewCountStatisticService;
-
-    @Autowired
-    DateConverter dateConverter;
-
-    @PostMapping("/betweenDay")
-    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất từ ngày bắt đầu tới ngày kết thúc")
-    public ResponseEntity<Object> statisticBetweenDay(
-            @RequestBody @Valid StatisticBetweenDayRequest request,
-            Pageable pageable
-    ) {
-        LocalDate startDay = dateConverter.toStartDay(request.getStartDay());
-        LocalDate endDay = dateConverter.toEndDay(request.getEndDay());
-
-        if (endDay.isBefore(startDay))
-            throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
-
-        return viewCountStatisticService.statisticBetweenDay(startDay, endDay, pageable);
-    }
-
-    @PostMapping("/quarter")
-    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất theo quý")
-    public ResponseEntity<Object> statisticByQuarter(
-            @RequestBody @Valid QuarterRequest request,
-            Pageable pageable
-    ) {
-        int quarter = dateConverter.toQuarter(request.getQuarter());
-        int year = dateConverter.toYear(request.getYear());
-
-
-
-        return viewCountStatisticService.statisticByQuarter(year, quarter, pageable);
-    }
-
-    @PostMapping("/betweenYear")
-    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất từ năm bắt đầu tới năm kết thúc")
-    public ResponseEntity<Object> statisticBetweenYear(
-            @RequestBody @Valid StatisticBetweenYearRequest request,
-            Pageable pageable
-    ) {
-        int startYear = dateConverter.toStartYear(request.getStartYear());
-        int endYear = dateConverter.toEndYear(request.getEndYear());
-
-        if (endYear < startYear)
-            throw new RuntimeException("Năm kết thúc phải lớn hơn hoặc bằng năm bắt đầu");
-
-        return viewCountStatisticService.statisticBetweenYear(startYear, endYear, pageable);
-    }
-
-    @GetMapping("/top20ProductViewedMostDay")
-    @ApiOperation(value = "Top 20 sản phẩm được xem nhiều nhất ngày hôm nay")
-    public ResponseEntity<Object> top20ProductViewedMostByDateDay(){
-        LocalDate nowDay = LocalDate.now();
-        return viewCountStatisticService.top20ProductViewedMostByDateDay(nowDay);
-    }
+//    @Autowired
+//    ViewCountStatisticService viewCountStatisticService;
+//
+//    @Autowired
+//    DateConverter dateConverter;
+//
+//    @PostMapping("/betweenDay")
+//    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất từ ngày bắt đầu tới ngày kết thúc")
+//    public ResponseEntity<Object> statisticBetweenDay(
+//            @RequestBody @Valid StatisticBetweenDayRequest request,
+//            Pageable pageable
+//    ) {
+//        LocalDate startDay = dateConverter.toStartDay(request.getStartDay());
+//        LocalDate endDay = dateConverter.toEndDay(request.getEndDay());
+//
+//        if (endDay.isBefore(startDay))
+//            throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
+//
+//        return viewCountStatisticService.statisticBetweenDay(startDay, endDay, pageable);
+//    }
+//
+//    @PostMapping("/quarter")
+//    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất theo quý")
+//    public ResponseEntity<Object> statisticByQuarter(
+//            @RequestBody @Valid QuarterRequest request,
+//            Pageable pageable
+//    ) {
+//        int quarter = dateConverter.toQuarter(request.getQuarter());
+//        int year = dateConverter.toYear(request.getYear());
+//
+//
+//
+//        return viewCountStatisticService.statisticByQuarter(year, quarter, pageable);
+//    }
+//
+//    @PostMapping("/betweenYear")
+//    @ApiOperation(value = "Những sản phẩm được xem nhiều nhất từ năm bắt đầu tới năm kết thúc")
+//    public ResponseEntity<Object> statisticBetweenYear(
+//            @RequestBody @Valid StatisticBetweenYearRequest request,
+//            Pageable pageable
+//    ) {
+//        int startYear = dateConverter.toStartYear(request.getStartYear());
+//        int endYear = dateConverter.toEndYear(request.getEndYear());
+//
+//        if (endYear < startYear)
+//            throw new RuntimeException("Năm kết thúc phải lớn hơn hoặc bằng năm bắt đầu");
+//
+//        return viewCountStatisticService.statisticBetweenYear(startYear, endYear, pageable);
+//    }
+//
+//    @GetMapping("/top20ProductViewedMostDay")
+//    @ApiOperation(value = "Top 20 sản phẩm được xem nhiều nhất ngày hôm nay")
+//    public ResponseEntity<Object> top20ProductViewedMostByDateDay(){
+//        LocalDate nowDay = LocalDate.now();
+//        return viewCountStatisticService.top20ProductViewedMostByDateDay(nowDay);
+//    }
 }
