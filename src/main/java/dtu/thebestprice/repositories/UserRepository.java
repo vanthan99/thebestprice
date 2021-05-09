@@ -16,8 +16,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    // danh sách tài khoản chưa phê duyệt sắp xếp theo ngày
+    // danh sách tài khoản đã phê duyệt hay chưa phê duyệt sắp xếp theo ngày
     Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveFalseOrderByCreatedAtDesc(Pageable pageable);
 
     Long countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole role);
+
+    // page người dùng theo role
+    Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveTrueAndRole(Pageable pageable, ERole role);
 }

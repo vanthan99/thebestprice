@@ -83,11 +83,17 @@ public class CategoryController {
 
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{categoryId}")
     @ApiOperation(value = "Xóa danh mục")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> deleteById(@RequestParam("id") Long categoryId) {
-        return categoryService.deleteById(categoryId);
+    public ResponseEntity<Object> deleteById(@PathVariable("categoryId") String categoryId) {
+        long id;
+        try {
+            id = Long.parseLong(categoryId);
+        } catch (Exception e) {
+            throw new RuntimeException("Id phải là số nguyên");
+        }
+        return categoryService.deleteById(id);
     }
 
 }

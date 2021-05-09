@@ -48,15 +48,15 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
         Elements imageElements = document.select(".img-small a img");
         if (imageElements.size() > 0) {
             imageElements.forEach(element -> {
-                images.add(element.attr("src"));
+                if (element.attr("src").contains("https://shopdunk.com/"))
+                    images.add(element.attr("src"));
             });
-
         }
         StringBuffer longDesc = new StringBuffer("");
         StringBuffer shortDesc = new StringBuffer("");
         Elements longDescElements = document.select(".sdo-info-system li");
 
-        for (int i = 0; i <=5 ; i++) {
+        for (int i = 0; i <= 5; i++) {
             shortDesc.append(longDescElements.get(i).select(".detail").text());
             shortDesc.append(" : ");
             shortDesc.append(longDescElements.get(i).select(".parameter").text());

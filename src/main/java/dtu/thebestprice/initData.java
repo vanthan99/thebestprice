@@ -185,15 +185,15 @@ public class initData {
 //        initSoluotTimKiem();
     }
 
-//    @PostConstruct
+    //    @PostConstruct
     public void initSoluotTimKiem() {
         Search search = new Search("Máy tính asus s340", 600L);
         searchRepository.save(search);
         searchStatisticRepository.save(new SearchStatistic(null, search, 1200L, LocalDate.of(2021, 1, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1150L, LocalDate.of(2021, 2, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1000L, LocalDate.of(2021, 3, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1130L, LocalDate.of(2021, 4, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1550L, LocalDate.of(2021, 5, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1250L, LocalDate.of(2021, 2, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1270L, LocalDate.of(2021, 3, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1280L, LocalDate.of(2021, 4, 15)));
+        searchStatisticRepository.save(new SearchStatistic(null, search, 1300L, LocalDate.of(2021, 5, 15)));
 
     }
 
@@ -335,33 +335,33 @@ public class initData {
                 null,
                 LocalDate.of(2021, 2, 15),
                 false,
-                400L
-        ));
-
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 3, 15),
-                true,
-                550L
-        ));
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 3, 15),
-                false,
                 500L
         ));
 
         statisticAccessRepository.save(new StatisticAccess(
                 null,
+                LocalDate.of(2021, 3, 15),
+                true,
+                650L
+        ));
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
+                LocalDate.of(2021, 3, 15),
+                false,
+                650L
+        ));
+
+        statisticAccessRepository.save(new StatisticAccess(
+                null,
                 LocalDate.of(2021, 4, 15),
                 true,
-                780L
+                740L
         ));
         statisticAccessRepository.save(new StatisticAccess(
                 null,
                 LocalDate.of(2021, 4, 15),
                 false,
-                450L
+                550L
         ));
 
         statisticAccessRepository.save(new StatisticAccess(
@@ -374,7 +374,7 @@ public class initData {
                 null,
                 LocalDate.of(2021, 5, 15),
                 false,
-                700L
+                410L
         ));
 
     }
@@ -2145,7 +2145,8 @@ public class initData {
                 "Siêu thị điện thoại - phụ kiện - linh kiện chính hãng",
                 "https://didongdanang.com/",
                 "https://didongdanang.com/wp-content/uploads/2020/02/bi-logo1.jpg",
-                true
+                true,
+                userRepository.findByUsername("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2153,7 +2154,8 @@ public class initData {
                 "ShopDuck Đại lý ủy quyền Apple",
                 "https://shopdunk.com/",
                 "https://shopdunk.com/wp-content/uploads/2018/03/logo-shopdunk.png",
-                true
+                true,
+                userRepository.findByUsername("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2161,7 +2163,8 @@ public class initData {
                 "Trang web công ty Phi Long",
                 "https://philong.com.vn/",
                 "https://philong.com.vn/media/banner/logo_PHILONG-LOGO-min-cn.png",
-                true
+                true,
+                userRepository.findByUsername("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2169,7 +2172,8 @@ public class initData {
                 "Trang web công ty Xuân Vinh",
                 "http://xuanvinh.vn/",
                 "https://lh3.googleusercontent.com/proxy/3yyyEz2uBXpUlctOdxSsSEPTv_BRIvfHXdrw1A2Q2KQDf7NMDWlVCLFgp4diTxStJv8DDllQPO7seH_duSUCmsOxv8DfBS5Xyd2thwY0",
-                true
+                true,
+                userRepository.findByUsername("supersuper").orElse(null)
         ));
 
 
@@ -2466,6 +2470,20 @@ public class initData {
 
     public void initUser() {
 
+        // tài khoản supper
+        userRepository.save(
+                new User(
+                        "supersuper",
+                        passwordEncoder.encode("adminadmin"),
+                        "Trương Văn Thân",
+                        "Quảng Trị",
+                        "supper@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_SUPER
+                )
+        );
 
         userRepository.save(
                 new User(

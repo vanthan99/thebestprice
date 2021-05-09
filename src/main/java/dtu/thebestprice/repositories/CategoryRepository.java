@@ -12,10 +12,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Category findByTitleAndCategory(String title, Category category);
 
     // Danh sách danh mục cha đang hoạt động
-    List<Category> findByCategoryIsNullAndDeleteFlgFalse();
+    List<Category> findByCategoryIsNullAndDeleteFlgFalseOrderByCreatedAtDesc();
 
     // danh sách các danh mục con có cùng 1 danh mục cha truyền vào
-    List<Category> findByCategoryAndDeleteFlgFalse(Category parentCategory);
+    List<Category> findByCategoryAndDeleteFlgFalseOrderByCreatedAtDesc(Category parentCategory);
 
     Category findByTitle(String title);
 
@@ -23,7 +23,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByIdAndCategoryIsNotNull(Long id);
 
     /*
-    * Kiểm tra id truyền vào có phải là danh mục cha hay khôgn */
+     * Kiểm tra id truyền vào có phải là danh mục cha hay khôgn */
     boolean existsByIdAndCategoryIsNull(Long id);
 
     /*

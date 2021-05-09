@@ -5,6 +5,7 @@ import dtu.thebestprice.services.RetailerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,8 +53,37 @@ public class RetailerController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Xóa nhà cung cấp")
+    @ApiOperation(value = "Xóa nhà nhà bán lẽ")
     public ResponseEntity<Object> deleteById(@RequestParam("id") String id) {
         return retailerService.deleteById(id);
+    }
+
+    @GetMapping("/listRetailerApproveFalse")
+    @ApiOperation(value = "Page nhà bán lẽ chưa được xác nhận")
+    public ResponseEntity<Object> listRetailerApproveFalse(Pageable pageable) {
+        return retailerService.pageRetailerByApprove(false, pageable);
+    }
+
+    @GetMapping("/listRetailerApproveTrue")
+    @ApiOperation(value = "Page nhà bán lẽ đã được xác nhận")
+    public ResponseEntity<Object> listRetailerApproveTrue(Pageable pageable) {
+        return retailerService.pageRetailerByApprove(true, pageable);
+    }
+
+    // phê duyệt nhà cung cấp
+    @PutMapping("/approveRetailer/{retailerId}")
+    @ApiOperation(value = "Phê duyệt nhà bán lẽ")
+    public ResponseEntity<Object> approveRetailer(
+            @PathVariable("retailerId") String strId
+    ) {
+        Long retailerId = null;
+
+        try {
+            retailerId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id nhà bán lẽ không hợp lệ");
+        }
+
+        return retailerService.approveRetailer(retailerId);
     }
 }

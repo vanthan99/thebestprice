@@ -1,6 +1,7 @@
 package dtu.thebestprice.securities;
 
 import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.enums.ERole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -65,6 +66,14 @@ public class MyUserDetails implements UserDetails {
 
     public String getRole() {
         return user.getRole().toString();
+    }
+
+    public boolean isGuest() {
+        return user.getRole().equals(ERole.ROLE_GUEST);
+    }
+
+    public Long getId(){
+        return user.getId();
     }
 
     public boolean getStatus() {

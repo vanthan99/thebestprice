@@ -166,11 +166,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<ParentCategoryResponse> listCategoryIsActive() {
         List<ParentCategoryResponse> list = new ArrayList<>();
 
-        List<Category> parentCategories = categoryRepository.findByCategoryIsNullAndDeleteFlgFalse();
+        List<Category> parentCategories = categoryRepository.findByCategoryIsNullAndDeleteFlgFalseOrderByCreatedAtDesc();
         parentCategories.forEach(parentCategory -> {
             list.add(categoryConverter.toParentCategoryResponse(
                     parentCategory,
-                    categoryRepository.findByCategoryAndDeleteFlgFalse(parentCategory)
+                    categoryRepository.findByCategoryAndDeleteFlgFalseOrderByCreatedAtDesc(parentCategory)
             ));
         });
 
