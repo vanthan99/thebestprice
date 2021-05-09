@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -160,7 +161,7 @@ public class initData {
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
 
-    //        @PostConstruct
+    //    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
@@ -197,116 +198,33 @@ public class initData {
 
     }
 
-    //    @PostConstruct
+    private int random(int min, int max) {
+        return new Random().nextInt((max - min) + 1) + min;
+    }
+
+//    @PostConstruct
     public void initViewCount() {
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1L),
-                LocalDate.now(),
-                50L
-        ));
 
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(12L),
-                LocalDate.now(),
-                60L
-        ));
+        LocalDate endDay = LocalDate.of(2021, 7, 1);
+        LocalDate startDay = LocalDate.of(2021, 3, 1);
 
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(3L),
-                LocalDate.now(),
-                80L
-        ));
+        Period period = Period.between(startDay, endDay);
+        System.out.println("tong"+period.getDays());
+        for (int i = 0; i < period.getDays(); i++) {
+            // random viewcount dien thoai
+            viewCountStatisticRepository.save(new ViewCountStatistic(
+                    productRepository.getOne((long) random(1, 20)),
+                    startDay.plusDays(i),
+                    (long) random(10, 30)
+            ));
+            // random laptop
+            viewCountStatisticRepository.save(new ViewCountStatistic(
+                    productRepository.getOne((long) random(1000, 1728)),
+                    startDay.plusDays(i),
+                    (long) random(10, 40)
+            ));
+        }
 
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(4L),
-                LocalDate.now(),
-                40L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(5L),
-                LocalDate.now(),
-                85L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(6L),
-                LocalDate.now(),
-                78L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(7L),
-                LocalDate.now(),
-                96L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(9L),
-                LocalDate.now(),
-                89L
-        ));
-
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1421L),
-                LocalDate.now(),
-                80L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1422L),
-                LocalDate.now(),
-                50L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1423L),
-                LocalDate.now(),
-                80L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1521L),
-                LocalDate.now(),
-                30L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1533L),
-                LocalDate.now(),
-                100L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1534L),
-                LocalDate.now(),
-                400L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1535L),
-                LocalDate.now(),
-                90L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1536L),
-                LocalDate.now(),
-                80L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1539L),
-                LocalDate.now(),
-                120L
-        ));
-
-        viewCountStatisticRepository.save(new ViewCountStatistic(
-                productRepository.getOne(1540L),
-                LocalDate.now(),
-                290L
-        ));
     }
 
     //    @PostConstruct

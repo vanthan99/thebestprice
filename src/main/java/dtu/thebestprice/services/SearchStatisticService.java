@@ -40,5 +40,5 @@ public interface SearchStatisticService {
 
 
     // thống kê những từ khóa được tìm kiếm theo tháng và keyword
-    ResponseEntity<Object> byDateAndKeyword(String keyword, int year, int month);
+    ResponseEntity<Object> byDateAndKeyword(String keyword, Integer year, Integer month,Pageable pageable);
 }

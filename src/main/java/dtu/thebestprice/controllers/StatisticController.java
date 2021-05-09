@@ -1,19 +1,19 @@
 package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.converters.DateConverter;
-import dtu.thebestprice.payload.request.StatisticBetweenDayRequest;
-import dtu.thebestprice.payload.request.StatisticRequest;
 import dtu.thebestprice.services.SearchStatisticService;
 import dtu.thebestprice.services.ViewCountStatisticService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.YearMonth;
 
@@ -50,35 +50,36 @@ public class StatisticController {
     @GetMapping("/statisticSearchByDateAndKeyword")
     public ResponseEntity<Object> statisticSearchByDateAndKeyword(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam("month") String strMonth,
-            @RequestParam("year") String strYear
+            @RequestParam(value = "month", required = false) String strMonth,
+            @RequestParam(value = "year", required = false) String strYear,
+            Pageable pageable
     ) {
-        int month;
-        int year;
+        Integer month = null;
+        Integer year = null;
 
         // validate
+        if (strMonth != null)
+            try {
+                month = Integer.parseInt(strMonth);
+                if (month < 1 || month > 12)
+                    throw new RuntimeException("Tháng từ 1 đến 12");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Tháng phải là số nguyên");
+            }
+        if (strYear != null)
+            try {
+                year = Integer.parseInt(strYear);
+                if (year <= 2020 || year > LocalDate.now().getYear())
+                    throw new RuntimeException("Năm không được bé hơn năm 2021 và không được lớn hơn năm hiện tại");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("năm phải là số nguyên");
+            }
 
-        try {
-            month = Integer.parseInt(strMonth);
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Tháng phải là số nguyên");
+        if (strYear != null && strMonth != null) {
+            if (YearMonth.of(year, month).isAfter(YearMonth.now()))
+                throw new RuntimeException("Tháng/năm truyền vào không được vượt quá hiện tại là " + YearMonth.now().toString());
         }
 
-        try {
-            year = Integer.parseInt(strYear);
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("năm phải là số nguyên");
-        }
-
-        if (month < 1 || month > 12)
-            throw new RuntimeException("Tháng từ 1 đến 12");
-        if (year <= 2020 || year > LocalDate.now().getYear())
-            throw new RuntimeException("Năm không được bé hơn năm 2021 và không được lớn hơn năm hiện tại");
-
-        if (YearMonth.of(year,month).isAfter(YearMonth.now()))
-            throw new RuntimeException("Tháng/năm truyền vào không được vượt quá hiện tại là "+YearMonth.now().toString());
-
-
-            return searchStatisticService.byDateAndKeyword(keyword,year,month);
+        return searchStatisticService.byDateAndKeyword(keyword, year, month, pageable);
     }
 }

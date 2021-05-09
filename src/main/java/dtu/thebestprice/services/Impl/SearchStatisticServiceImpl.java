@@ -254,31 +254,80 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
     }
 
     @Override
-    public ResponseEntity<Object> byDateAndKeyword(String keyword, int year, int month) {
+    @Transactional
+    public ResponseEntity<Object> byDateAndKeyword(String keyword, Integer year, Integer month, Pageable pageable) {
         Query query;
-        if (keyword == null || keyword.trim().equalsIgnoreCase(""))
+        if (keyword != null && year != null && month != null) {
+            // trả về tất cả
             query = entityManager
                     .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
-                            "WHERE YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "WHERE s.search.keyword like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
                             "GROUP BY s.search " +
                             "ORDER BY number desc ")
                     .setParameter(1, year)
-                    .setParameter(2, month)
-                    .setMaxResults(15);
-        else {
+                    .setParameter(2, keyword)
+                    .setParameter(3, month);
+
+        } else if (keyword != null && year == null && month == null) {
             query = entityManager
                     .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
-                            "WHERE s.search.keyword like concat('%',?3,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "WHERE s.search.keyword like concat('%',?1,'%') " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, keyword);
+
+        } else if (keyword != null && year != null && month == null) {
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s " +
+                            "WHERE s.search.keyword like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 " +
                             "GROUP BY s.search " +
                             "ORDER BY number desc ")
                     .setParameter(1, year)
-                    .setParameter(2, month)
-                    .setParameter(3,keyword)
-                    .setMaxResults(15);
+                    .setParameter(2, keyword);
+
+        } else if (keyword == null && year != null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s " +
+                            "WHERE  YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, month);
+        } else if (keyword == null && year == null && month == null) {
+            // trả về tất cả
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ");
+        } else if (keyword == null && year == null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s where month(s.statisticDay) = ?1 " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, month);
+        } else if (keyword != null && year == null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s " +
+                            "WHERE s.search.keyword like concat('%',?2,'%') and month(s.statisticDay) = ?1 " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, month)
+                    .setParameter(2, keyword);
+        } else {
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s where year(s.statisticDay) = ?1 " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, year);
         }
-        List<StatisticSearchModel> list = query.getResultList();
-        return ResponseEntity.ok(list);
+        return getResult(query, pageable);
     }
 }
