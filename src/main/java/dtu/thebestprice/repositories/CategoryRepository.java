@@ -2,8 +2,10 @@ package dtu.thebestprice.repositories;
 
 import dtu.thebestprice.entities.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +20,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByCategoryAndDeleteFlgFalseOrderByCreatedAtDesc(Category parentCategory);
 
     Category findByTitle(String title);
+
+    // chuyển delete flag về true khi khuyển vào category id
+    @Transactional
+    @Modifying
+    @Query("update Category c set c.deleteFlg = true where c.category.id = :parentId")
+    void deleteChildCategoryByParentId(Long parentId);
 
     // kiểm tra id truyền vào có phải là danh mục con hay không?
     boolean existsByIdAndCategoryIsNotNull(Long id);

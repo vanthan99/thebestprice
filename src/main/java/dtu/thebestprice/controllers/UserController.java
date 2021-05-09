@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,14 +35,15 @@ public class UserController {
     @ApiOperation(value = "Guest đăng ký tài khoản nhà bán lẽ ")
     @PreAuthorize("hasAuthority('ROLE_GUEST')")
     public ResponseEntity<Object> registerRetailerAccount(
-            @RequestBody @Valid RetailerRequest retailerRequest,
-            @AuthenticationPrincipal MyUserDetails myUserDetails
+            @RequestBody @Valid RetailerRequest retailerRequest
     ) {
-        if (!myUserDetails.isGuest()) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+        if (!userDetails.isGuest()) {
             throw new RuntimeException("Chỉ có tài khoản guest mới được đăng ký tài khoản nhà cung cấp");
         }
         return userService.guestRegisterRetailerAccount(
-                userRepository.getOne(myUserDetails.getId()),
+                userRepository.getOne(userDetails.getId()),
                 retailerRequest
         );
     }
@@ -73,10 +76,11 @@ public class UserController {
     @PutMapping("/editPassword")
     @ApiOperation(value = "Thay đổi mật khẩu")
     public ResponseEntity<Object> editProfile(
-            @RequestBody @Valid PasswordRequest request,
-            @AuthenticationPrincipal MyUserDetails myUserDetails
+            @RequestBody @Valid PasswordRequest request
     ) {
-        return userService.updatePassword(request, myUserDetails.getId());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+        return userService.updatePassword(request, userDetails.getId());
     }
 
     @PostMapping("/createGuestAccount")
@@ -85,7 +89,7 @@ public class UserController {
     public ResponseEntity<Object> adminCreateGuestAccount(
             @RequestBody @Valid RegisterRequest request
     ) {
-        userService.createNew(request, true, true, ERole.ROLE_GUEST,true);
+        userService.createNew(request, true, true, ERole.ROLE_GUEST, true);
         return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản guest thành công"));
     }
 

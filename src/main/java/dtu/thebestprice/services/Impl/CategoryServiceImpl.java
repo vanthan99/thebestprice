@@ -186,6 +186,11 @@ public class CategoryServiceImpl implements CategoryService {
         category.setDeleteFlg(true);
         categoryRepository.save(category);
 
+        // nếu xóa category cha thì xóa luoon category con
+        if (category.getCategory() == null) {
+            categoryRepository.deleteChildCategoryByParentId(category.getId());
+        }
+
         return ResponseEntity.ok(new ApiResponse(true, "Xóa danh mục thành công"));
     }
 
