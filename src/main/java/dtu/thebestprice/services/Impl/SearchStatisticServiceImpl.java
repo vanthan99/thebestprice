@@ -2,6 +2,7 @@ package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.PageCustom;
+import dtu.thebestprice.payload.response.SearchResponse;
 import dtu.thebestprice.payload.response.query.StatisticCountSearchByQuarterModel;
 import dtu.thebestprice.payload.response.query.StatisticSearchModel;
 import dtu.thebestprice.repositories.SearchStatisticRepository;
@@ -154,9 +155,9 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
 
         PageCustom page = new PageCustom();
 
-        List<StatisticSearchModel> list = query.getResultList();
+        List<SearchResponse> list = query.getResultList();
 
-        page.setContent(Collections.singletonList(list));
+        page.setContent(list);
         page.setTotalElements(totalElements);
         page.setSize(pageable.getPageSize());
         page.setNumber(pageable.getPageNumber());
@@ -260,7 +261,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
         if (keyword != null && year != null && month != null) {
             // trả về tất cả
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
                             "WHERE s.search.keyword like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
                             "GROUP BY s.search " +
@@ -271,7 +272,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
 
         } else if (keyword != null && year == null && month == null) {
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
                             "WHERE s.search.keyword like concat('%',?1,'%') " +
                             "GROUP BY s.search " +
@@ -280,7 +281,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
 
         } else if (keyword != null && year != null && month == null) {
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
                             "WHERE s.search.keyword like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 " +
                             "GROUP BY s.search " +
@@ -290,7 +291,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
 
         } else if (keyword == null && year != null && month != null) {
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
                             "WHERE  YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
                             "GROUP BY s.search " +
@@ -300,20 +301,20 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
         } else if (keyword == null && year == null && month == null) {
             // trả về tất cả
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
                             "GROUP BY s.search " +
                             "ORDER BY number desc ");
         } else if (keyword == null && year == null && month != null) {
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s where month(s.statisticDay) = ?1 " +
                             "GROUP BY s.search " +
                             "ORDER BY number desc ")
                     .setParameter(1, month);
         } else if (keyword != null && year == null && month != null) {
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s " +
                             "WHERE s.search.keyword like concat('%',?2,'%') and month(s.statisticDay) = ?1 " +
                             "GROUP BY s.search " +
@@ -322,7 +323,7 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                     .setParameter(2, keyword);
         } else {
             query = entityManager
-                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.SearchResponse(s.search.id,s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
                             "FROM SearchStatistic s where year(s.statisticDay) = ?1 " +
                             "GROUP BY s.search " +
                             "ORDER BY number desc ")

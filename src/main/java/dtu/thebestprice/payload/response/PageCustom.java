@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class PageCustom {
-    private List<Object> content;
+    private List content;
     private int number = 0;
     private int totalPages = 0;
     private int totalElements = 0;

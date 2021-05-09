@@ -209,8 +209,7 @@ public class initData {
         LocalDate startDay = LocalDate.of(2021, 3, 1);
 
         Period period = Period.between(startDay, endDay);
-        System.out.println("tong"+period.getDays());
-        for (int i = 0; i < period.getDays(); i++) {
+        for (int i = 0; i < 100; i++) {
             // random viewcount dien thoai
             viewCountStatisticRepository.save(new ViewCountStatistic(
                     productRepository.getOne((long) random(1, 20)),
