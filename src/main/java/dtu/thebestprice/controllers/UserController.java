@@ -104,6 +104,51 @@ public class UserController {
         return userService.adminRegisterRetailerAccount(request);
     }
 
+    // admin xóa tài khoản retailer hoặc guest
+    @DeleteMapping("/deleteGuestOrRetailer/{accountId}")
+    @ApiOperation(value = "Admin xóa tài khoản guest hoặc retailer")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> deleteGuestOrRetailer(
+            @PathVariable("accountId") String accountId
+    ) {
+        long id;
+        try {
+            id = Long.parseLong(accountId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id không hợp lệ");
+        }
+
+        return userService.deleteGuestOrRetailer(id);
+    }
+
+    // quyền supper thêm tài khoản admin
+    @PreAuthorize("hasAuthority('ROLE_SUPER')")
+    @PostMapping("/createAdminAccount")
+    @ApiOperation(value = "root(tài khoản quyền cao nhất) tạo tài khoản admin")
+    public ResponseEntity<Object> createAdminAccount(
+            @RequestBody @Valid RegisterRequest request
+    ) {
+        userService.createNew(request, true, true, ERole.ROLE_GUEST, true);
+        return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản admin thành công"));
+    }
+
+
+    // quyền supper xóa tài khoản admin,guest,retailer
+    @PreAuthorize("hasAuthority('ROLE_SUPER')")
+    @DeleteMapping("/superDelete/{userId}")
+    @ApiOperation(value = "root(tài khoản quyền cao nhất) xóa tài khoản guest,retailer,admin")
+    public ResponseEntity<Object> superDelete(
+            @PathVariable("userId") String strId
+    ) {
+        long id;
+        try {
+            id = Long.parseLong(strId);
+        }catch (NumberFormatException e){
+            throw new RuntimeException("Id phải là số nguyên");
+        }
+
+        return userService.superDelete(id);
+    }
 
 //    @PostMapping("/approveRetailer")
 //    @ApiOperation(value = "Phê duyệt tài khoản retailer")

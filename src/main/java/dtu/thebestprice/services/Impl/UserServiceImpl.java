@@ -2,7 +2,6 @@ package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.converters.RetailerConverter;
 import dtu.thebestprice.converters.UserConverter;
-import dtu.thebestprice.entities.Retailer;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.*;
@@ -17,8 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.RuntimeMBeanException;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -102,7 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createNew(RegisterRequest request, boolean enable, boolean approve, ERole role,boolean checkValidate) {
+    public User createNew(RegisterRequest request, boolean enable, boolean approve, ERole role, boolean checkValidate) {
         // validate
         if (userRepository.existsByUsername(request.getUsername()))
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
@@ -130,21 +129,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerRequest retailerRequest) {
 
-        retailerService.create(retailerRequest,user,false,true);
+        retailerService.create(retailerRequest, user, false, true);
 
-        return ResponseEntity.ok(new ApiResponse(true,"Đăng ký tài khoản retailer thành công. hãy đợi quản trị viên phê duyệt"));
+        return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản retailer thành công. hãy đợi quản trị viên phê duyệt"));
     }
 
     @Override
     public ResponseEntity<Object> adminRegisterRetailerAccount(UserRetailerRequest request) {
-        if (this.validateWhileCreateUser(request.getUser()) && retailerService.validateWhileCreateRetailer(request.getRetailer())){
+        if (this.validateWhileCreateUser(request.getUser()) && retailerService.validateWhileCreateRetailer(request.getRetailer())) {
 
-            User user = this.createNew(request.getUser(),true,true,ERole.ROLE_RETAILER,false);
+            User user = this.createNew(request.getUser(), true, true, ERole.ROLE_RETAILER, false);
 
-            retailerService.create(request.getRetailer(),user,true,false);
+            retailerService.create(request.getRetailer(), user, true, false);
 
 
-            return ResponseEntity.ok(new ApiResponse(true,"Thêm mới thành công"));
+            return ResponseEntity.ok(new ApiResponse(true, "Thêm mới thành công"));
         }
 
         throw new RuntimeException("Đã xảy ra lõi");
@@ -203,4 +202,39 @@ public class UserServiceImpl implements UserService {
         throw new RuntimeException("Mật khẩu hiện tại không đúng!");
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<Object> deleteGuestOrRetailer(long id) {
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        if (user.getRole().equals(ERole.ROLE_GUEST) || user.getRole().equals(ERole.ROLE_RETAILER)) {
+            // thực hiện xóa...
+            user.setDeleteFlg(true);
+
+            userRepository.save(user);
+
+            return ResponseEntity.ok(new ApiResponse(true, "Xóa tài khoản thành công"));
+        }
+        return ResponseEntity.status(400).body(new ApiResponse(false, "Admin chỉ được xóa tài khoản guest hoặc retailer"));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> superDelete(long id) {
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        if (user.getRole().equals(ERole.ROLE_SUPER))
+            throw new RuntimeException("Không thể xóa tài khoản của chính mình");
+
+        // thực hiện xóa...
+        user.setDeleteFlg(true);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Xóa tài khoản thành công"));
+    }
 }

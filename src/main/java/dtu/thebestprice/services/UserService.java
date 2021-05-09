@@ -37,4 +37,10 @@ public interface UserService {
     ResponseEntity<Object> editProfile(UserUpdateRequest request, Long userId);
 
     ResponseEntity<Object> updatePassword(PasswordRequest passwordRequest, Long userId);
+
+    // Admin xóa tài khoản guest hoặc retailer
+    ResponseEntity<Object> deleteGuestOrRetailer(long id);
+
+    // root xoá tài khoản admin,guest,retailer
+    ResponseEntity<Object> superDelete(long id);
 }
