@@ -73,10 +73,16 @@ public class ProductController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/{productId}")
     @ApiOperation(value = "Xóa sản phẩm theo id")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> deleteById(@RequestParam("id") Long id){
+    public ResponseEntity<Object> deleteById(@PathVariable("productId") String strId){
+        long id;
+        try{
+            id = Long.parseLong(strId);
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("id phải là số nguyên");
+        }
         return productService.deleteById(id);
     }
 }

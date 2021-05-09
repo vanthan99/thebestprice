@@ -40,7 +40,7 @@ public class RetailerController {
             @RequestBody @Valid RetailerRequest retailerRequest,
             @PathVariable("retailerId") String trRetailerId
     ) {
-        Long retailerId;
+        long retailerId;
         try {
             if (trRetailerId.trim().equalsIgnoreCase(""))
                 throw new RuntimeException("Không được để trống id");
@@ -51,10 +51,10 @@ public class RetailerController {
         return retailerService.update(retailerRequest, retailerId);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{retailerId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Xóa nhà nhà bán lẽ")
-    public ResponseEntity<Object> deleteById(@RequestParam("id") String id) {
+    public ResponseEntity<Object> deleteById(@PathVariable("retailerId") String id) {
         return retailerService.deleteById(id);
     }
 
