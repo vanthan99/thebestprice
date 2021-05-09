@@ -39,4 +39,6 @@ public interface SearchStatisticService {
     ResponseEntity<Object> countSearchByBetweenYear(int startYear, int endYear);
 
 
+    // thống kê những từ khóa được tìm kiếm theo tháng và keyword
+    ResponseEntity<Object> byDateAndKeyword(String keyword, int year, int month);
 }

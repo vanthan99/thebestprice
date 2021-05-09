@@ -7,6 +7,7 @@ import dtu.thebestprice.payload.response.query.StatisticSearchModel;
 import dtu.thebestprice.repositories.SearchStatisticRepository;
 import dtu.thebestprice.services.SearchStatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -229,8 +230,8 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
         try {
             return ResponseEntity.ok(query.getSingleResult());
 
-        } catch (Exception e){
-            return ResponseEntity.status(404).body(new ApiResponse(false,"Không có dữ liệu cho quý "+ quarter +" Năm "+year));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(new ApiResponse(false, "Không có dữ liệu cho quý " + quarter + " Năm " + year));
         }
 
 
@@ -250,5 +251,34 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                         .setParameter(2, endYear);
 
         return ResponseEntity.ok(query.getResultList());
+    }
+
+    @Override
+    public ResponseEntity<Object> byDateAndKeyword(String keyword, int year, int month) {
+        Query query;
+        if (keyword == null || keyword.trim().equalsIgnoreCase(""))
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s " +
+                            "WHERE YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, month)
+                    .setMaxResults(15);
+        else {
+            query = entityManager
+                    .createQuery("SELECT new dtu.thebestprice.payload.response.query.StatisticSearchModel(s.search.keyword, SUM(s.numberOfSearch) AS number)  " +
+                            "FROM SearchStatistic s " +
+                            "WHERE s.search.keyword like concat('%',?3,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "GROUP BY s.search " +
+                            "ORDER BY number desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, month)
+                    .setParameter(3,keyword)
+                    .setMaxResults(15);
+        }
+        List<StatisticSearchModel> list = query.getResultList();
+        return ResponseEntity.ok(list);
     }
 }

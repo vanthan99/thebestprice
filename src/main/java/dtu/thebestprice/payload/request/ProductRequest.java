@@ -12,15 +12,15 @@ import java.util.List;
 @Data
 public class ProductRequest {
     @NotBlank(message = "Không được để trống tiêu đề")
-    @Size(min = 10,max = 255,message = "Tiêu đề nằm trong khoảng 10 - 255 ký tự")
+    @Size(min = 10, max = 255, message = "Tiêu đề nằm trong khoảng 10 - 255 ký tự")
     private String title;
 
     @NotBlank(message = "Không được để trống mô tả chi tiết")
-    @Size(min = 10,message = "Mô tả chi tiết phải nhiều hơn 10 ký tự")
+    @Size(min = 10, message = "Mô tả chi tiết phải nhiều hơn 10 ký tự")
     private String longDescription;
 
     @NotBlank(message = "Không được để trống mô tả ngắn")
-    @Size(min = 10,message = "Mô tả ngắn phải nhiều hơn 10 ký tự")
+    @Size(min = 10, message = "Mô tả ngắn phải nhiều hơn 10 ký tự")
     private String shortDescription;
 
     @NotNull(message = "Không được để trống id của danh mục")
@@ -32,6 +32,6 @@ public class ProductRequest {
     // list hình ảnh
     private List<
             @URL(message = "URL hình ảnh không đúng định dạng")
-            @Size(max = 255,message = "Hình ảnh không vượt quá 255 ký tự")
+            @Size(max = 255, message = "Hình ảnh không vượt quá 255 ký tự")
                     String> images;
 }

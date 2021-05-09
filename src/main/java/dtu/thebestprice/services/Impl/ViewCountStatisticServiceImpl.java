@@ -14,6 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,7 +93,7 @@ public class ViewCountStatisticServiceImpl implements dtu.thebestprice.services.
                 throw new RuntimeException("Quý nhập vào không hợp lệ. quý là số nguyên. có giá trị từ 1 cho tới 4");
         }
 
-        return getResult(query,pageable);
+        return getResult(query, pageable);
     }
 
     @Override
@@ -124,6 +126,24 @@ public class ViewCountStatisticServiceImpl implements dtu.thebestprice.services.
         List<ViewCountModel> list = query.getResultList();
 
         List<StatisticViewCountResponse> result = list.stream().map(viewCountModel -> viewCountConverter.toStatisticViewCountResponse(viewCountModel)).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
+
+    @Override
+    public ResponseEntity<Object> statisticBetweenDay(LocalDate startDay, LocalDate endDay) {
+        Period different = Period.between(startDay, endDay);
+
+        if (endDay.isAfter(LocalDate.now()))
+            throw new RuntimeException("Ngày kết thúc chỉ được thống kê tới hôm nay " + LocalDate.now().toString());
+
+        List<Long> result = new ArrayList<>();
+
+        for (int i = 0; i <= different.getDays(); i++) {
+            result.add(viewCountStatisticRepository.countByStatisticDay(startDay.plusDays(i)));
+        }
+
+        result = result.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList());
+
         return ResponseEntity.ok(result);
     }
 

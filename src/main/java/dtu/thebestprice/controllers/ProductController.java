@@ -85,4 +85,20 @@ public class ProductController {
         }
         return productService.deleteById(id);
     }
+
+    // danh sách sản phẩm đã được phê duyệt
+    @GetMapping("/approveTrue")
+    @ApiOperation(value = "Page sản phẩm đã được phê duyệt")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> findByApproveTrue(Pageable pageable){
+        return productService.findByApprove(true,pageable);
+    }
+
+    // danh sách sản phẩm chưa được phê duyệt
+    @GetMapping("/approveFalse")
+    @ApiOperation(value = "Page sản phẩm chưa được phê duyệt")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> findByApproveFalse(Pageable pageable){
+        return productService.findByApprove(false,pageable);
+    }
 }

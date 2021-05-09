@@ -13,4 +13,8 @@ public interface ViewCountStatisticService {
     ResponseEntity<Object> statisticBetweenYear(int startYear, int endYear, Pageable pageable);
 
     ResponseEntity<Object> top20ProductViewedMostByDateDay(LocalDate nowDay);
+
+    // thống kê lượt xem sản phẩm theo ngày bắt đầu và ngày kết thúc.
+    // đếm số lượt xem của sản phẩm theo ngày.
+    ResponseEntity<Object> statisticBetweenDay(LocalDate startDay, LocalDate endDay);
 }

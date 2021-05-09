@@ -19,4 +19,7 @@ public interface ProductService {
     ResponseEntity<Object> update(ProductRequest productRequest, Long productId);
 
     ResponseEntity<Object> deleteById(Long id);
+
+    // page sản phẩm đã phê duyệt hoặc chưa phê duyệt
+    ResponseEntity<Object> findByApprove(boolean b, Pageable pageable);
 }

@@ -144,6 +144,12 @@ public class ProductServiceImpl implements ProductService {
         return ResponseEntity.ok(new ApiResponse(true, "Xóa sản phẩm thành công"));
     }
 
+    @Override
+    public ResponseEntity<Object> findByApprove(boolean b, Pageable pageable) {
+
+        return null;
+    }
+
     private void saveImage(Product product, String imageItem) {
         Image image = new Image();
 

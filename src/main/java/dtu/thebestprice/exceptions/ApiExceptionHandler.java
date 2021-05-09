@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,12 @@ public class ApiExceptionHandler {
         // quá trình kiểm soat lỗi diễn ra ở đây
         return ResponseEntity.status(400).body(new ApiResponse(false, ex.getLocalizedMessage()));
     }
+
+//    // lỗi định dạng ngày
+//    @ExceptionHandler(DateTimeParseException.class)
+//    public ResponseEntity<Object> dateTimeParseException(){
+//        return ResponseEntity.status(400).body(new ApiResponse(false, "Vui Lòng nhập đúng định dạng ngày dd/MM/yyyy"));
+//    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> undeclaredThrowableException(RuntimeException e){

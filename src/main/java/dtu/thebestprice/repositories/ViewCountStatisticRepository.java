@@ -20,4 +20,8 @@ public interface ViewCountStatisticRepository extends JpaRepository<ViewCountSta
 
     @Query("select s from ViewCountStatistic s where s.statisticDay between :startDay and :endDay order by s.viewCount desc")
     Page<ViewCountStatistic> statisticViewCountProductByBetweenDay(LocalDate startDay, LocalDate endDay, Pageable pageable);
+
+    // lấy số lượt xem theo ngày
+    @Query("select sum(v.viewCount) from ViewCountStatistic v where v.statisticDay = :date")
+    Long countByStatisticDay(LocalDate date);
 }
