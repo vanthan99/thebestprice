@@ -6,11 +6,9 @@ import dtu.thebestprice.payload.request.UserGuestOrRetailerRequest;
 import dtu.thebestprice.payload.request.UserUpdateRequest;
 import dtu.thebestprice.payload.response.UserResponse;
 import dtu.thebestprice.payload.response.UserRetailerResponse;
-import dtu.thebestprice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import sun.plugin2.message.CustomSecurityManagerAckMessage;
 
 @Component
 public class UserConverter {
