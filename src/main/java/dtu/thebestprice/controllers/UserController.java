@@ -66,10 +66,11 @@ public class UserController {
     @PutMapping("/editProfile")
     @ApiOperation(value = "Cập nhật profile")
     public ResponseEntity<Object> editProfile(
-            @RequestBody @Valid UserUpdateRequest request,
-            @AuthenticationPrincipal MyUserDetails myUserDetails
+            @RequestBody @Valid UserUpdateRequest request
     ) {
-        return userService.editProfile(request, myUserDetails.getId());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+        return userService.editProfile(request, userDetails.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
