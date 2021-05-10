@@ -97,7 +97,7 @@ public class StatisticController {
 
 
     @ApiOperation(value = "Thống kê những những sản phẩm được xem nhiều nhất")
-    @GetMapping("/statisticViewCountByDateAndKeyword")
+    @GetMapping("/statisticProductByDateAndKeyword")
     public ResponseEntity<Object> statisticViewCountByDateAndKeyword(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "month", required = false) String strMonth,
