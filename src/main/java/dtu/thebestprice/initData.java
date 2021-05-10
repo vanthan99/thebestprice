@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -160,12 +161,11 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-
-    //    @PostConstruct
+//    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
-
+//
 //        System.out.println("Bắt đầu lưu category");
 //        initCategory();
 //
@@ -177,32 +177,97 @@ public class initData {
 //
 //        System.out.println("Bắt đầu lưu sản phẩm");
 //        initProductV2();
-//
-////        initProduct();
-//        initManyProductRetailer();
-//
-//        initSoluottruycap();
-//        initViewCount();
-//        initSoluotTimKiem();
+
+//        initProduct();
+        initManyProductRetailer();
+
+        initRating();
+        initSoluottruycap();
+        initViewCount();
+        initSoluotTimKiem();
+    }
+
+    private void initRating() {
+        User user = userRepository.getOne(3L);
+        User user2 = userRepository.getOne(4L);
+        User user3 = userRepository.getOne(5L);
+
+        for (int i = 1; i <= productRepository.count(); i++) {
+            ratingRepository.save(new Rating((long) random(1, 5), user, productRepository.getOne((long) i)));
+            ratingRepository.save(new Rating((long) random(1, 5), user2, productRepository.getOne((long) i)));
+            ratingRepository.save(new Rating((long) random(1, 5), user3, productRepository.getOne((long) i)));
+        }
     }
 
     //    @PostConstruct
+    @Transactional
     public void initSoluotTimKiem() {
-        Search search = new Search("Máy tính asus s340", 600L);
-        searchRepository.save(search);
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1200L, LocalDate.of(2021, 1, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1250L, LocalDate.of(2021, 2, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1270L, LocalDate.of(2021, 3, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1280L, LocalDate.of(2021, 4, 15)));
-        searchStatisticRepository.save(new SearchStatistic(null, search, 1300L, LocalDate.of(2021, 5, 15)));
+        Search search1 = new Search("Máy tính asus s430", 600L);
+        Search search2 = new Search("iphone x", 650L);
+        Search search3 = new Search("iphone xr", 550L);
+        Search search4 = new Search("iphone 8 plus", 640L);
+        Search search5 = new Search("laptop envy", 400L);
+        Search search6 = new Search("tai nghe hay", 450L);
+        Search search7 = new Search("laptop gaming i9", 470L);
+        Search search8 = new Search("loa jbl", 465L);
+        Search search9 = new Search("laptop gram", 511L);
+        Search search10 = new Search("diện thoại iphone", 520L);
+
+        searchRepository.save(search1);
+        searchRepository.save(search2);
+        searchRepository.save(search3);
+        searchRepository.save(search4);
+        searchRepository.save(search5);
+        searchRepository.save(search6);
+        searchRepository.save(search7);
+        searchRepository.save(search8);
+        searchRepository.save(search9);
+        searchRepository.save(search10);
+
+        for (int i = 1; i <= 5; i++) {
+            searchStatisticRepository.save(new SearchStatistic(null, search1, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search2, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search3, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search4, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search5, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search6, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search7, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search8, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search9, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+            searchStatisticRepository.save(new SearchStatistic(null, search10, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+        }
+
+        search1.setNumberOfSearch(searchStatisticRepository.countBySearch(search1));
+        search2.setNumberOfSearch(searchStatisticRepository.countBySearch(search2));
+        search3.setNumberOfSearch(searchStatisticRepository.countBySearch(search3));
+        search4.setNumberOfSearch(searchStatisticRepository.countBySearch(search4));
+        search5.setNumberOfSearch(searchStatisticRepository.countBySearch(search5));
+        search6.setNumberOfSearch(searchStatisticRepository.countBySearch(search6));
+        search7.setNumberOfSearch(searchStatisticRepository.countBySearch(search7));
+        search8.setNumberOfSearch(searchStatisticRepository.countBySearch(search8));
+        search9.setNumberOfSearch(searchStatisticRepository.countBySearch(search9));
+        search10.setNumberOfSearch(searchStatisticRepository.countBySearch(search10));
+
+
+        searchRepository.save(search1);
+        searchRepository.save(search2);
+        searchRepository.save(search3);
+        searchRepository.save(search4);
+        searchRepository.save(search5);
+        searchRepository.save(search6);
+        searchRepository.save(search7);
+        searchRepository.save(search8);
+        searchRepository.save(search9);
+        searchRepository.save(search10);
 
     }
+
 
     private int random(int min, int max) {
         return new Random().nextInt((max - min) + 1) + min;
     }
 
-//    @PostConstruct
+    //    @PostConstruct
     public void initViewCount() {
 
         LocalDate endDay = LocalDate.of(2021, 7, 1);
@@ -226,170 +291,142 @@ public class initData {
 
     }
 
-    //    @PostConstruct
+    //        @PostConstruct
     public void initSoluottruycap() {
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 1, 15),
-                true,
-                750L
-        ));
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 1, 15),
-                false,
-                500L
-        ));
+        for (int i = 1; i <= 5; i++) {
+            statisticAccessRepository.save(new StatisticAccess(
+                    null,
+                    LocalDate.of(2021, i, 15),
+                    true,
+                    (long) random(235, 259)
+            ));
 
+            statisticAccessRepository.save(new StatisticAccess(
+                    null,
+                    LocalDate.of(2021, i, 15),
+                    false,
+                    (long) random(235, 280)
+            ));
 
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 2, 15),
-                true,
-                800L
-        ));
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 2, 15),
-                false,
-                500L
-        ));
-
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 3, 15),
-                true,
-                650L
-        ));
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 3, 15),
-                false,
-                650L
-        ));
-
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 4, 15),
-                true,
-                740L
-        ));
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 4, 15),
-                false,
-                550L
-        ));
-
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 5, 15),
-                true,
-                900L
-        ));
-        statisticAccessRepository.save(new StatisticAccess(
-                null,
-                LocalDate.of(2021, 5, 15),
-                false,
-                410L
-        ));
-
+        }
     }
 
     //    @PostConstruct
     private void initManyProductRetailer() {
         Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
-        initProductRetailer(
-                productRepository.getOne(1422L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
-                9890000L
-        );
 
-        initProductRetailer(
-                productRepository.getOne(1422L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb",
-                9990000L
-        );
 
-        initProductRetailer(
-                productRepository.getOne(1423L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw",
-                10000000L
-        );
+        // laptop
+        for (int i = 1422; i <= 1752; i++) {
+            initProductRetailer(
+                    productRepository.getOne((long) i),
+                    xuanVinhRetailer,
+                    "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
+                    (long) (random(12, 18) * 100000)
+            );
+        }
 
-        initProductRetailer(
-                productRepository.getOne(1424L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt",
-                11900000L
-        );
+        // dien thoai
+        for (int i = 1; i <= 20; i++) {
+            initProductRetailer(
+                    productRepository.getOne((long) i),
+                    xuanVinhRetailer,
+                    "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
+                    (long) (random(12, 18) * 100000)
+            );
+        }
 
-        initProductRetailer(
-                productRepository.getOne(1425L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt",
-                11950000L
-
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1426L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt",
-                12890000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1427L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt",
-                13900000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1428L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang",
-                16990000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1429L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang",
-                17290000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1430L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt",
-                17500000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1431L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw",
-                18500000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1432L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw",
-                18900000L
-        );
-
-        initProductRetailer(
-                productRepository.getOne(1433L),
-                xuanVinhRetailer,
-                "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10",
-                19800000L
-        );
+//        initProductRetailer(
+//                productRepository.getOne(1422L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
+//                9890000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1422L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb",
+//                9990000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1423L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw",
+//                10000000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1424L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt",
+//                11900000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1425L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt",
+//                11950000L
+//
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1426L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt",
+//                12890000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1427L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt",
+//                13900000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1428L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang",
+//                16990000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1429L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang",
+//                17290000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1430L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt",
+//                17500000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1431L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw",
+//                18500000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1432L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw",
+//                18900000L
+//        );
+//
+//        initProductRetailer(
+//                productRepository.getOne(1433L),
+//                xuanVinhRetailer,
+//                "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10",
+//                19800000L
+//        );
     }
 
     private void saveProductV2(Set<ProductCrawler> productCrawlers, Category category, Brand brand, Retailer retailer) {
@@ -2418,8 +2455,22 @@ public class initData {
 
         userRepository.save(
                 new User(
+                        "nguyenthithao",
+                        passwordEncoder.encode("nguyenthithao123"),
+                        "Nguyễn Thị Thảo",
+                        "Quảng Trị",
+                        "thithao.ad.it@gmail.com",
+                        "0365843463",
+                        true,
+                        true,
+                        ERole.ROLE_RETAILER
+                )
+        );
+
+        userRepository.save(
+                new User(
                         "nguyenhuutho",
-                        passwordEncoder.encode("thotho"),
+                        passwordEncoder.encode("thothotho"),
                         "Nguyễn Hữu Thọ",
                         "Quảng Trị",
                         "huutho.ad.it@gmail.com",

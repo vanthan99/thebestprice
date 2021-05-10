@@ -8,6 +8,9 @@ import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.request.ProductRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.LongProductResponse;
+import dtu.thebestprice.payload.response.PageCustom;
+import dtu.thebestprice.payload.response.SearchResponse;
+import dtu.thebestprice.payload.response.query.ViewCountModel;
 import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.repositories.ImageRepository;
 import dtu.thebestprice.repositories.ProductRepository;
@@ -22,10 +25,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -41,6 +47,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @Override
     public Page<LongProductResponse> filter(FilterRequest filterRequest, Pageable pageable) throws Exception {
@@ -148,6 +157,111 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Object> findByApprove(boolean b, Pageable pageable) {
 
         return null;
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> pageProductMostViewMonth(String keyword, Pageable pageable, Integer month, Integer year) {
+        Query query;
+        if (keyword != null && year != null && month != null) {
+            // trả về tất cả
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.title like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, keyword)
+                    .setParameter(3, month);
+
+        } else if (keyword != null && year == null && month == null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.title like concat('%',?1,'%') " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, keyword);
+
+        } else if (keyword != null && year != null && month == null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.title like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, keyword);
+
+        } else if (keyword == null && year != null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE  YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, month);
+        } else if (keyword == null && year == null && month == null) {
+            // trả về tất cả
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ");
+        } else if (keyword == null && year == null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
+                            "FROM ViewCountStatistic s where month(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, month);
+        } else if (keyword != null && year == null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.title like concat('%',?2,'%') and month(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, month)
+                    .setParameter(2, keyword);
+        } else {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
+                            "FROM ViewCountStatistic s where year(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year);
+        }
+
+        return getResult(query, pageable);
+    }
+
+    @Transactional
+    public ResponseEntity<Object> getResult(Query query, Pageable pageable) {
+        int totalElements = query.getResultList().size();
+
+        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        query.setMaxResults(pageable.getPageSize());
+
+        PageCustom page = new PageCustom();
+
+        List<ViewCountModel> list = query.getResultList();
+
+        List<LongProductResponse> result = list.stream().map(viewCountModel -> productConverter.toLongProductResponse(viewCountModel.getProduct())).collect(Collectors.toList());
+
+        page.setContent(result);
+        page.setTotalElements(totalElements);
+        page.setSize(pageable.getPageSize());
+        page.setNumber(pageable.getPageNumber());
+        page.setTotalPages((int) Math.ceil((double) totalElements / page.getSize()));
+        page.setFirst(page.getNumber() == 0);
+        page.setLast(page.getTotalPages() - 1 == page.getNumber());
+        page.setEmpty(page.getContent().size() == 0);
+        page.setNumberOfElements(page.getContent().size());
+
+        return ResponseEntity.ok(page);
     }
 
     private void saveImage(Product product, String imageItem) {

@@ -1,6 +1,7 @@
 package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.converters.DateConverter;
+import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.services.SearchStatisticService;
 import dtu.thebestprice.services.ViewCountStatisticService;
 import io.swagger.annotations.Api;
@@ -32,6 +33,9 @@ public class StatisticController {
 
     @Autowired
     SearchStatisticService searchStatisticService;
+
+    @Autowired
+    ProductService productService;
 
     @ApiOperation(value = "Thống kê số lượt xem sản phẩm theo ngày truyền vào")
     @GetMapping("/viewCount")
@@ -85,5 +89,43 @@ public class StatisticController {
         }
 
         return searchStatisticService.byDateAndKeyword(keyword, year, month, pageable);
+    }
+
+
+    @ApiOperation(value = "Thống kê những những sản phẩm được xem nhiều nhất")
+    @GetMapping("/statisticViewCountByDateAndKeyword")
+    public ResponseEntity<Object> statisticViewCountByDateAndKeyword(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "month", required = false) String strMonth,
+            @RequestParam(value = "year", required = false) String strYear,
+            Pageable pageable
+    ) {
+        Integer month = null;
+        Integer year = null;
+
+        // validate
+        if (strMonth != null)
+            try {
+                month = Integer.parseInt(strMonth);
+                if (month < 1 || month > 12)
+                    throw new RuntimeException("Tháng từ 1 đến 12");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Tháng phải là số nguyên");
+            }
+        if (strYear != null)
+            try {
+                year = Integer.parseInt(strYear);
+                if (year <= 2020 || year > LocalDate.now().getYear())
+                    throw new RuntimeException("Năm không được bé hơn năm 2021 và không được lớn hơn năm hiện tại");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("năm phải là số nguyên");
+            }
+
+        if (strYear != null && strMonth != null) {
+            if (YearMonth.of(year, month).isAfter(YearMonth.now()))
+                throw new RuntimeException("Tháng/năm truyền vào không được vượt quá hiện tại là " + YearMonth.now().toString());
+        }
+
+        return productService.pageProductMostViewMonth(keyword, pageable, month, year);
     }
 }

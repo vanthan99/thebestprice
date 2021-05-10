@@ -106,7 +106,7 @@ public class ProductConverter {
         longProductResponse.setImages(images);
 
         // set Rating
-        longProductResponse.setRate(ratingRepository.getRateByProduct(product.getId()));
+        longProductResponse.setRate((double) Math.round(ratingRepository.getRateByProduct(product.getId()) * 10) / 10);
 
 
         // set product retailer response

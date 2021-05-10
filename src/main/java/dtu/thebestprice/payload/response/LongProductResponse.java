@@ -17,7 +17,7 @@ public class LongProductResponse {
     private ShortCategoryResponse category;
     private BrandResponse brand;
     private List<String> images;
-    private Long rate;
+    private Double rate;
     private Long lowestPrice;
     private Long highestPrice;
     private List<ProductRetailerResponse> prices;

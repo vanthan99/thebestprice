@@ -22,4 +22,7 @@ public interface ProductService {
 
     // page sản phẩm đã phê duyệt hoặc chưa phê duyệt
     ResponseEntity<Object> findByApprove(boolean b, Pageable pageable);
+
+    // page sản phẩm được xem nhiều nhất tháng hiện tại
+    ResponseEntity<Object> pageProductMostViewMonth(String keyword,Pageable pageable,Integer month, Integer year);
 }

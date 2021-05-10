@@ -3,6 +3,8 @@ package dtu.thebestprice.converters;
 import dtu.thebestprice.entities.ViewCountStatistic;
 import dtu.thebestprice.payload.response.StatisticViewCountResponse;
 import dtu.thebestprice.payload.response.query.ViewCountModel;
+import dtu.thebestprice.repositories.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,6 +12,9 @@ import java.util.List;
 
 @Component
 public class ViewCountConverter {
+    @Autowired
+    ProductRepository productRepository;
+
     public StatisticViewCountResponse toStatisticViewCountResponse(ViewCountStatistic statistic) {
         StatisticViewCountResponse viewCountResponse = new StatisticViewCountResponse();
         viewCountResponse.setProductId(statistic.getProduct().getId());

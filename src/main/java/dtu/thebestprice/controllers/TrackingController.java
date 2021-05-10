@@ -1,18 +1,22 @@
 package dtu.thebestprice.controllers;
 
-import dtu.thebestprice.entities.StatisticAccess;
+import dtu.thebestprice.payload.request.RatingRequest;
 import dtu.thebestprice.payload.request.SearchTrackingRequest;
 import dtu.thebestprice.securities.MyUserDetails;
 import dtu.thebestprice.services.ProductTrackingService;
+import dtu.thebestprice.services.RateService;
 import dtu.thebestprice.services.SearchTrackingService;
 import dtu.thebestprice.services.StatisticAccessService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/tracking")
@@ -26,6 +30,9 @@ public class TrackingController {
 
     @Autowired
     StatisticAccessService statisticAccessService;
+
+    @Autowired
+    RateService rateService;
 
     @ApiOperation(value = "Product Tracking")
     @PostMapping("/product")
@@ -59,5 +66,36 @@ public class TrackingController {
             return statisticAccessService.save(false);
         }
 
+    }
+
+    // rating
+    @PostMapping("/rating/{productId}")
+    @ApiOperation(value = "Người dùng gửi đánh giá (rating) sản phẩm")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST','ROLE_RETAILER')")
+    public ResponseEntity<Object> ratingTracking(
+            @PathVariable("productId") String strProductId,
+            @RequestBody @Valid RatingRequest ratingRequest
+    ) {
+        long productId;
+        long rate;
+
+        try {
+            productId = Long.parseLong(strProductId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id sản phẩm phải là số nguyên");
+        }
+
+        try {
+            rate = Long.parseLong(ratingRequest.getRate());
+            if (rate < 1 || rate > 5)
+                throw new RuntimeException("Chỉ đánh giá từ 1 tới 5 sao");
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Rate phải là số nguyên và không được để trống");
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+
+        return rateService.rating(userDetails.getId(), rate, productId);
     }
 }
