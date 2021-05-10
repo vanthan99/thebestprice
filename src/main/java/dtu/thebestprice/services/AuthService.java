@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 public interface AuthService {
     ApiResponse register(RegisterRequest registerRequest, ERole role);
 
-    String registerConfirm(String token);
+    ResponseEntity<Object> registerConfirm(String token);
 
 
 }

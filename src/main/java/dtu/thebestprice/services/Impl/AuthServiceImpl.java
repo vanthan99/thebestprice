@@ -10,6 +10,7 @@ import dtu.thebestprice.repositories.VerificationTokenRepository;
 import dtu.thebestprice.services.AuthService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -102,14 +103,21 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public String registerConfirm(String token) {
+    public ResponseEntity<Object> registerConfirm(String token) {
         if (token == null)
-            throw new RuntimeException("Token không tồn tại");
+            throw new RuntimeException("Token Trống");
+
+        UUID tepm;
+        try {
+            tepm = UUID.fromString(token);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Token không đúng định dạng");
+        }
 
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
 
         if (verificationToken == null) {
-            return "Đã xảy ra lỗi";
+            throw new RuntimeException("Token không tồn tại");
         }
 
         User user = verificationToken.getUser();
@@ -117,7 +125,7 @@ public class AuthServiceImpl implements AuthService {
         if (new Date().getTime() > verificationToken.getExpiryDate().getTime()) {
             verificationTokenRepository.deleteById(verificationToken.getId());
             userRepository.deleteById(user.getId());
-            return "Token đã hết hạn";
+            throw new RuntimeException("Token đã hết hạn");
         }
 
         if (user.getRole().equals(ERole.ROLE_GUEST)) {
@@ -125,11 +133,11 @@ public class AuthServiceImpl implements AuthService {
             user.setApprove(true);
             userRepository.save(user);
 
-            return "Xác nhận email thành công. hãy trở lại trang web để đăng nhập lại";
+            return ResponseEntity.ok(new ApiResponse(true, "Xác nhận email thành công. hãy trở lại trang web để đăng nhập lại"));
         } else {
             user.setEnable(true);
             userRepository.save(user);
-            return "Xác nhận email thành công. Chúng tối sẽ gửi 1 email thông báo đến bạn ngay sau khi tài khoản được quản trị viên phê duyệt";
+            return ResponseEntity.ok(new ApiResponse(true, "Xác nhận email thành công. Chúng tối sẽ gửi 1 email thông báo đến bạn ngay sau khi tài khoản được quản trị viên phê duyệt"));
         }
     }
 
@@ -162,7 +170,7 @@ public class AuthServiceImpl implements AuthService {
         MimeMessageHelper helper = new MimeMessageHelper(message, multipart, "utf-8");
         String htmlMsg = "<h3>Hi!</h3>"
                 + "<h3>Chào mừng đến với thebestprice. Để hoàn tất quá trình đăng ký, vui lòng nhấn vào đường link bên dưới" +
-                "\r\n" + "http://localhost:8080" + confirmationUrl;
+                "\r\n" + "https://demo-tbp.herokuapp.com" + confirmationUrl;
         message.setContent(htmlMsg, "text/html; charset=UTF-8");
         helper.setTo(user.getEmail());
         helper.setSubject("Thông báo từ thebestprice");
