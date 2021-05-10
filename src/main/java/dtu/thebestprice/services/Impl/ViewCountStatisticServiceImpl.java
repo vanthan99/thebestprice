@@ -133,7 +133,7 @@ public class ViewCountStatisticServiceImpl implements dtu.thebestprice.services.
 
     @Override
     public ResponseEntity<Object> statisticBetweenDay(Date startDay, Date endDay) {
-        long getDiff = startDay.getTime() - endDay.getTime();
+        long getDiff = endDay.getTime() - startDay.getTime();
 
         long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
 
@@ -144,7 +144,7 @@ public class ViewCountStatisticServiceImpl implements dtu.thebestprice.services.
 
         List<Long> result = new ArrayList<>();
 
-        for (int i = 0; i < getDaysDiff; i++) {
+        for (int i = 0; i <= getDaysDiff; i++) {
             result.add(viewCountStatisticRepository.countByStatisticDay(date.plusDays(i)));
         }
 

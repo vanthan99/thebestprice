@@ -24,6 +24,7 @@ public class RedisConfig {
         // Tạo Standalone Connection tới Redis
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
         redisStandaloneConfiguration.setPassword(RedisPassword.of("DNcPgk85NIhb35hFJovgulIjYu1jIkYQ"));
+
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -36,6 +37,7 @@ public class RedisConfig {
         // RedisTemplate giúp chúng ta thao tác với Redis
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
+
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
         return template;
     }
