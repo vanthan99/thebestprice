@@ -3,6 +3,8 @@ package dtu.thebestprice.services;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
+
 public interface DashBoardService {
     ResponseEntity<Object> overView();
 
@@ -21,4 +23,6 @@ public interface DashBoardService {
     ResponseEntity<Object> statisticKeyword(Pageable pageable);
 
     ResponseEntity<Object> statisticAccessByQuarter();
+
+    ResponseEntity<Object> exportToExcel() throws IOException;
 }

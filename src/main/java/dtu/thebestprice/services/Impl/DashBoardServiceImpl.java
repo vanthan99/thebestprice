@@ -2,6 +2,7 @@ package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.entities.Search;
 import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.exports.StatisticExcelExporter;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.SearchResponse;
 import dtu.thebestprice.payload.response.dashboard.DashBoard;
@@ -10,15 +11,23 @@ import dtu.thebestprice.payload.response.dashboard.User;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.DashBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DashBoardServiceImpl implements DashBoardService {
@@ -36,6 +45,9 @@ public class DashBoardServiceImpl implements DashBoardService {
 
     @Autowired
     SearchRepository searchRepository;
+
+    @Autowired
+    ViewCountStatisticRepository viewCountStatisticRepository;
 
     @Override
     public ResponseEntity<Object> overView() {
@@ -60,8 +72,8 @@ public class DashBoardServiceImpl implements DashBoardService {
         int month = nowDate.getMonthValue();
         int year = nowDate.getYear();
 
-        Long auth = statisticAccessRepository.countByYearAndAuthTrue(year);
-        Long anonymous = statisticAccessRepository.countByYearAndAuthFalse(year);
+        Long auth = statisticAccessRepository.countByYearAndAuth(year, true);
+        Long anonymous = statisticAccessRepository.countByYearAndAuth(year, false);
 
         User userRate = new User();
 
@@ -76,17 +88,20 @@ public class DashBoardServiceImpl implements DashBoardService {
 
         List<Long> statisticAccess = new ArrayList<>();
         List<Long> statisticSearch = new ArrayList<>();
+        List<Long> statisticViewCount = new ArrayList<>();
 
         if (type.equalsIgnoreCase("month")) {
-
 
             // set statistic access // set statistic search
             for (int i = 1; i <= month; i++) {
                 statisticAccess.add(statisticAccessRepository.countByMonth(year, i));
                 statisticSearch.add(searchStatisticRepository.countByMonth(year, i));
+                statisticViewCount.add(viewCountStatisticRepository.countByMonth(year, i));
             }
-            dashBoard.setStatisticAccess(statisticAccess);
-            dashBoard.setStatisticSearch(statisticSearch);
+
+            dashBoard.setStatisticAccess(statisticAccess.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+            dashBoard.setStatisticSearch(statisticSearch.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+            dashBoard.setStatisticViewCount(statisticViewCount.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
 
             return ResponseEntity.ok(dashBoard);
 
@@ -106,10 +121,12 @@ public class DashBoardServiceImpl implements DashBoardService {
 
                 statisticSearch.add(searchStatisticRepository.countByQuarter(year, months));
                 statisticAccess.add(statisticAccessRepository.countByQuarter(year, months));
+                statisticViewCount.add(viewCountStatisticRepository.countByQuarter(year,months));
             }
 
-            dashBoard.setStatisticAccess(statisticAccess);
-            dashBoard.setStatisticSearch(statisticSearch);
+            dashBoard.setStatisticAccess(statisticAccess.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+            dashBoard.setStatisticSearch(statisticSearch.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+            dashBoard.setStatisticViewCount(statisticViewCount.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
 
             return ResponseEntity.ok(dashBoard);
         } else return ResponseEntity.status(400).body(new ApiResponse(false, "Tham số không đúng"));
@@ -145,8 +162,8 @@ public class DashBoardServiceImpl implements DashBoardService {
     @Override
     public ResponseEntity<Object> rateUser() {
         LocalDate nowDay = LocalDate.now();
-        Long auth = statisticAccessRepository.countByMonthAndAuthTrue(nowDay.getYear(), nowDay.getMonthValue());
-        Long anonymous = statisticAccessRepository.countByMonthAndAuthFalse(nowDay.getYear(), nowDay.getMonthValue());
+        Long auth = statisticAccessRepository.countByMonthAndAuth(nowDay.getYear(), nowDay.getMonthValue(), true);
+        Long anonymous = statisticAccessRepository.countByMonthAndAuth(nowDay.getYear(), nowDay.getMonthValue(), false);
 
         User user = new User();
         user.setAuth(((1.0) * auth / (auth + anonymous)) * 100);
@@ -178,6 +195,33 @@ public class DashBoardServiceImpl implements DashBoardService {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @Override
+    public ResponseEntity<Object> exportToExcel() throws IOException {
+
+        LocalDate nowDay = LocalDate.now();
+
+        int month = nowDay.getMonthValue();
+        int year = nowDay.getYear();
+
+        OverView overView = new OverView();
+        overView.setVisitor(statisticAccessRepository.countByMonth(year, month));
+        overView.setSearch(searchStatisticRepository.countByMonth(year, month));
+        overView.setProduct(productRepository.count());
+        overView.setUser(userRepository.countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole.ROLE_GUEST));
+        overView.setRetailer(userRepository.countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole.ROLE_RETAILER));
+
+        ByteArrayInputStream in = StatisticExcelExporter.customersToExcel(overView);
+        // return IOUtils.toByteArray(in);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=customers.xlsx");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(in));
     }
 
     private SearchResponse toSearchResponse(Search search) {

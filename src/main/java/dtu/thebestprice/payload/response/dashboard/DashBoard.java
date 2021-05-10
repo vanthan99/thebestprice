@@ -9,5 +9,6 @@ import java.util.List;
 public class DashBoard {
     private List<Long> statisticAccess = new ArrayList<>();
     private List<Long> statisticSearch = new ArrayList<>();
+    private List<Long> statisticViewCount = new ArrayList<>();
     private User rateUser;
 }

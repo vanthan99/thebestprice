@@ -35,4 +35,8 @@ public interface SearchStatisticRepository extends JpaRepository<SearchStatistic
     // tính tổng số lần tìm kiếm theo từ khóa
     @Query("select sum(s.numberOfSearch) from SearchStatistic s where s.search = :search")
     Long countBySearch(Search search);
+
+    // đếm tổng số lần tìm kiếm theo ngày
+    @Query("select sum(s.numberOfSearch) from SearchStatistic s where s.statisticDay = :date")
+    Long countByDay(LocalDate date);
 }

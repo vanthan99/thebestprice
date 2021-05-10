@@ -17,8 +17,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 ;
 
@@ -330,5 +334,28 @@ public class SearchStatisticServiceImpl implements SearchStatisticService {
                     .setParameter(1, year);
         }
         return getResult(query, pageable);
+    }
+
+
+    @Override
+    public ResponseEntity<Object> statisticBetweenDay(Date startDay, Date endDay) {
+        long getDiff = endDay.getTime() - startDay.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        LocalDate date = startDay.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        if (endDay.after(new Date()))
+            throw new RuntimeException("Ngày kết thúc chỉ được thống kê tới hôm nay " + LocalDate.now().toString());
+
+        List<Long> result = new ArrayList<>();
+
+        for (int i = 0; i <= getDaysDiff; i++) {
+            result.add(searchStatisticRepository.countByDay(date.plusDays(i)));
+        }
+
+        result = result.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
     }
 }

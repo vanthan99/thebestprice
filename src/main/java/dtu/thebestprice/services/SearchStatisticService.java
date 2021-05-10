@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public interface SearchStatisticService {
     // Thống kê tìm kiếm theo 1 ngày truyền vào
@@ -41,4 +42,8 @@ public interface SearchStatisticService {
 
     // thống kê những từ khóa được tìm kiếm theo tháng và keyword
     ResponseEntity<Object> byDateAndKeyword(String keyword, Integer year, Integer month,Pageable pageable);
+
+    // thống kê số lượt tìm kiếm theo ngày
+    // trả về 1 array đếm số lượng lần tìm kiếm theo ngày
+    ResponseEntity<Object> statisticBetweenDay(Date startDay, Date endDay);
 }

@@ -3,6 +3,7 @@ package dtu.thebestprice.controllers;
 import dtu.thebestprice.converters.DateConverter;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.services.SearchStatisticService;
+import dtu.thebestprice.services.StatisticAccessService;
 import dtu.thebestprice.services.ViewCountStatisticService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,10 +36,13 @@ public class StatisticController {
     SearchStatisticService searchStatisticService;
 
     @Autowired
+    StatisticAccessService statisticAccessService;
+
+    @Autowired
     ProductService productService;
 
     @ApiOperation(value = "Thống kê số lượt xem sản phẩm theo ngày truyền vào")
-    @GetMapping("/viewCount")
+    @GetMapping("/statisticProduct")
     public ResponseEntity<Object> statisticViewCountByDate(
             @RequestParam("startDay") String strStartDay,
             @RequestParam("endDay") String strEndDay
@@ -127,5 +131,39 @@ public class StatisticController {
         }
 
         return productService.pageProductMostViewMonth(keyword, pageable, month, year);
+    }
+
+    @ApiOperation(value = "Thống kê lượt truy cập theo ngày")
+    @GetMapping("/access")
+    public ResponseEntity<Object> access(
+            @RequestParam("startDay") String strStartDay,
+            @RequestParam("endDay") String strEndDay
+    ){
+        LocalDate startDay = dateConverter.toStartDay(strStartDay);
+        LocalDate endDay = dateConverter.toEndDay(strEndDay);
+
+        if (endDay.isBefore(startDay))
+            throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
+
+        return statisticAccessService.staticBetweenDay(
+                Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    }
+
+    @ApiOperation(value = "Thống kê lượt tìm kiếm theo ngày")
+    @GetMapping("/search")
+    public ResponseEntity<Object> search(
+            @RequestParam("startDay") String strStartDay,
+            @RequestParam("endDay") String strEndDay
+    ){
+        LocalDate startDay = dateConverter.toStartDay(strStartDay);
+        LocalDate endDay = dateConverter.toEndDay(strEndDay);
+
+        if (endDay.isBefore(startDay))
+            throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
+
+        return searchStatisticService.statisticBetweenDay(
+                Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 }

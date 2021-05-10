@@ -27,4 +27,15 @@ public interface ViewCountStatisticRepository extends JpaRepository<ViewCountSta
 
     @Query("select sum(v.viewCount) from ViewCountStatistic  v where v.product.id = :id")
     Long countByProduct(Long id);
+
+    @Query("select sum(v.viewCount) from ViewCountStatistic v where YEAR(v.statisticDay) = :year and MONTH(v.statisticDay) = :month ")
+    Long countByMonth(int year, int month);
+
+
+    // đếm số lượt tìm kiếm theo quý
+    @Query("select sum(s.viewCount)" +
+            " from ViewCountStatistic s " +
+            "where year(s.statisticDay) = :year" +
+            " and month(s.statisticDay) in :months ")
+    Long countByQuarter(int year, int[] months);
 }

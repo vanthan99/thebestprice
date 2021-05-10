@@ -11,24 +11,32 @@ public interface StatisticAccessRepository extends JpaRepository<StatisticAccess
 
     StatisticAccess findByAuthAndStatisticDay(boolean auth, LocalDate date);
 
+    @Query("select sum(s.counter) from StatisticAccess s where s.statisticDay = :date")
+    Long countByDay(LocalDate date);
+
     @Query("select sum(s.counter)" +
             " from StatisticAccess s" +
             " where year(s.statisticDay) = :year " +
             " and month(s.statisticDay) = :month ")
     Long countByMonth(int year, int month);
 
-    @Query("select sum(s.counter)" +
-            " from StatisticAccess s" +
-            " where s.auth = true and year(s.statisticDay) = :year " +
-            " and month(s.statisticDay) = :month ")
-    Long countByMonthAndAuthTrue(int year, int month);
+//    @Query("select sum(s.counter)" +
+//            " from StatisticAccess s" +
+//            " where s.auth = true and year(s.statisticDay) = :year " +
+//            " and month(s.statisticDay) = :month ")
+//    Long countByMonthAndAuthTrue(int year, int month);
+//
+//    @Query("select sum(s.counter)" +
+//            " from StatisticAccess s" +
+//            " where s.auth = false and year(s.statisticDay) = :year " +
+//            " and month(s.statisticDay) = :month ")
+//    Long countByMonthAndAuthFalse(int year, int month);
 
     @Query("select sum(s.counter)" +
             " from StatisticAccess s" +
-            " where s.auth = false and year(s.statisticDay) = :year " +
+            " where s.auth = :auth and year(s.statisticDay) = :year " +
             " and month(s.statisticDay) = :month ")
-    Long countByMonthAndAuthFalse(int year, int month);
-
+    Long countByMonthAndAuth(int year, int month,boolean auth);
 
     @Query("select sum(s.counter)" +
             " from StatisticAccess s" +
@@ -36,15 +44,21 @@ public interface StatisticAccessRepository extends JpaRepository<StatisticAccess
             " and month(s.statisticDay) in :months ")
     Long countByQuarter(int year, int[] months);
 
-    @Query("select sum(s.counter)" +
-            " from StatisticAccess s" +
-            " where s.auth = false and year(s.statisticDay) = :year ")
-    Long countByYearAndAuthFalse(int year);
+//    @Query("select sum(s.counter)" +
+//            " from StatisticAccess s" +
+//            " where s.auth = false and year(s.statisticDay) = :year ")
+//    Long countByYearAndAuthFalse(int year);
+//
+//    @Query("select sum(s.counter)" +
+//            " from StatisticAccess s" +
+//            " where s.auth = true and year(s.statisticDay) = :year ")
+//    Long countByYearAndAuthTrue(int year);
 
     @Query("select sum(s.counter)" +
             " from StatisticAccess s" +
-            " where s.auth = true and year(s.statisticDay) = :year ")
-    Long countByYearAndAuthTrue(int year);
+            " where s.auth = :auth and year(s.statisticDay) = :year ")
+    Long countByYearAndAuth(int year,boolean auth);
+
 
 
 }
