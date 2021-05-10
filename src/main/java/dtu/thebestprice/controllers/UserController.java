@@ -104,6 +104,31 @@ public class UserController {
         return userService.adminRegisterRetailerAccount(request);
     }
 
+    // admin chỉnh sửa tài khoản cho guest hoặc retailer
+    @PutMapping("/editGuestOrRetailerAccount/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Admin chỉnh sửa tài khoản cho guest hoặc retailer")
+    public ResponseEntity<Object> adminEditGuestOrRetailerAccount(
+            @PathVariable("userId") String strId,
+            @RequestBody @Valid UserUpdateRequest request
+    ) {
+        long userId;
+        long phoneNumber;
+        try {
+            userId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id người dùng phải là số nguyên");
+        }
+
+        try {
+            phoneNumber = Long.parseLong(request.getPhoneNumber());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Số điện thoại không hợp lệ");
+        }
+
+        return userService.adminEditGuestOrRetailerAccount(userId, request);
+    }
+
     // admin xóa tài khoản retailer hoặc guest
     @DeleteMapping("/deleteGuestOrRetailer/{accountId}")
     @ApiOperation(value = "Admin xóa tài khoản guest hoặc retailer")
@@ -143,12 +168,13 @@ public class UserController {
         long id;
         try {
             id = Long.parseLong(strId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Id phải là số nguyên");
         }
 
         return userService.superDelete(id);
     }
+
 
 //    @PostMapping("/approveRetailer")
 //    @ApiOperation(value = "Phê duyệt tài khoản retailer")

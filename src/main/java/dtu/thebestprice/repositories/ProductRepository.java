@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Modifying
     @Query("UPDATE Product p SET p.viewCount =(p.viewCount + 1) WHERE p.id = :productId")
     void updateViewCount(Long productId);
+
+    Page<Product> findByApproveAndDeleteFlgFalse(boolean approve, Pageable pageable);
 }

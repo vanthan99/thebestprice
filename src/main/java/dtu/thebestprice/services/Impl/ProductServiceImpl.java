@@ -6,10 +6,7 @@ import dtu.thebestprice.entities.Image;
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.request.ProductRequest;
-import dtu.thebestprice.payload.response.ApiResponse;
-import dtu.thebestprice.payload.response.LongProductResponse;
-import dtu.thebestprice.payload.response.PageCustom;
-import dtu.thebestprice.payload.response.SearchResponse;
+import dtu.thebestprice.payload.response.*;
 import dtu.thebestprice.payload.response.query.ViewCountModel;
 import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.repositories.ImageRepository;
@@ -155,8 +152,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<Object> findByApprove(boolean b, Pageable pageable) {
-
-        return null;
+        Page<ShortProductResponse> page =
+                productRepository
+                        .findByApproveAndDeleteFlgFalse(b, pageable)
+                        .map(product -> productConverter.toShortProductResponse(product));
+        return ResponseEntity.ok(page);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<ViewCountModel> list = query.getResultList();
 
-        List<LongProductResponse> result = list.stream().map(viewCountModel -> productConverter.toLongProductResponse(viewCountModel.getProduct())).collect(Collectors.toList());
+        List<ShortProductResponse> result = list.stream().map(viewCountModel -> productConverter.toShortProductResponse(viewCountModel.getProduct())).collect(Collectors.toList());
 
         page.setContent(result);
         page.setTotalElements(totalElements);

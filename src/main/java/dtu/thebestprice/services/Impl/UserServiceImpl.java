@@ -237,4 +237,23 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity.ok(new ApiResponse(true, "Xóa tài khoản thành công"));
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UserUpdateRequest request) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new RuntimeException("không tồn tại người dùng"));
+
+        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER))
+            throw new RuntimeException("Không đủ quyền để chỉnh sửa tài khoản này");
+
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAddress(request.getAddress());
+        user.setFullName(request.getFullName());
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Cập nhật thông tin cho người dùng thành công"));
+    }
 }

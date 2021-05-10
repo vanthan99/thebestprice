@@ -6,6 +6,7 @@ import dtu.thebestprice.payload.request.ProductRequest;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import dtu.thebestprice.payload.response.ProductItem;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
+import dtu.thebestprice.payload.response.ShortProductResponse;
 import dtu.thebestprice.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -128,6 +129,39 @@ public class ProductConverter {
 
 
         return longProductResponse;
+    }
+
+    public ShortProductResponse toShortProductResponse(Product product) {
+        ShortProductResponse response = new ShortProductResponse();
+        response.setId(product.getId());
+        response.setTitle(product.getTitle());
+        response.setViewCount(product.getViewCount());
+
+        // set Rating
+        response.setRate((double) Math.round(ratingRepository.getRateByProduct(product.getId()) * 10) / 10);
+
+        // set list image
+        List<String> images = new ArrayList<>();
+        imageRepository.findByProductAndDeleteFlgFalse(product).forEach(image -> {
+            images.add(image.getUrl());
+        });
+        response.setImages(images);
+
+
+
+        // set lowest and highest price
+        List<ProductRetailer> productRetailers = productRetailerRepository.findByProductAndDeleteFlgFalse(product);
+        List<ProductRetailerResponse> productRetailerResponseList =
+                productRetailerConverter.toProductRetailerResponseList(productRetailers)
+                        .stream()
+                        .filter(productRetailerResponse -> productRetailerResponse.getPrice() != null)
+                        .filter(productRetailerResponse -> productRetailerResponse.getPrice() != 0)
+                        .collect(Collectors.toList());
+        ;
+        LongSummaryStatistics statistics = this.summaryStatisticsPrice(productRetailerResponseList);
+        response.setLowestPrice(statistics.getCount() != 0 ? statistics.getMin() : 0);
+        response.setHighestPrice(statistics.getCount() != 0 ? statistics.getMax() : 0);
+        return response;
     }
 
     public ProductItem toProductItem(Product product) {

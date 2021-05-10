@@ -33,11 +33,11 @@ public class ProductController {
     @ApiOperation(value = "Tìm sản phẩm theo id")
     public ResponseEntity<Object> findById(
             @PathVariable(name = "productId") String productId
-    ){
+    ) {
         try {
             return ResponseEntity.ok(productService.findById(productId));
         } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false,e.getMessage()),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -48,7 +48,7 @@ public class ProductController {
             @PathVariable("catId") String catId
     ) {
         try {
-            return ResponseEntity.ok(productService.findByCategoryId(pageable,catId));
+            return ResponseEntity.ok(productService.findByCategoryId(pageable, catId));
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
         }
@@ -57,7 +57,7 @@ public class ProductController {
     @PostMapping
     @ApiOperation(value = "Thêm mới sản phẩm")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> createProduct(@RequestBody @Valid ProductRequest productRequest){
+    public ResponseEntity<Object> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         return productService.create(productRequest);
     }
 
@@ -68,7 +68,7 @@ public class ProductController {
             @RequestBody @Valid ProductRequest productRequest,
             @PathVariable("productId") String strProductId
 
-    ){
+    ) {
         Long productId;
         try {
             if (strProductId.trim().equalsIgnoreCase(""))
@@ -77,18 +77,18 @@ public class ProductController {
         } catch (NumberFormatException e) {
             throw new NumberFormatException("id phải là số nguyên");
         }
-        return productService.update(productRequest,productId);
+        return productService.update(productRequest, productId);
     }
 
 
     @DeleteMapping("/{productId}")
     @ApiOperation(value = "Xóa sản phẩm theo id")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> deleteById(@PathVariable("productId") String strId){
+    public ResponseEntity<Object> deleteById(@PathVariable("productId") String strId) {
         long id;
-        try{
+        try {
             id = Long.parseLong(strId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("id phải là số nguyên");
         }
         return productService.deleteById(id);
@@ -98,16 +98,16 @@ public class ProductController {
     @GetMapping("/approveTrue")
     @ApiOperation(value = "Page sản phẩm đã được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveTrue(Pageable pageable){
-        return productService.findByApprove(true,pageable);
+    public ResponseEntity<Object> findByApproveTrue(Pageable pageable) {
+        return productService.findByApprove(true, pageable);
     }
 
     // danh sách sản phẩm chưa được phê duyệt
     @GetMapping("/approveFalse")
     @ApiOperation(value = "Page sản phẩm chưa được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveFalse(Pageable pageable){
-        return productService.findByApprove(false,pageable);
+    public ResponseEntity<Object> findByApproveFalse(Pageable pageable) {
+        return productService.findByApprove(false, pageable);
     }
 
 

@@ -43,4 +43,6 @@ public interface UserService {
 
     // root xoá tài khoản admin,guest,retailer
     ResponseEntity<Object> superDelete(long id);
+
+    ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UserUpdateRequest request);
 }
