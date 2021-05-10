@@ -68,34 +68,5 @@ public class TrackingController {
 
     }
 
-    // rating
-    @PostMapping("/rating/{productId}")
-    @ApiOperation(value = "Người dùng gửi đánh giá (rating) sản phẩm")
-    @PreAuthorize("hasAnyAuthority('ROLE_GUEST','ROLE_RETAILER')")
-    public ResponseEntity<Object> ratingTracking(
-            @PathVariable("productId") String strProductId,
-            @RequestBody @Valid RatingRequest ratingRequest
-    ) {
-        long productId;
-        long rate;
 
-        try {
-            productId = Long.parseLong(strProductId);
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Id sản phẩm phải là số nguyên");
-        }
-
-        try {
-            rate = Long.parseLong(ratingRequest.getRate());
-            if (rate < 1 || rate > 5)
-                throw new RuntimeException("Chỉ đánh giá từ 1 tới 5 sao");
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Rate phải là số nguyên và không được để trống");
-        }
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
-
-        return rateService.rating(userDetails.getId(), rate, productId);
-    }
 }
