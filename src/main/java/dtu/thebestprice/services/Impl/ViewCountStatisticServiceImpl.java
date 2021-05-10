@@ -15,7 +15,9 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,16 +132,20 @@ public class ViewCountStatisticServiceImpl implements dtu.thebestprice.services.
     }
 
     @Override
-    public ResponseEntity<Object> statisticBetweenDay(LocalDate startDay, LocalDate endDay) {
-        Period different = Period.between(startDay, endDay);
+    public ResponseEntity<Object> statisticBetweenDay(Date startDay, Date endDay) {
+        long getDiff = startDay.getTime() - endDay.getTime();
 
-        if (endDay.isAfter(LocalDate.now()))
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        LocalDate date = startDay.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        if (endDay.after(new Date()))
             throw new RuntimeException("Ngày kết thúc chỉ được thống kê tới hôm nay " + LocalDate.now().toString());
 
         List<Long> result = new ArrayList<>();
 
-        for (int i = 0; i <= different.getDays(); i++) {
-            result.add(viewCountStatisticRepository.countByStatisticDay(startDay.plusDays(i)));
+        for (int i = 0; i < getDaysDiff; i++) {
+            result.add(viewCountStatisticRepository.countByStatisticDay(date.plusDays(i)));
         }
 
         result = result.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList());

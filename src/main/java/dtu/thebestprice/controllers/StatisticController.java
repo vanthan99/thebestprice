@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 
 @RestController
 @RequestMapping("/api/v1/statistic")
@@ -43,7 +45,9 @@ public class StatisticController {
         if (endDay.isBefore(startDay))
             throw new RuntimeException("Ngày kết thúc phải bằng hoăc lớn hon ngày bắt đầu");
 
-        return viewCountStatisticService.statisticBetweenDay(startDay, endDay);
+        return viewCountStatisticService.statisticBetweenDay(
+                Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     @ApiOperation(value = "Thống kê những từ khóa đã được tìm kiếm")
