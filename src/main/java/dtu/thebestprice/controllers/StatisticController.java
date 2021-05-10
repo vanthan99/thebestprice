@@ -42,7 +42,7 @@ public class StatisticController {
     ProductService productService;
 
     @ApiOperation(value = "Thống kê số lượt xem sản phẩm theo ngày truyền vào")
-    @GetMapping("/statisticProduct")
+    @GetMapping("/viewCount")
     public ResponseEntity<Object> statisticViewCountByDate(
             @RequestParam("startDay") String strStartDay,
             @RequestParam("endDay") String strEndDay
