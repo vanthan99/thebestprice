@@ -19,10 +19,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
 
 @Component
 public class initData {
@@ -161,7 +159,7 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-//    @PostConstruct
+//        @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
@@ -179,12 +177,12 @@ public class initData {
 //        initProductV2();
 
 //        initProduct();
-        initManyProductRetailer();
-
-        initRating();
-        initSoluottruycap();
-        initViewCount();
-        initSoluotTimKiem();
+//        initManyProductRetailer();
+//
+//        initRating();
+//        initSoluottruycap();
+//        initViewCount();
+//        initSoluotTimKiem();
     }
 
     private void initRating() {
@@ -268,13 +266,20 @@ public class initData {
     }
 
     //    @PostConstruct
+    @Transactional
     public void initViewCount() {
 
-        LocalDate endDay = LocalDate.of(2021, 7, 1);
-        LocalDate startDay = LocalDate.of(2021, 3, 1);
 
-        Period period = Period.between(startDay, endDay);
-        for (int i = 0; i < 100; i++) {
+        LocalDate startDay = LocalDate.of(2021, 3, 1);
+        LocalDate endDay = LocalDate.of(2021, 7, 1);
+        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        long getDiff = date2.getTime() - date.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        for (int i = 0; i <= getDaysDiff; i++) {
             // random viewcount dien thoai
             viewCountStatisticRepository.save(new ViewCountStatistic(
                     productRepository.getOne((long) random(1, 20)),
@@ -283,12 +288,27 @@ public class initData {
             ));
             // random laptop
             viewCountStatisticRepository.save(new ViewCountStatistic(
-                    productRepository.getOne((long) random(1000, 1728)),
+                    productRepository.getOne((long) random(1420, 1728)),
                     startDay.plusDays(i),
                     (long) random(10, 40)
             ));
         }
 
+//        for (int i = 1; i <= 20; i++) {
+//            Product product = productRepository.getOne((long) i);
+//            if (viewCountStatisticRepository.countByProduct((long) i) != null) {
+//                product.setViewCount(viewCountStatisticRepository.countByProduct((long) i));
+//                productRepository.save(product);
+//            }
+//        }
+//
+//        for (int i = 1420; i <= 1728; i++) {
+//            Product product = productRepository.getOne((long) i);
+//            if (viewCountStatisticRepository.countByProduct((long) i) != null) {
+//                product.setViewCount(viewCountStatisticRepository.countByProduct((long) i));
+//                productRepository.save(product);
+//            }
+//        }
     }
 
     //        @PostConstruct
@@ -322,7 +342,7 @@ public class initData {
                     productRepository.getOne((long) i),
                     xuanVinhRetailer,
                     "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
-                    (long) (random(12, 18) * 100000)
+                    (long) (random(12, 18) * 1000000)
             );
         }
 
@@ -332,7 +352,7 @@ public class initData {
                     productRepository.getOne((long) i),
                     xuanVinhRetailer,
                     "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
-                    (long) (random(12, 18) * 100000)
+                    (long) (random(12, 18) * 1000000)
             );
         }
 
@@ -2125,7 +2145,7 @@ public class initData {
                 "Xuân Vinh",
                 "Trang web công ty Xuân Vinh",
                 "http://xuanvinh.vn/",
-                "https://lh3.googleusercontent.com/proxy/3yyyEz2uBXpUlctOdxSsSEPTv_BRIvfHXdrw1A2Q2KQDf7NMDWlVCLFgp4diTxStJv8DDllQPO7seH_duSUCmsOxv8DfBS5Xyd2thwY0",
+                "http://xuanvinh.vn/uploads/logo3.png",
                 true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
@@ -2458,7 +2478,7 @@ public class initData {
                         "nguyenthithao",
                         passwordEncoder.encode("nguyenthithao123"),
                         "Nguyễn Thị Thảo",
-                        "Quảng Trị",
+                        "Quảng Bình",
                         "thithao.ad.it@gmail.com",
                         "0365843463",
                         true,

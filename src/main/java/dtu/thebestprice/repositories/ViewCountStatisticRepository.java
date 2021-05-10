@@ -24,4 +24,7 @@ public interface ViewCountStatisticRepository extends JpaRepository<ViewCountSta
     // lấy số lượt xem theo ngày
     @Query("select sum(v.viewCount) from ViewCountStatistic v where v.statisticDay = :date")
     Long countByStatisticDay(LocalDate date);
+
+    @Query("select sum(v.viewCount) from ViewCountStatistic  v where v.product.id = :id")
+    Long countByProduct(Long id);
 }
