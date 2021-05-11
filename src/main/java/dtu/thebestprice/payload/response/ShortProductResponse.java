@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class ShortProductResponse {
     private Long id;
     private String title;
+    private String shortDescription;
     private String image;
     private Double rate;
     private Long lowestPrice;
