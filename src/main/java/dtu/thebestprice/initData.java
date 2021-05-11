@@ -160,7 +160,7 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-//    @PostConstruct
+    //    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
@@ -277,7 +277,7 @@ public class initData {
         return new Random().nextInt((max - min) + 1) + min;
     }
 
-//    @PostConstruct
+    //    @PostConstruct
     @Transactional
     public void initViewCount() {
         LocalDate startDay = LocalDate.of(2021, 1, 1);
@@ -326,7 +326,7 @@ public class initData {
 
     }
 
-    //        @PostConstruct
+//    @PostConstruct
     public void initSoluottruycap() {
         LocalDate startDay = LocalDate.of(2021, 1, 1);
         LocalDate endDay = LocalDate.of(2021, 7, 1);
@@ -342,14 +342,14 @@ public class initData {
                     null,
                     startDay.plusDays(i),
                     true,
-                    (long) random(27, 37)
+                    (long) random(96, 150)
             ));
 
             statisticAccessRepository.save(new StatisticAccess(
                     null,
                     startDay.plusDays(i),
                     false,
-                    (long) random(27, 37)
+                    (long) random(96, 150)
             ));
         }
     }

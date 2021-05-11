@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LongSummaryStatistics;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -157,8 +158,9 @@ public class ProductConverter {
                 });
 
         LongSummaryStatistics statistics = this.summaryStatistics(prices);
-        response.setLowestPrice(statistics.getCount() != 0 ? statistics.getMin() : 0);
-        response.setHighestPrice(statistics.getCount() != 0 ? statistics.getMax() : 0);
+        response.setHighestPrice(statistics.getMax());
+        response.setLowestPrice(statistics.getMin());
+
         return response;
     }
 
@@ -199,6 +201,10 @@ public class ProductConverter {
 
     // thống kê từ 1 mảng Long truyền vào
     private LongSummaryStatistics summaryStatistics(List<Long> longList) {
+        longList = longList
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         return longList.stream().mapToLong(Long::new).summaryStatistics();
     }
 

@@ -13,6 +13,7 @@ import dtu.thebestprice.repositories.ImageRepository;
 import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.specifications.ProductSpecification;
+import dtu.thebestprice.specifications.ViewCountStatisticSpecification;
 import org.hibernate.service.NullServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -168,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE s.product.title like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
+                            "WHERE lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, year)
@@ -179,7 +180,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE s.product.title like concat('%',?1,'%') " +
+                            "WHERE lower(s.product.title) like concat('%',lower(?1) ,'%') " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, keyword);
@@ -188,7 +189,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE s.product.title like concat('%',?2,'%') and YEAR(s.statisticDay) = ?1 " +
+                            "WHERE lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, year)
@@ -221,7 +222,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE s.product.title like concat('%',?2,'%') and month(s.statisticDay) = ?1 " +
+                            "WHERE lower(s.product.title) like concat('%',lower(?2) ,'%') and month(s.statisticDay) = ?1 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, month)
