@@ -91,7 +91,12 @@ public class ProductConverter {
 
     public LongProductResponse toLongProductResponse(Product product) {
         LongProductResponse longProductResponse = new LongProductResponse();
-
+        Long totalRate = ratingRepository.countByProduct(product);
+        if (totalRate == null) {
+            longProductResponse.setTotalRate(0L);
+        } else {
+            longProductResponse.setTotalRate(totalRate);
+        }
         longProductResponse.setId(product.getId());
         longProductResponse.setTitle(product.getTitle());
         longProductResponse.setShortDescription(product.getShortDescription());

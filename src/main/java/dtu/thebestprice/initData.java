@@ -160,7 +160,7 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-    //    @PostConstruct
+//    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
@@ -182,7 +182,7 @@ public class initData {
 //
 //        initRating();
 //        initSoluottruycap();
-//        initViewCount();
+        initViewCount();
 //        initSoluotTimKiem();
     }
 
@@ -233,18 +233,20 @@ public class initData {
         long getDiff = date2.getTime() - date.getTime();
 
         long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+        int min = 10;
+        int max = 12;
 
         for (int i = 0; i <= getDaysDiff; i++) {
-            searchStatisticRepository.save(new SearchStatistic(null, search1, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search2, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search3, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search4, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search5, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search6, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search7, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search8, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search9, (long) random(30, 40), startDay.plusDays(i)));
-            searchStatisticRepository.save(new SearchStatistic(null, search10, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search1, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search2, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search3, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search4, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search5, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search6, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search7, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search8, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search9, (long) random(min, max), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search10, (long) random(min, max), startDay.plusDays(i)));
         }
 
         search1.setNumberOfSearch(searchStatisticRepository.countBySearch(search1));
@@ -289,18 +291,21 @@ public class initData {
 
         long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
 
+        int min = 50;
+        int max = 60;
+
         for (int i = 0; i <= getDaysDiff; i++) {
             // random viewcount dien thoai
             viewCountStatisticRepository.save(new ViewCountStatistic(
                     productRepository.getOne((long) random(1, 20)),
                     startDay.plusDays(i),
-                    (long) random(5, 10)
+                    (long) random(min, max)
             ));
             // random laptop
             viewCountStatisticRepository.save(new ViewCountStatistic(
                     productRepository.getOne((long) random(1420, 1728)),
                     startDay.plusDays(i),
-                    (long) random(5, 10)
+                    (long) random(min, max)
             ));
         }
 
@@ -326,7 +331,7 @@ public class initData {
 
     }
 
-//    @PostConstruct
+    //    @PostConstruct
     public void initSoluottruycap() {
         LocalDate startDay = LocalDate.of(2021, 1, 1);
         LocalDate endDay = LocalDate.of(2021, 7, 1);
@@ -336,20 +341,22 @@ public class initData {
         long getDiff = date2.getTime() - date.getTime();
 
         long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+        int min = 45;
+        int max = 60;
 
         for (int i = 0; i <= getDaysDiff; i++) {
             statisticAccessRepository.save(new StatisticAccess(
                     null,
                     startDay.plusDays(i),
                     true,
-                    (long) random(96, 150)
+                    (long) random(min, max)
             ));
 
             statisticAccessRepository.save(new StatisticAccess(
                     null,
                     startDay.plusDays(i),
                     false,
-                    (long) random(96, 150)
+                    (long) random(min, max)
             ));
         }
     }

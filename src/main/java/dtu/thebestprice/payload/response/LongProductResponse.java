@@ -21,4 +21,5 @@ public class LongProductResponse {
     private Long lowestPrice;
     private Long highestPrice;
     private List<ProductRetailerResponse> prices;
+    private Long totalRate;
 }

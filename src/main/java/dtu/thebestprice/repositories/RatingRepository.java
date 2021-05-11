@@ -14,4 +14,7 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     boolean existsByProductAndUser(Product product, User user);
 
     Rating findByProductAndUser(Product product, User user);
+
+    @Query("select count(r) from Rating r where r.product = :product")
+    Long countByProduct(Product product);
 }
