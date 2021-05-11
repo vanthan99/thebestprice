@@ -2,13 +2,18 @@ package dtu.thebestprice.converters;
 
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
+import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.ProductRequest;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import dtu.thebestprice.payload.response.ProductItem;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
 import dtu.thebestprice.payload.response.ShortProductResponse;
 import dtu.thebestprice.repositories.*;
+import dtu.thebestprice.securities.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -45,6 +50,9 @@ public class ProductConverter {
 
     @Autowired
     PriceRepository priceRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     // mapping product request to product entity
     public Product toEntity(ProductRequest productRequest) {
@@ -92,11 +100,36 @@ public class ProductConverter {
     public LongProductResponse toLongProductResponse(Product product) {
         LongProductResponse longProductResponse = new LongProductResponse();
         Long totalRate = ratingRepository.countByProduct(product);
+
+
+        // check auth
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                //when Anonymous Authentication is enabled
+                !(SecurityContextHolder.getContext().getAuthentication()
+                        instanceof AnonymousAuthenticationToken)) {
+            User user = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElse(null);
+
+            if (user != null) {
+                if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER)) {
+                    longProductResponse.setRated(true);
+                } else {
+                    // quyền guest và quền retailer
+                    longProductResponse.setRated(ratingRepository.existsByProductAndUser(product, user));
+                }
+            }
+        } else {
+            longProductResponse.setRated(false);
+        }
+
+
         if (totalRate == null) {
             longProductResponse.setTotalRate(0L);
         } else {
             longProductResponse.setTotalRate(totalRate);
         }
+
+
         longProductResponse.setId(product.getId());
         longProductResponse.setTitle(product.getTitle());
         longProductResponse.setShortDescription(product.getShortDescription());
