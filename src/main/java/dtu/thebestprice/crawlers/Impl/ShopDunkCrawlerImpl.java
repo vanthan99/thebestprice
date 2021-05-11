@@ -48,8 +48,13 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
         Elements imageElements = document.select(".img-small a img");
         if (imageElements.size() > 0) {
             imageElements.forEach(element -> {
-                if (element.attr("src").contains("https://shopdunk.com/"))
-                    images.add(element.attr("src"));
+
+                try {
+                    if (!isRedirectHomePage(element.attr("src")))
+                        images.add(element.attr("src"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
         StringBuffer longDesc = new StringBuffer("");
@@ -82,5 +87,10 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
         productCrawler.setUrl(url);
 
         return productCrawler;
+    }
+
+    private boolean isRedirectHomePage(String url) throws IOException {
+        Document document = Jsoup.connect(url).ignoreContentType(true).get();
+        return document.baseUri().equalsIgnoreCase("https://shopdunk.com/");
     }
 }

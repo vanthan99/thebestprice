@@ -92,12 +92,10 @@ public class UserServiceImpl implements UserService {
                 .findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
 
-        if (!user.getRole().equals(ERole.ROLE_GUEST)) {
-            throw new RuntimeException("Tài khoản hiện tại chưa phải là tài khoản guest");
+        if (user.getRole().equals(ERole.ROLE_GUEST)) {
+            user.setRole(ERole.ROLE_RETAILER);
+            userRepository.save(user);
         }
-
-        user.setRole(ERole.ROLE_RETAILER);
-        userRepository.save(user);
     }
 
     @Override
@@ -255,5 +253,20 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return ResponseEntity.ok(new ApiResponse(true, "Cập nhật thông tin cho người dùng thành công"));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> adminEditPasswordForGuestOrRetailer(long userId, PasswordByAdminRequest request) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER))
+            throw new RuntimeException("Không thể đổi mật khẩu cho tài khoản này");
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        return ResponseEntity.ok(new ApiResponse(true, "Đổi mật khẩu cho người dùng thành công"));
     }
 }

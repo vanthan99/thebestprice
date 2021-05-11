@@ -2,14 +2,12 @@ package dtu.thebestprice.entities;
 
 import dtu.thebestprice.entities.base.BaseEntity;
 import dtu.thebestprice.entities.enums.ERole;
-import dtu.thebestprice.entities.enums.EUserStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table
@@ -37,10 +35,10 @@ public class User extends BaseEntity {
     @Column(length = 11)
     private String phoneNumber;
 
-    @Column
+    @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean enable = false;
 
-    @Column
+    @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;
 
     @Column(length = 20)

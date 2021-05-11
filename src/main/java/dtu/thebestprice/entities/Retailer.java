@@ -29,7 +29,7 @@ public class Retailer extends BaseEntity {
     @Column
     private String logoImage;
 
-    @Column
+    @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;
 
     @ManyToOne(fetch = FetchType.EAGER)

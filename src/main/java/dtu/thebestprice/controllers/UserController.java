@@ -129,6 +129,24 @@ public class UserController {
         return userService.adminEditGuestOrRetailerAccount(userId, request);
     }
 
+    // admin đổi mật khẩu cho guest hoặc retailer
+    @PutMapping("/adminEditPasswordForGuestOrRetailer/{userId}")
+    @ApiOperation(value = "Admin cập nhật mật khẩu cho guest hoặc retailer")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> adminEditPasswordForGuestOrRetailer(
+           @PathVariable("userId") String strUserId,
+           @RequestBody @Valid PasswordByAdminRequest request
+    ){
+        long userId;
+        try{
+            userId= Long.parseLong(strUserId);
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("Id người dùng không được để trống và phải là số nguyên");
+        }
+
+        return userService.adminEditPasswordForGuestOrRetailer(userId,request);
+    }
+
     // admin xóa tài khoản retailer hoặc guest
     @DeleteMapping("/deleteGuestOrRetailer/{accountId}")
     @ApiOperation(value = "Admin xóa tài khoản guest hoặc retailer")

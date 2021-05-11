@@ -9,4 +9,6 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<Image,Long> {
     List<Image> findByProductAndDeleteFlgFalse(Product product);
     boolean  existsByProductAndUrlAndDeleteFlgFalse(Product product, String url);
+
+    Image findFirstByProduct(Product product);
 }

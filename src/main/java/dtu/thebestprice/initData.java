@@ -1,5 +1,6 @@
 package dtu.thebestprice;
 
+import dtu.thebestprice.crawlers.Impl.ShopDunkCrawlerImpl;
 import dtu.thebestprice.crawlers.PhiLongCrawler;
 import dtu.thebestprice.crawlers.ShopDunkCrawler;
 import dtu.thebestprice.crawlers.model.ProductCrawler;
@@ -159,7 +160,7 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-//        @PostConstruct
+//    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
@@ -222,17 +223,28 @@ public class initData {
         searchRepository.save(search9);
         searchRepository.save(search10);
 
-        for (int i = 1; i <= 5; i++) {
-            searchStatisticRepository.save(new SearchStatistic(null, search1, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search2, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search3, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search4, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search5, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search6, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search7, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search8, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search9, (long) random(50, 70), LocalDate.of(2021, i, 15)));
-            searchStatisticRepository.save(new SearchStatistic(null, search10, (long) random(50, 70), LocalDate.of(2021, i, 15)));
+
+        LocalDate startDay = LocalDate.of(2021, 1, 1);
+        LocalDate endDay = LocalDate.of(2021, 7, 1);
+
+        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        long getDiff = date2.getTime() - date.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        for (int i = 0; i <= getDaysDiff; i++) {
+            searchStatisticRepository.save(new SearchStatistic(null, search1, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search2, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search3, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search4, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search5, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search6, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search7, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search8, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search9, (long) random(30, 40), startDay.plusDays(i)));
+            searchStatisticRepository.save(new SearchStatistic(null, search10, (long) random(30, 40), startDay.plusDays(i)));
         }
 
         search1.setNumberOfSearch(searchStatisticRepository.countBySearch(search1));
@@ -265,12 +277,10 @@ public class initData {
         return new Random().nextInt((max - min) + 1) + min;
     }
 
-    //    @PostConstruct
+//    @PostConstruct
     @Transactional
     public void initViewCount() {
-
-
-        LocalDate startDay = LocalDate.of(2021, 3, 1);
+        LocalDate startDay = LocalDate.of(2021, 1, 1);
         LocalDate endDay = LocalDate.of(2021, 7, 1);
         Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -284,50 +294,63 @@ public class initData {
             viewCountStatisticRepository.save(new ViewCountStatistic(
                     productRepository.getOne((long) random(1, 20)),
                     startDay.plusDays(i),
-                    (long) random(10, 30)
+                    (long) random(5, 10)
             ));
             // random laptop
             viewCountStatisticRepository.save(new ViewCountStatistic(
                     productRepository.getOne((long) random(1420, 1728)),
                     startDay.plusDays(i),
-                    (long) random(10, 40)
+                    (long) random(5, 10)
             ));
         }
 
-//        for (int i = 1; i <= 20; i++) {
-//            Product product = productRepository.getOne((long) i);
-//            if (viewCountStatisticRepository.countByProduct((long) i) != null) {
-//                product.setViewCount(viewCountStatisticRepository.countByProduct((long) i));
-//                productRepository.save(product);
-//            }
-//        }
-//
-//        for (int i = 1420; i <= 1728; i++) {
-//            Product product = productRepository.getOne((long) i);
-//            if (viewCountStatisticRepository.countByProduct((long) i) != null) {
-//                product.setViewCount(viewCountStatisticRepository.countByProduct((long) i));
-//                productRepository.save(product);
-//            }
-//        }
+        // set viewcount for product
+        for (int i = 1; i <= 20; i++) {
+            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
+            if (viewCount != null) {
+                Product product = productRepository.getOne((long) i);
+                product.setViewCount(viewCount);
+                productRepository.save(product);
+            }
+        }
+
+        for (int i = 1420; i <= 1728; i++) {
+            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
+            if (viewCount != null) {
+                Product product = productRepository.getOne((long) i);
+                product.setViewCount(viewCount);
+                productRepository.save(product);
+            }
+        }
+
+
     }
 
     //        @PostConstruct
     public void initSoluottruycap() {
-        for (int i = 1; i <= 5; i++) {
+        LocalDate startDay = LocalDate.of(2021, 1, 1);
+        LocalDate endDay = LocalDate.of(2021, 7, 1);
+        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        long getDiff = date2.getTime() - date.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        for (int i = 0; i <= getDaysDiff; i++) {
             statisticAccessRepository.save(new StatisticAccess(
                     null,
-                    LocalDate.of(2021, i, 15),
+                    startDay.plusDays(i),
                     true,
-                    (long) random(235, 259)
+                    (long) random(27, 37)
             ));
 
             statisticAccessRepository.save(new StatisticAccess(
                     null,
-                    LocalDate.of(2021, i, 15),
+                    startDay.plusDays(i),
                     false,
-                    (long) random(235, 280)
+                    (long) random(27, 37)
             ));
-
         }
     }
 
@@ -355,98 +378,6 @@ public class initData {
                     (long) (random(12, 18) * 1000000)
             );
         }
-
-//        initProductRetailer(
-//                productRepository.getOne(1422L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
-//                9890000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1422L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-a514-51-525e-h6vsv-002-i5-8265u-4gb-hdd1tb",
-//                9990000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1423L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-a315-56-37dv-nx-hs5sv-001-i3-1005g1-4gb-256gb-ssd-15-6fhd-win-10-dgw",
-//                10000000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1424L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-a315-56-59xy-i5-1035g1-4gb-256gb-win10-fpt",
-//                11900000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1425L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-a515-55-37hd-nx-hsmsv-006-i3-1005g1-4gb-256gb-15-6-fhd-win-10-fpt",
-//                11950000L
-//
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1426L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-5-a514-53-346u-nx-hussv-005-i3-1005g1-4gb-512gb-ssd-14-0fhd-win-10-fpt",
-//                12890000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1427L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-a315-55g-504m-i5-10210u-4gb-512gb-ssd-mx230-2gb-15-6fhd-win-10-fpt",
-//                13900000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1428L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-7-a715-42g-r4st-r5-5500u-8gb-256gb-ssd-gtx-1650-4gb-15-6-fhd-win10-chinh-hang",
-//                16990000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1429L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-aspire-5-a514-54-540f-i5-1135g7-8gb-512gb-ssd-14-win10-chinh-hang",
-//                17290000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1430L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-swift-3-sf314-58-39bz-nx-hpmsv-007-i3-10110u-8gb-512gbssd-win-10-fpt",
-//                17500000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1431L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-nitro-5-an515-44-r9jm-nh-q9msv-003-r5-4600h-8gb-512gb-ssd-gtx1650-4gb-15-6-144hz-win10-dgw",
-//                18500000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1432L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-swift-3-sf314-41-r8g9-nx-hfdsv-003-r7-3700u-8gb-512gb-ssd-win10-dgw",
-//                18900000L
-//        );
-//
-//        initProductRetailer(
-//                productRepository.getOne(1433L),
-//                xuanVinhRetailer,
-//                "http://xuanvinh.vn/acer-nitro-5-an515-55-5923-nh-q7nsv-004-i5-10300h-8gb-512gb-ssd-gtx1650ti-4gb-144hz-win-10",
-//                19800000L
-//        );
     }
 
     private void saveProductV2(Set<ProductCrawler> productCrawlers, Category category, Brand brand, Retailer retailer) {
@@ -469,7 +400,7 @@ public class initData {
             productRetailerRepository.save(productRetailer);
 
             // save price
-            priceRepository.save(new Price(productCrawler.getPrice(), productRetailer));
+            priceRepository.save(new Price(productCrawler.getPrice(), productRetailer, true));
 
             // save Images
             productCrawler.getImages().forEach(s -> imageRepository.save(new Image(s, product)));
@@ -1999,6 +1930,7 @@ public class initData {
     private void initPrice(ProductRetailer productRetailer, Long p) {
         Price price = new Price();
         price.setPrice(p);
+        price.setActive(true);
         price.setProductRetailer(productRetailer);
         priceRepository.save(price);
     }
@@ -2449,8 +2381,8 @@ public class initData {
                 new User(
                         "supersuper",
                         passwordEncoder.encode("adminadmin"),
-                        "Trương Văn Thân",
-                        "Quảng Trị",
+                        "Tài khoản root",
+                        "Đại học duy tân",
                         "supper@gmail.com",
                         "0365843463",
                         true,
@@ -2464,7 +2396,7 @@ public class initData {
                         "truongvanthan",
                         passwordEncoder.encode("thanthan"),
                         "Trương Văn Thân",
-                        "Quảng Trị",
+                        "Triệu Phong - Quảng Trị",
                         "vanthan.ad.it@gmail.com",
                         "0365843463",
                         true,
@@ -2479,8 +2411,8 @@ public class initData {
                         passwordEncoder.encode("nguyenthithao123"),
                         "Nguyễn Thị Thảo",
                         "Quảng Bình",
-                        "thithao.ad.it@gmail.com",
-                        "0365843463",
+                        "thithaonguyen@gmail.com",
+                        "0982312370",
                         true,
                         true,
                         ERole.ROLE_RETAILER
@@ -2492,9 +2424,9 @@ public class initData {
                         "nguyenhuutho",
                         passwordEncoder.encode("thothotho"),
                         "Nguyễn Hữu Thọ",
-                        "Quảng Trị",
-                        "huutho.ad.it@gmail.com",
-                        "0365843463",
+                        "Hải Lăng - Quảng Trị",
+                        "huutho.nguyen@gmail.com",
+                        "0973612732",
                         true,
                         true,
                         ERole.ROLE_RETAILER
@@ -2507,9 +2439,9 @@ public class initData {
                         "nguyenthinhung",
                         passwordEncoder.encode("nhungnhung"),
                         "Nguyễn Thị Nhung",
-                        "Quảng Trị",
-                        "nhungnhung.ad.it@gmail.com",
-                        "0365843463",
+                        "Triệu An - Quảng Trị",
+                        "nhungnhung@gmail.com",
+                        "0934273263",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2518,12 +2450,12 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung1",
-                        passwordEncoder.encode("nhungnhung1"),
-                        "Nguyễn Thị Nhung",
-                        "Quảng Trị",
-                        "nhungnhung1.ad.it@gmail.com",
-                        "0365843463",
+                        "nguyenquanghai",
+                        passwordEncoder.encode("nguyenquanghai"),
+                        "Nguyễn Quang Hải",
+                        "Hà Nội",
+                        "quanghai.bongda@gmail.com",
+                        "0937246284",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2532,12 +2464,12 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung2",
-                        passwordEncoder.encode("nhungnhung2"),
-                        "Nguyễn Thị Nhung2",
-                        "Quảng Trị",
-                        "nhungnhung2.ad.it@gmail.com",
-                        "0365843463",
+                        "phuongnc",
+                        passwordEncoder.encode("nguyencongphuong"),
+                        "Nguyễn Công Phượng",
+                        "TP.Hồ Chí Minh",
+                        "nguyencongphuong.bongda@gmail.com",
+                        "0987436829",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2546,12 +2478,12 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung3",
-                        passwordEncoder.encode("nhungnhung3"),
-                        "Nguyễn Thị Nhung3",
-                        "Quảng Trị",
-                        "nhungnhung3.ad.it@gmail.com",
-                        "0365843463",
+                        "mytam_singer",
+                        passwordEncoder.encode("casimytam"),
+                        "Ca sĩ mỹ tâm",
+                        "Đà Nẵng",
+                        "mytam.danang@gmail.com",
+                        "0937378924",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2560,12 +2492,26 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung4",
-                        passwordEncoder.encode("nhungnhung4"),
-                        "Nguyễn Thị Nhung4",
-                        "Quảng Trị",
-                        "nhungnhung4.ad.it@gmail.com",
-                        "0365843463",
+                        "kylamdtu",
+                        passwordEncoder.encode("kytamdtu"),
+                        "Lê Nguyễn kỳ Lâm",
+                        "Đà Nẵng",
+                        "kylamdtu@gmail.com",
+                        "0938274629",
+                        true,
+                        true,
+                        ERole.ROLE_RETAILER
+                )
+        );
+
+        userRepository.save(
+                new User(
+                        "khacvietsinger",
+                        passwordEncoder.encode("khacviet"),
+                        "Nguyễn Khắc Việt",
+                        "Hà Nội",
+                        "khacviet.casi@gmail.com",
+                        "0983748345",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2574,12 +2520,12 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung5",
-                        passwordEncoder.encode("nhungnhung5"),
-                        "Nguyễn Thị Nhung5",
-                        "Quảng Trị",
-                        "nhungnhung5.ad.it@gmail.com",
-                        "0365843463",
+                        "daobinhan123",
+                        passwordEncoder.encode("daobinhan"),
+                        "Đào Bình An",
+                        "Hải Lăng - Quảng Trị",
+                        "binhandao.hailang@gmail.com",
+                        "0987438943",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2588,12 +2534,12 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung6",
-                        passwordEncoder.encode("nhungnhung6"),
-                        "Nguyễn Thị Nhung6",
-                        "Quảng Trị",
-                        "nhungnhung6.ad.it@gmail.com",
-                        "0365843463",
+                        "vaocaoky1999",
+                        passwordEncoder.encode("vocaoky99"),
+                        "Võ Cao Kỳ",
+                        "Ái Tử - Quảng Trị",
+                        "kyvo1999@gmail.com",
+                        "093743478",
                         true,
                         true,
                         ERole.ROLE_GUEST
@@ -2602,26 +2548,12 @@ public class initData {
 
         userRepository.save(
                 new User(
-                        "nguyenthinhung7",
-                        passwordEncoder.encode("nhungnhung7"),
-                        "Nguyễn Thị Nhung7",
-                        "Quảng Trị",
-                        "nhungnhung7.ad.it@gmail.com",
-                        "0365843463",
-                        true,
-                        true,
-                        ERole.ROLE_GUEST
-                )
-        );
-
-        userRepository.save(
-                new User(
-                        "nguyenthinhung8",
-                        passwordEncoder.encode("nhungnhung8"),
-                        "Nguyễn Thị Nhung8",
-                        "Quảng Trị",
-                        "nhungnhung8.ad.it@gmail.com",
-                        "0365843463",
+                        "nguyenthanhnamtb",
+                        passwordEncoder.encode("nguyenthanhnam"),
+                        "Nguyễn Thành Nam",
+                        "Tiền Hải - Thái Bình",
+                        "namntn@gmail.com",
+                        "0987367834",
                         true,
                         true,
                         ERole.ROLE_GUEST

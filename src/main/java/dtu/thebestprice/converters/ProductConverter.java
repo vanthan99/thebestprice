@@ -42,6 +42,9 @@ public class ProductConverter {
     @Autowired
     BrandRepository brandRepository;
 
+    @Autowired
+    PriceRepository priceRepository;
+
     // mapping product request to product entity
     public Product toEntity(ProductRequest productRequest) {
         Product product = new Product();
@@ -141,24 +144,18 @@ public class ProductConverter {
         response.setRate((double) Math.round(ratingRepository.getRateByProduct(product.getId()) * 10) / 10);
 
         // set list image
-        List<String> images = new ArrayList<>();
-        imageRepository.findByProductAndDeleteFlgFalse(product).forEach(image -> {
-            images.add(image.getUrl());
-        });
-        response.setImages(images);
-
+        response.setImage(imageRepository.findFirstByProduct(product).getUrl());
 
 
         // set lowest and highest price
         List<ProductRetailer> productRetailers = productRetailerRepository.findByProductAndDeleteFlgFalse(product);
-        List<ProductRetailerResponse> productRetailerResponseList =
-                productRetailerConverter.toProductRetailerResponseList(productRetailers)
-                        .stream()
-                        .filter(productRetailerResponse -> productRetailerResponse.getPrice() != null)
-                        .filter(productRetailerResponse -> productRetailerResponse.getPrice() != 0)
-                        .collect(Collectors.toList());
-        ;
-        LongSummaryStatistics statistics = this.summaryStatisticsPrice(productRetailerResponseList);
+        List<Long> prices = new ArrayList<>();
+        productRetailers
+                .forEach(productRetailer -> {
+                    prices.add(priceRepository.findByPriceLatestByProductRetailer(productRetailer));
+                });
+
+        LongSummaryStatistics statistics = this.summaryStatistics(prices);
         response.setLowestPrice(statistics.getCount() != 0 ? statistics.getMin() : 0);
         response.setHighestPrice(statistics.getCount() != 0 ? statistics.getMax() : 0);
         return response;
@@ -197,6 +194,11 @@ public class ProductConverter {
             }
         });
         return prices.stream().mapToLong(Long::new).summaryStatistics();
+    }
+
+    // thống kê từ 1 mảng Long truyền vào
+    private LongSummaryStatistics summaryStatistics(List<Long> longList) {
+        return longList.stream().mapToLong(Long::new).summaryStatistics();
     }
 
 }

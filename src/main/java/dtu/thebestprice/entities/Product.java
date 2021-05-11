@@ -56,6 +56,6 @@ public class Product extends BaseEntity {
     @Field(index = Index.NO,store = Store.YES)
     private Long viewCount = 0L;
 
-    @Column
+    @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;
 }

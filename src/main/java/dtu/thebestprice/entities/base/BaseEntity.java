@@ -40,7 +40,7 @@ public abstract class BaseEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column
+    @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean deleteFlg = false;
 
     @Column

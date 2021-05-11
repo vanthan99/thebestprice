@@ -45,4 +45,7 @@ public interface UserService {
     ResponseEntity<Object> superDelete(long id);
 
     ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UserUpdateRequest request);
+
+    // admin sửa mật khẩu cho guest hoặc retailer
+    ResponseEntity<Object> adminEditPasswordForGuestOrRetailer(long userId, PasswordByAdminRequest request);
 }

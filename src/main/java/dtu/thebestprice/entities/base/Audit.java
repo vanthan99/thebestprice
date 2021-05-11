@@ -30,8 +30,8 @@ public abstract class Audit {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column
-    private boolean deleteFlg = true;
+    @Column(columnDefinition = "TINYINT(1) default 0")
+    private boolean deleteFlg = false;
 
     @CreatedBy
     private String createdBy;

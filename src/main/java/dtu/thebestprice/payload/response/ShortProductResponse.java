@@ -12,7 +12,7 @@ import java.util.List;
 public class ShortProductResponse {
     private Long id;
     private String title;
-    private List<String> images;
+    private String image;
     private Double rate;
     private Long lowestPrice;
     private Long highestPrice;

@@ -22,7 +22,7 @@ public class StatisticAccess {
     @Column
     private LocalDate statisticDay;
 
-    @Column
+    @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean auth = false;
 
     @Column
