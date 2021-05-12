@@ -6,11 +6,14 @@ import dtu.thebestprice.crawlers.ShopDunkCrawler;
 import dtu.thebestprice.crawlers.model.ProductCrawler;
 import dtu.thebestprice.entities.*;
 import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.payload.request.BannerRequest;
 import dtu.thebestprice.payload.request.CategoryRequest;
 import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.AuthService;
+import dtu.thebestprice.services.BannerService;
 import dtu.thebestprice.services.CategoryService;
+import dtu.thebestprice.services.RateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -80,6 +83,11 @@ public class initData {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    RateService rateService;
+
+    @Autowired
+    BannerService bannerService;
 
     private final String PHILONG_LAPTOP_ACER = "https://philong.com.vn/laptop-acer.html";
     private final String PHILONG_LAPTOP_ASUS = "https://philong.com.vn/laptop-asus.html";
@@ -182,19 +190,64 @@ public class initData {
 //
 //        initRating();
 //        initSoluottruycap();
-        initViewCount();
+//        initViewCount();
 //        initSoluotTimKiem();
+
+//        initBanner();
     }
 
-    private void initRating() {
-        User user = userRepository.getOne(3L);
-        User user2 = userRepository.getOne(4L);
-        User user3 = userRepository.getOne(5L);
+    private void initBanner() {
+        bannerService.createNew(
+                new BannerRequest(
+                        "So sánh ngay",
+                        "So sánh sản phẩm với đánh giá tốt nhất từ các gian hàng",
+                        "https://demo-tbp.herokuapp.com/img/slider2.5a899920.png",
+                        "https://demo-tbp.herokuapp.com/"
+                )
+        );
 
+        bannerService.createNew(
+                new BannerRequest(
+                        "Nhãn hàng apple",
+                        "Mẫu điện thoại apple được yêu thích nhất",
+                        "https://shopdunk.com/wp-content/uploads/2021/05/iphone-12-pro-max.jpg",
+                        "https://shopdunk.com/"
+                )
+        );
+
+        bannerService.createNew(
+                new BannerRequest(
+                        "Nhãn hàng asus",
+                        "Chương trình khuyến mãi asus",
+                        "https://philong.com.vn/media/product/24408-04_scar_15_l.jpg",
+                        "https://philong.com.vn/"
+                )
+        );
+
+        bannerService.createNew(
+                new BannerRequest(
+                        "Màn hình LG siêu mỏng",
+                        "Trải nghiệm công nghệ màn hình tràn viền",
+                        "https://philong.com.vn/media/product/22428-34wk95c-new.png",
+                        "https://philong.com.vn/"
+                )
+        );
+
+        bannerService.createNew(
+                new BannerRequest(
+                        "Hiệu suất vượt trội với i7",
+                        "Hoạt động vượt trội với CPU core i7",
+                        "https://philong.com.vn/media/product/20637-9700-1.jpg",
+                        "https://philong.com.vn/"
+                )
+        );
+    }
+
+    //    @PostConstruct
+    private void initRating() {
         for (int i = 1; i <= productRepository.count(); i++) {
-            ratingRepository.save(new Rating((long) random(1, 5), user, productRepository.getOne((long) i)));
-            ratingRepository.save(new Rating((long) random(1, 5), user2, productRepository.getOne((long) i)));
-            ratingRepository.save(new Rating((long) random(1, 5), user3, productRepository.getOne((long) i)));
+            for (int j = 1; j <= random(2, 6); j++)
+                rateService.rating((long) random(3, 13), (long) random(1, 5), (long) i);
         }
     }
 
@@ -2066,7 +2119,7 @@ public class initData {
                 "SHOPDUNK",
                 "ShopDuck Đại lý ủy quyền Apple",
                 "https://shopdunk.com/",
-                "https://shopdunk.com/wp-content/uploads/2018/03/logo-shopdunk.png",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fshopdunk.PNG?alt=media&token=5902bf1d-8258-4762-ae9e-f75c36aeb85c",
                 true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
@@ -2084,7 +2137,7 @@ public class initData {
                 "Xuân Vinh",
                 "Trang web công ty Xuân Vinh",
                 "http://xuanvinh.vn/",
-                "http://xuanvinh.vn/uploads/logo3.png",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fxuanvinh.PNG?alt=media&token=607010d9-ca47-447e-a1c2-f3407e57b7e7",
                 true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
