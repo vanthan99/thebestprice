@@ -142,6 +142,9 @@ public class UserServiceImpl implements UserService {
                         .findById(userId)
                         .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
 
+        if (userRepository.existsByIdAndFullNameAndAddressAndPhoneNumber(userId, request.getFullName(), request.getAddress(), request.getPhoneNumber()))
+            throw new RuntimeException("Thông tin tài khoản không có thay đổi mới nào");
+
         User newUser = userConverter.toUser(request, user);
         userRepository.save(newUser);
         return ResponseEntity.ok(new ApiResponse(true, "Cập nhật thông tin cá nhân thành công"));
@@ -153,6 +156,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
+        if (passwordRequest.getCurrentPassword().equals(passwordRequest.getNewPassword()))
+            throw new RuntimeException("Mật khẩu không có thay đổi");
 
         if (passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
@@ -208,6 +213,9 @@ public class UserServiceImpl implements UserService {
         if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER))
             throw new RuntimeException("Không đủ quyền để chỉnh sửa tài khoản này");
 
+        if (userRepository.existsByIdAndFullNameAndAddressAndPhoneNumberAndUsernameAndEmail(userId, request.getFullName(), request.getAddress(), request.getPhoneNumber(), request.getUsername(), request.getEmail()))
+            throw new RuntimeException("Không tin tài khoản không có thay đổi");
+
         // check username
         if (userRepository.existsByUsername(request.getUsername()) && !user.getUsername().equals(request.getUsername()))
             throw new RuntimeException("Tên đăng nhập đã bị trùng");
@@ -220,7 +228,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByPhoneNumber(request.getPhoneNumber()) && !user.getPhoneNumber().equals(request.getPhoneNumber()))
             throw new RuntimeException("số điện thoại đã bị trùng");
 
-        User newUser = userConverter.toUser(request,user);
+        User newUser = userConverter.toUser(request, user);
 
         userRepository.save(user);
 

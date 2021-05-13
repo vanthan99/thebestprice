@@ -25,4 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // page người dùng theo role
     Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveTrueAndRole(Pageable pageable, ERole role);
+
+    boolean existsByIdAndFullNameAndAddressAndPhoneNumber(Long id, String fullName, String address, String phoneNumber);
+
+    boolean existsByIdAndFullNameAndAddressAndPhoneNumberAndUsernameAndEmail(Long id, String fullName, String address, String phoneNumber,String username, String email);
 }
