@@ -1,6 +1,7 @@
 package dtu.thebestprice.services;
 
 import dtu.thebestprice.payload.request.BannerRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface BannerService {
@@ -13,4 +14,6 @@ public interface BannerService {
     ResponseEntity<Object> deleteById(long bannerId);
 
     ResponseEntity<Object> switchEnable(long bannerId);
+
+    ResponseEntity<Object> findAll(Pageable pageable);
 }

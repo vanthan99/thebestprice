@@ -4,9 +4,12 @@ import dtu.thebestprice.converters.BannerConverter;
 import dtu.thebestprice.entities.Banner;
 import dtu.thebestprice.payload.request.BannerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
+import dtu.thebestprice.payload.response.BannerResponse;
 import dtu.thebestprice.repositories.BannerRepository;
 import dtu.thebestprice.services.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +28,7 @@ public class BannerServiceImpl implements BannerService {
         Banner banner = bannerConverter.toEntity(request);
         banner.setEnable(true);
         bannerRepository.save(banner);
-        return ResponseEntity.ok(new ApiResponse(true,"Thêm mới banner thành công"));
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới banner thành công"));
     }
 
     @Override
@@ -76,5 +79,15 @@ public class BannerServiceImpl implements BannerService {
         banner.setEnable(true);
         bannerRepository.save(banner);
         return ResponseEntity.ok(new ApiResponse(true, "bật trạng thái hoạt động của banner thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> findAll(Pageable pageable) {
+        Page<BannerResponse> page
+                = bannerRepository
+                .findAll(pageable)
+                .map(banner -> bannerConverter.toBannerResponse(banner));
+
+        return ResponseEntity.ok(page);
     }
 }
