@@ -15,9 +15,9 @@ public interface RetailerService {
 
     ResponseEntity<Object> deleteById(String id);
 
-    ResponseEntity<Object> create(RetailerRequest retailerRequest);
+    ResponseEntity<Object> create(RetailerRequest retailerRequest,Long userId);
 
-    void create(RetailerRequest retailerRequest, User user, boolean approve,boolean isCheckValidate);
+    ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean approve,boolean isCheckValidate);
 
     boolean validateWhileCreateRetailer(RetailerRequest request);
 

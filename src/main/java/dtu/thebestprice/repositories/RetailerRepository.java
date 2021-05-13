@@ -1,6 +1,7 @@
 package dtu.thebestprice.repositories;
 
 import dtu.thebestprice.entities.Retailer;
+import dtu.thebestprice.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,9 +26,19 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long> {
 
     boolean existsByName(String name);
 
+    boolean existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
+            Long id,
+            String name,
+            String description,
+            String logoImage,
+            String homePage,
+            User user
+    );
+
     // page retailer chưa được phê duyệt hoặc đã được phê duyệt
     Page<Retailer> findByDeleteFlgFalseAndApprove(boolean approve, Pageable pageable);
 
     // page retailer chưa được phê duyệt hoặc đã được phê duyệt sắp xếp giảm giầm theo thời gian
     Page<Retailer> findByDeleteFlgFalseAndApproveOrderByCreatedAt(boolean approve, Pageable pageable);
+
 }

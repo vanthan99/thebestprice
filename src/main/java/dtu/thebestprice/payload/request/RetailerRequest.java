@@ -25,4 +25,7 @@ public class RetailerRequest {
     @NotBlank(message = "Không được để trống home page")
     @URL(message = "Không đúng định dạng URL homepage")
     private String homePage;
+
+    @NotNull(message = "Không được để trống user id")
+    private String userId;
 }

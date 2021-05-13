@@ -1,12 +1,15 @@
 package dtu.thebestprice.services.Impl;
 
+import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
 import dtu.thebestprice.converters.RetailerConverter;
 import dtu.thebestprice.entities.Retailer;
 import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.RetailerResponse;
 import dtu.thebestprice.repositories.RetailerRepository;
+import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.RetailerService;
 import dtu.thebestprice.services.UserService;
 import io.swagger.annotations.Api;
@@ -31,6 +34,9 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public Set<RetailerResponse> findAll() {
@@ -60,7 +66,7 @@ public class RetailerServiceImpl implements RetailerService {
     }
 
     @Override
-    public ResponseEntity<Object> create(RetailerRequest retailerRequest) {
+    public ResponseEntity<Object> create(RetailerRequest retailerRequest, Long userId) {
         // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
         if (retailerRepository.existsByName(retailerRequest.getName().trim()))
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
@@ -73,12 +79,20 @@ public class RetailerServiceImpl implements RetailerService {
         if (retailerRepository.existsByHomePage(retailerRequest.getHomePage().trim()))
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
 
-        retailerRepository.save(retailerConverter.toEntity(retailerRequest));
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại user"));
+
+        Retailer retailer = retailerConverter.toEntity(retailerRequest);
+
+        retailer.setUser(user);
+
+        retailerRepository.save(retailer);
         return ResponseEntity.ok(new ApiResponse(true, "Thêm mới thành công"));
     }
 
     @Override
-    public void create(RetailerRequest retailerRequest, User user, boolean approve, boolean isCheckValidate) {
+    public ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean approve, boolean isCheckValidate) {
         if (isCheckValidate) {
             // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
             if (retailerRepository.existsByName(retailerRequest.getName().trim()))
@@ -97,6 +111,8 @@ public class RetailerServiceImpl implements RetailerService {
         retailer.setApprove(approve);
         retailer.setUser(user);
         retailerRepository.save(retailer);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới nhà bán lẽ thành công"));
     }
 
     @Override
@@ -117,9 +133,29 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     public ResponseEntity<Object> update(RetailerRequest retailerRequest, Long retailerId) {
-        Retailer retailer = retailerRepository.findById(retailerId).orElse(null);
-        if (retailer == null)
-            return ResponseEntity.status(404).body(new ApiResponse(false, "id của nhà bán lẽ không tồn tại"));
+        Retailer retailer = retailerRepository
+                .findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("id của nhà bán lẽ không tồn tại"));
+
+        long userId;
+        try {
+            userId = Long.parseLong(retailerRequest.getUserId());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("id user không tồn tại");
+        }
+
+        User user = userRepository.getOne(userId);
+
+        // kiểm tra xem thông tin trước và sau khi update có giống nhau hay không?
+        if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
+                retailerId,
+                retailerRequest.getName(),
+                retailerRequest.getDescription(),
+                retailerRequest.getLogo(),
+                retailerRequest.getHomePage(),
+                user
+        ))
+            throw new RuntimeException("Thông tin trước và sau khi thay đổi là giống nhau");
 
         // kiểm tra tên mới có trùng với tên của một nhà bán lẽ khác hay không?
         if (
@@ -168,7 +204,12 @@ public class RetailerServiceImpl implements RetailerService {
         retailer.setApprove(true);
         retailerRepository.save(retailer);
 
-        userService.updateGuestToRetailer(retailer.getUser().getId());
+        // nếu mà user là guest thì update lên role retailer
+        User user = retailer.getUser();
+        if (user.getRole().equals(ERole.ROLE_GUEST)) {
+            user.setRole(ERole.ROLE_RETAILER);
+            userRepository.save(user);
+        }
 
         return ResponseEntity.ok(new ApiResponse(true, "Xác nhận nhà bán lẽ thành công"));
     }
