@@ -107,7 +107,7 @@ public class UserController {
 //    }
 
     // admin chặn hoặc mở chặn người dùng
-    @PutMapping("/toggleEnable")
+    @PutMapping("/toggleEnable/{userId}")
     @ApiOperation(value = "Admin chặn hoặc mở chặn tài khoản retailer hoặc guest")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> toggleEnable(
