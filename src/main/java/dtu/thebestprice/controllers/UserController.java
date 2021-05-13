@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -51,14 +53,14 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/listGuestAccount")
     @ApiOperation(value = "Page tài khoản guest")
-    public ResponseEntity<Object> listGuestAccount(Pageable pageable) {
+    public ResponseEntity<Object> listGuestAccount(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
         return userService.findByRole(pageable, ERole.ROLE_GUEST);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/listRetailerAccount")
     @ApiOperation(value = "Page tài khoản retailer")
-    public ResponseEntity<Object> listRetailerAccount(Pageable pageable) {
+    public ResponseEntity<Object> listRetailerAccount(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
         return userService.findByRole(pageable, ERole.ROLE_RETAILER);
     }
 
@@ -104,13 +106,39 @@ public class UserController {
         return userService.adminRegisterRetailerAccount(request);
     }
 
+//    // admin chỉnh sửa tài khoản cho guest hoặc retailer
+//    @PutMapping("/editGuestOrRetailerAccount/{userId}")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @ApiOperation(value = "Admin chỉnh sửa tài khoản cho guest hoặc retailer")
+//    public ResponseEntity<Object> adminEditGuestOrRetailerAccount(
+//            @PathVariable("userId") String strId,
+//            @RequestBody @Valid UserUpdateRequest request
+//    ) {
+//        long userId;
+//        long phoneNumber;
+//        try {
+//            userId = Long.parseLong(strId);
+//        } catch (NumberFormatException e) {
+//            throw new NumberFormatException("Id người dùng phải là số nguyên");
+//        }
+//
+//        try {
+//            phoneNumber = Long.parseLong(request.getPhoneNumber());
+//        } catch (NumberFormatException e) {
+//            throw new RuntimeException("Số điện thoại không hợp lệ");
+//        }
+//
+//        return userService.adminEditGuestOrRetailerAccount(userId, request);
+//    }
+
+
     // admin chỉnh sửa tài khoản cho guest hoặc retailer
     @PutMapping("/editGuestOrRetailerAccount/{userId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Admin chỉnh sửa tài khoản cho guest hoặc retailer")
     public ResponseEntity<Object> adminEditGuestOrRetailerAccount(
             @PathVariable("userId") String strId,
-            @RequestBody @Valid UserUpdateRequest request
+            @RequestBody @Valid UpdateUserByAdminRequest request
     ) {
         long userId;
         long phoneNumber;
@@ -164,6 +192,27 @@ public class UserController {
         return userService.deleteGuestOrRetailer(id);
     }
 
+    // admin xem thông tin user
+    @GetMapping("/{accountId}")
+    @ApiOperation(value = "Admin Xem thông tin user")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> findById(
+            @PathVariable("accountId") String accountId
+    ) {
+        long id;
+        try {
+            id = Long.parseLong(accountId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id không hợp lệ");
+        }
+        return userService.findById(id);
+    }
+
+
+
+    /*
+    * QUYỀN SUPER
+    * */
     // quyền supper thêm tài khoản admin
     @PreAuthorize("hasAuthority('ROLE_SUPER')")
     @PostMapping("/createAdminAccount")
@@ -192,35 +241,5 @@ public class UserController {
 
         return userService.superDelete(id);
     }
-
-
-//    @PostMapping("/approveRetailer")
-//    @ApiOperation(value = "Phê duyệt tài khoản retailer")
-//    public ResponseEntity<Object> approveRetailerAccount(
-//            @RequestParam(value = "id",required = false) String strRetailerId
-//    ){
-//        Long retailerId = null;
-//        try {
-//            retailerId = Long.parseLong(strRetailerId);
-//        }catch (Exception e){
-//            throw new RuntimeException("Id không đúng định dạng");
-//        }
-//
-//        return userService.approveRetailerAccount(retailerId);
-//
-//    }
-
-
-//    @GetMapping("/listRetailerAccountApproveFalse")
-//    @ApiOperation(value = " Danh sách những tài khoản nhà bán lẽ đợi phê duyệt")
-//    public ResponseEntity<Object> listRetailerAccountApproveFalse(Pageable pageable){
-//        return userService.listAccountApproveFalse(pageable);
-//    }
-//
-//    @GetMapping("/listRetailerAccountApproveTrue")
-//    @ApiOperation(value = " Danh sách những tài khoản nhà bán lẽ đã phê duyệt")
-//    public ResponseEntity<Object> listRetailerAccountApproveTrue(Pageable pageable){
-//        return userService.listAccountApproveTrue(pageable);
-//    }
-
+    /*End quyền super*/
 }

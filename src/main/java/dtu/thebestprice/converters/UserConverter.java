@@ -2,6 +2,7 @@ package dtu.thebestprice.converters;
 
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.payload.request.RegisterRequest;
+import dtu.thebestprice.payload.request.UpdateUserByAdminRequest;
 import dtu.thebestprice.payload.request.UserGuestOrRetailerRequest;
 import dtu.thebestprice.payload.request.UserUpdateRequest;
 import dtu.thebestprice.payload.response.UserResponse;
@@ -53,7 +54,7 @@ public class UserConverter {
         return user;
     }
 
-    public User toUser(UserGuestOrRetailerRequest request){
+    public User toUser(UserGuestOrRetailerRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -65,7 +66,7 @@ public class UserConverter {
 
     }
 
-    public User toUser(RegisterRequest request){
+    public User toUser(RegisterRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -74,6 +75,14 @@ public class UserConverter {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setEmail(request.getEmail());
         return user;
+    }
 
+    public User toUser(UpdateUserByAdminRequest request, User user) {
+        user.setUsername(request.getUsername());
+        user.setFullName(request.getFullName());
+        user.setAddress(request.getAddress());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setEmail(request.getEmail());
+        return user;
     }
 }

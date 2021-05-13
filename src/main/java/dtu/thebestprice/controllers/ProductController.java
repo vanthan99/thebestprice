@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -106,7 +108,7 @@ public class ProductController {
     @GetMapping("/approveFalse")
     @ApiOperation(value = "Page sản phẩm chưa được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveFalse(Pageable pageable) {
+    public ResponseEntity<Object> findByApproveFalse(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
         return productService.findByApprove(false, pageable);
     }
 

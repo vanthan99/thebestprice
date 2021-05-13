@@ -39,44 +39,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-
-//    @SneakyThrows
-//    @Override
-//    @Transactional
-//    // phê duyệt tài khoản retailer
-//    public ResponseEntity<Object> approveRetailerAccount(Long userId) {
-//        if (!userRepository.existsById(userId))
-//            throw new RuntimeException("Không tồn tại user");
-//
-//        User user = userRepository.getOne(userId);
-//
-//        if (user.isApprove())
-//            throw new RuntimeException("Tài khoản này đã được phê duyệt trước đó");
-//
-//        user.setApprove(true);
-//        userRepository.save(user);
-//
-//
-//        // gửi mail thông báo
-//        MimeMessage message = mailSender.createMimeMessage();
-//        boolean multipart = true;
-//        MimeMessageHelper helper = new MimeMessageHelper(message, multipart, "utf-8");
-//        String htmlMsg =
-//                "<h3>Chào bạn. Chúng tôi đã xem xét và đã phê duyệt tài khoản của bạn.\n" +
-//                        "Bạn có thể truy cập tài khoản ngay bây giờ </h3>";
-//        message.setContent(htmlMsg, "text/html; charset=UTF-8");
-//        helper.setTo(user.getEmail());
-//        helper.setSubject("Thông báo tài khoản nhà bán hàng của bạn đã được phê duyệt");
-//        //-----------------
-//        mailSender.send(message);
-//
-//
-//        return ResponseEntity.ok(new ApiResponse(true, "Phê duyệt tài khoản thành công"));
-//    }
-
-
-    // danh sách những tài khoản nhà bán lẽ đã được phê duyệt
-
     // danh sách các nhà bán lẽ chưa được phê duyệt
     @Override
     public ResponseEntity<Object> listAccountApproveFalse(Pageable pageable) {
@@ -238,7 +200,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UserUpdateRequest request) {
+    public ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UpdateUserByAdminRequest request) {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new RuntimeException("không tồn tại người dùng"));
@@ -246,9 +208,19 @@ public class UserServiceImpl implements UserService {
         if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER))
             throw new RuntimeException("Không đủ quyền để chỉnh sửa tài khoản này");
 
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setAddress(request.getAddress());
-        user.setFullName(request.getFullName());
+        // check username
+        if (userRepository.existsByUsername(request.getUsername()) && !user.getUsername().equals(request.getUsername()))
+            throw new RuntimeException("Tên đăng nhập đã bị trùng");
+
+        // check email
+        if (userRepository.existsByEmail(request.getEmail()) && !user.getEmail().equals(request.getEmail()))
+            throw new RuntimeException("email đã bị trùng");
+
+        // check phonenumber
+        if (userRepository.existsByPhoneNumber(request.getPhoneNumber()) && !user.getPhoneNumber().equals(request.getPhoneNumber()))
+            throw new RuntimeException("số điện thoại đã bị trùng");
+
+        User newUser = userConverter.toUser(request,user);
 
         userRepository.save(user);
 
@@ -268,5 +240,14 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "Đổi mật khẩu cho người dùng thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> findById(long id) {
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
+
+        return ResponseEntity.ok(userConverter.toUserRetailerResponse(user));
     }
 }

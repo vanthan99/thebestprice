@@ -44,8 +44,11 @@ public interface UserService {
     // root xoá tài khoản admin,guest,retailer
     ResponseEntity<Object> superDelete(long id);
 
-    ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UserUpdateRequest request);
+    ResponseEntity<Object> adminEditGuestOrRetailerAccount(long userId, UpdateUserByAdminRequest request);
 
     // admin sửa mật khẩu cho guest hoặc retailer
     ResponseEntity<Object> adminEditPasswordForGuestOrRetailer(long userId, PasswordByAdminRequest request);
+
+    // thông tin user theo id
+    ResponseEntity<Object> findById(long id);
 }
