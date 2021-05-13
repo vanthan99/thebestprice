@@ -1,6 +1,5 @@
 package dtu.thebestprice.services.Impl;
 
-import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
 import dtu.thebestprice.converters.RetailerConverter;
 import dtu.thebestprice.entities.Retailer;
 import dtu.thebestprice.entities.User;
@@ -12,8 +11,6 @@ import dtu.thebestprice.repositories.RetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.RetailerService;
 import dtu.thebestprice.services.UserService;
-import io.swagger.annotations.Api;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
