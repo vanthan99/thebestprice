@@ -38,6 +38,8 @@ public class UserConverter {
         userResponse.setPhoneNumber(user.getPhoneNumber());
         userResponse.setEmail(user.getEmail());
         userResponse.setRegisterDay(user.getCreatedAt().toLocalDate());
+        userResponse.setEnable(user.isEnable());
+        userResponse.setApprove(user.isApprove());
         return userResponse;
     }
 

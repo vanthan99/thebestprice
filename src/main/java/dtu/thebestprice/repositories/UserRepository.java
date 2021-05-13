@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // danh sách tài khoản đã phê duyệt hay chưa phê duyệt sắp xếp theo ngày
     Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveFalseOrderByCreatedAtDesc(Pageable pageable);
 
+    Page<User> findByDeleteFlgFalseAndRole(Pageable pageable,ERole role);
+
     Long countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole role);
 
     // page người dùng theo role

@@ -48,8 +48,7 @@ public class MyUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         if (!user.isEnable()) throw new RuntimeException("Tài khoản không hoạt động");
-        if (!user.isApprove()) throw new RuntimeException("Tài khoản chưa được phê duyệt");
-        return !user.isDeleteFlg() && user.isEnable() && user.isApprove();
+        return !user.isDeleteFlg() && user.isEnable();
     }
 
     public String getFullName() {
@@ -72,11 +71,11 @@ public class MyUserDetails implements UserDetails {
         return user.getRole().equals(ERole.ROLE_GUEST);
     }
 
-    public Long getId(){
+    public Long getId() {
         return user.getId();
     }
 
     public boolean getStatus() {
-        return user.isEnable() && user.isApprove();
+        return user.isEnable();
     }
 }

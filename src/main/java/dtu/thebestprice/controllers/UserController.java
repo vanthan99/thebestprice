@@ -92,45 +92,37 @@ public class UserController {
     public ResponseEntity<Object> adminCreateGuestAccount(
             @RequestBody @Valid RegisterRequest request
     ) {
-        userService.createNew(request, true, true, ERole.ROLE_GUEST, true);
+        userService.createNew(request, true, false, ERole.ROLE_GUEST, true);
         return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản guest thành công"));
     }
 
 
-    @PostMapping("/createRetailerAccount")
-    @ApiOperation(value = "Admin tạo tài khoản cho retailer")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> adminCreateRetailerAccount(
-            @RequestBody @Valid UserRetailerRequest request
-    ) {
-        return userService.adminRegisterRetailerAccount(request);
-    }
-
-//    // admin chỉnh sửa tài khoản cho guest hoặc retailer
-//    @PutMapping("/editGuestOrRetailerAccount/{userId}")
+//    @PostMapping("/createRetailerAccount")
+//    @ApiOperation(value = "Admin tạo tài khoản cho retailer")
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-//    @ApiOperation(value = "Admin chỉnh sửa tài khoản cho guest hoặc retailer")
-//    public ResponseEntity<Object> adminEditGuestOrRetailerAccount(
-//            @PathVariable("userId") String strId,
-//            @RequestBody @Valid UserUpdateRequest request
+//    public ResponseEntity<Object> adminCreateRetailerAccount(
+//            @RequestBody @Valid UserRetailerRequest request
 //    ) {
-//        long userId;
-//        long phoneNumber;
-//        try {
-//            userId = Long.parseLong(strId);
-//        } catch (NumberFormatException e) {
-//            throw new NumberFormatException("Id người dùng phải là số nguyên");
-//        }
-//
-//        try {
-//            phoneNumber = Long.parseLong(request.getPhoneNumber());
-//        } catch (NumberFormatException e) {
-//            throw new RuntimeException("Số điện thoại không hợp lệ");
-//        }
-//
-//        return userService.adminEditGuestOrRetailerAccount(userId, request);
+//        return userService.adminRegisterRetailerAccount(request);
 //    }
 
+    // admin chặn hoặc mở chặn người dùng
+    @PutMapping("/toggleEnable")
+    @ApiOperation(value = "Admin chặn hoặc mở chặn tài khoản retailer hoặc guest")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> toggleEnable(
+            @PathVariable("userId") String strId
+    ) {
+        long userId;
+
+        try {
+            userId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id người dùng phải là số nguyên");
+        }
+
+        return userService.adminToggleEnable(userId);
+    }
 
     // admin chỉnh sửa tài khoản cho guest hoặc retailer
     @PutMapping("/editGuestOrRetailerAccount/{userId}")

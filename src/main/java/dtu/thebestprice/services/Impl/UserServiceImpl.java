@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> findByRole(Pageable pageable, ERole role) {
         return ResponseEntity.ok(
                 userRepository
-                        .findByDeleteFlgFalseAndEnableTrueAndApproveTrueAndRole(pageable, role)
+                        .findByDeleteFlgFalseAndRole(pageable, role)
                         .map(user -> userConverter.toUserRetailerResponse(user))
         );
     }
@@ -228,7 +228,12 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByPhoneNumber(request.getPhoneNumber()) && !user.getPhoneNumber().equals(request.getPhoneNumber()))
             throw new RuntimeException("số điện thoại đã bị trùng");
 
+
         User newUser = userConverter.toUser(request, user);
+
+        // nếu thay đổi email mới thì đặt lại thuộc tính approve
+        if (!user.getEmail().equals(request.getEmail()))
+            newUser.setApprove(false);
 
         userRepository.save(user);
 
@@ -257,5 +262,27 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
 
         return ResponseEntity.ok(userConverter.toUserRetailerResponse(user));
+    }
+
+    @Override
+    public ResponseEntity<Object> adminToggleEnable(long userId) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new RuntimeException("Id người dùng không tồn tại"));
+
+        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER))
+            throw new RuntimeException("Thông thể hành động với tài khoản này");
+
+        String message = "";
+
+        if (user.isEnable()) {
+            message = "Chặn người dùng thành công";
+        } else {
+            message = "Bỏ chặn người dùng thành công";
+        }
+        user.setEnable(!user.isEnable());
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ApiResponse(true, message));
     }
 }

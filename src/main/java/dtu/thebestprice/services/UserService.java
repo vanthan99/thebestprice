@@ -51,4 +51,6 @@ public interface UserService {
 
     // thông tin user theo id
     ResponseEntity<Object> findById(long id);
+
+    ResponseEntity<Object> adminToggleEnable(long userId);
 }

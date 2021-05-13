@@ -13,4 +13,6 @@ public class UserRetailerResponse {
     private String email;
     private String phoneNumber;
     private LocalDate registerDay;
+    private boolean enable;
+    private boolean approve;
 }
