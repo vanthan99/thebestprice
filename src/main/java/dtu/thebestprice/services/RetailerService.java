@@ -1,6 +1,7 @@
 package dtu.thebestprice.services;
 
 import dtu.thebestprice.entities.User;
+import dtu.thebestprice.payload.request.RetailerForUserRequest;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.RetailerResponse;
@@ -15,9 +16,13 @@ public interface RetailerService {
 
     ResponseEntity<Object> deleteById(String id);
 
-    ResponseEntity<Object> create(RetailerRequest retailerRequest,Long userId);
+    ResponseEntity<Object> create(RetailerRequest retailerRequest, Long userId);
 
-    ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean approve,boolean isCheckValidate);
+    ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean approve, boolean isCheckValidate);
+
+    ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean deleteFlg, boolean enable, boolean approve);
+
+    ResponseEntity<Object> create(RetailerForUserRequest retailerForUserRequest, User user, boolean deleteFlg, boolean enable, boolean approve);
 
     boolean validateWhileCreateRetailer(RetailerRequest request);
 
@@ -29,4 +34,7 @@ public interface RetailerService {
     // phê duyệt retailer
     ResponseEntity<Object> approveRetailer(Long retailerId);
 
+    ResponseEntity<Object> findById(long retailerId);
+
+    ResponseEntity<Object> toggleEnable(long retailerId);
 }

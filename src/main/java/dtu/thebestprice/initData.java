@@ -168,7 +168,7 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-//    @PostConstruct
+    //    @PostConstruct
     public void init() {
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
@@ -449,6 +449,7 @@ public class initData {
             Product product = productCrawler.getProduct();
             product.setCategory(category);
             product.setBrand(brand);
+            product.setEnable(true);
             product.setApprove(true);
 
 
@@ -2112,6 +2113,7 @@ public class initData {
                 "https://didongdanang.com/",
                 "https://didongdanang.com/wp-content/uploads/2020/02/bi-logo1.jpg",
                 true,
+                true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 
@@ -2120,7 +2122,7 @@ public class initData {
                 "ShopDuck Đại lý ủy quyền Apple",
                 "https://shopdunk.com/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fshopdunk.PNG?alt=media&token=5902bf1d-8258-4762-ae9e-f75c36aeb85c",
-                true,
+                true,true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 
@@ -2129,7 +2131,7 @@ public class initData {
                 "Trang web công ty Phi Long",
                 "https://philong.com.vn/",
                 "https://philong.com.vn/media/banner/logo_PHILONG-LOGO-min-cn.png",
-                true,
+                true,true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 
@@ -2138,7 +2140,7 @@ public class initData {
                 "Trang web công ty Xuân Vinh",
                 "http://xuanvinh.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fxuanvinh.PNG?alt=media&token=607010d9-ca47-447e-a1c2-f3407e57b7e7",
-                true,
+                true,true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 

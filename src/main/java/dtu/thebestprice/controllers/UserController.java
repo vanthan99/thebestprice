@@ -1,5 +1,6 @@
 package dtu.thebestprice.controllers;
 
+import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.*;
 import dtu.thebestprice.payload.response.ApiResponse;
@@ -37,13 +38,16 @@ public class UserController {
     @ApiOperation(value = "Guest đăng ký tài khoản nhà bán lẽ ")
     @PreAuthorize("hasAuthority('ROLE_GUEST')")
     public ResponseEntity<Object> registerRetailerAccount(
-            @RequestBody @Valid RetailerRequest retailerRequest
+            @RequestBody @Valid RetailerForUserRequest retailerRequest
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
         if (!userDetails.isGuest()) {
             throw new RuntimeException("Chỉ có tài khoản guest mới được đăng ký tài khoản nhà cung cấp");
         }
+
+        User user = userRepository.getOne(userDetails.getId());
+
         return userService.guestRegisterRetailerAccount(
                 userRepository.getOne(userDetails.getId()),
                 retailerRequest

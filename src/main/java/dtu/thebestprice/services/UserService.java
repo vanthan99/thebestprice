@@ -22,7 +22,7 @@ public interface UserService {
     User createNew(RegisterRequest request, boolean enable, boolean approve, ERole role, boolean checkValidate);
 
     // guest Đăng ký tài khoản retailer
-    ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerRequest retailerRequest);
+    ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerForUserRequest retailerRequest);
 
     // admin đăng ký tài khoản retailer
     ResponseEntity<Object> adminRegisterRetailerAccount(UserRetailerRequest request);

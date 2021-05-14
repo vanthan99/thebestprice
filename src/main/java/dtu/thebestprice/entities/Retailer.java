@@ -32,6 +32,9 @@ public class Retailer extends BaseEntity {
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;
 
+    @Column(columnDefinition = "TINYINT(1) default 0")
+    private boolean enable = false;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private User user;

@@ -87,9 +87,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerRequest retailerRequest) {
+    public ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerForUserRequest retailerRequest) {
 
-        retailerService.create(retailerRequest, user, false, true);
+        retailerService.create(retailerRequest, user, false, false, false);
 
         return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản retailer thành công. hãy đợi quản trị viên phê duyệt"));
     }

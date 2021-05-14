@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +17,12 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long> {
 
     // Danh sách nhà bán lẽ đang hoạt động
     Set<Retailer> findByDeleteFlgFalse();
+
+
+    // danh sách nhà bán lẽ đang hoạt động
+    List<Retailer> findByDeleteFlgAndEnableAndApprove(boolean deleteFlg, boolean enable, boolean approve);
+
+    List<Retailer> findByDeleteFlgAndEnable(boolean deleteFlg, boolean enable);
 
     // Danh sách nhà bán lẽ đã bị xóa
     Set<Retailer> findByDeleteFlgTrue();
@@ -40,5 +47,6 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long> {
 
     // page retailer chưa được phê duyệt hoặc đã được phê duyệt sắp xếp giảm giầm theo thời gian
     Page<Retailer> findByDeleteFlgFalseAndApproveOrderByCreatedAt(boolean approve, Pageable pageable);
+
 
 }

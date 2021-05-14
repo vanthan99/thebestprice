@@ -58,4 +58,7 @@ public class Product extends BaseEntity {
 
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;
+
+    @Column(columnDefinition = "TINYINT(1) default 0")
+    private boolean enable = false;
 }
