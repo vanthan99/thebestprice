@@ -449,7 +449,6 @@ public class initData {
             Product product = productCrawler.getProduct();
             product.setCategory(category);
             product.setBrand(brand);
-            product.setEnable(true);
             product.setApprove(true);
 
 
