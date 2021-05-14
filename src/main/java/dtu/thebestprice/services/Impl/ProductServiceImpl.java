@@ -4,6 +4,8 @@ import dtu.thebestprice.converters.ProductConverter;
 import dtu.thebestprice.entities.Category;
 import dtu.thebestprice.entities.Image;
 import dtu.thebestprice.entities.Product;
+import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.request.ProductRequest;
 import dtu.thebestprice.payload.response.*;
@@ -11,6 +13,7 @@ import dtu.thebestprice.payload.response.query.ViewCountModel;
 import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.repositories.ImageRepository;
 import dtu.thebestprice.repositories.ProductRepository;
+import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.specifications.ProductSpecification;
 import dtu.thebestprice.specifications.ViewCountStatisticSpecification;
@@ -20,6 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
@@ -49,6 +55,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     EntityManager entityManager;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     public Page<LongProductResponse> filter(FilterRequest filterRequest, Pageable pageable) throws Exception {
 
@@ -77,6 +86,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public LongProductResponse findById(String productId) throws Exception {
+
+
         long id;
         try {
             id = Long.parseLong(productId);
@@ -86,7 +97,24 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productRepository.findById(id).orElseThrow(() -> new Exception("id của sản phẩm không tồn tại"));
 
-        return productConverter.toLongProductResponse(product);
+        if (product.isEnable())
+            return productConverter.toLongProductResponse(product);
+
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                //when Anonymous Authentication is enabled
+                !(SecurityContextHolder.getContext().getAuthentication()
+                        instanceof AnonymousAuthenticationToken)) {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+
+            assert user != null;
+            if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER)) {
+                return productConverter.toLongProductResponse(product);
+            }
+        }
+        throw new RuntimeException("Sẩn phẩm đã bị khóa");
     }
 
 

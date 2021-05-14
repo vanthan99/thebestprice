@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Product extends BaseEntity {
     private String longDescription;
 
     // map to Image table
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "product")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "product")
     private List<Image> images;
 
     // map to Categories table
@@ -48,14 +49,17 @@ public class Product extends BaseEntity {
     @IndexedEmbedded(includeEmbeddedObjectId = true)
     private Brand brand;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "product")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "product")
     @IndexedEmbedded(includeEmbeddedObjectId = true)
     private Set<ProductRetailer> productRetailers;
 
     @Column
-    @Field(index = Index.NO,store = Store.YES)
+    @Field(index = Index.NO, store = Store.YES)
     private Long viewCount = 0L;
 
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;
+
+    @Column(columnDefinition = "TINYINT(1) default 1")
+    private boolean enable = true;
 }

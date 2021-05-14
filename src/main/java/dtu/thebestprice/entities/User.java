@@ -35,8 +35,8 @@ public class User extends BaseEntity {
     @Column(length = 11)
     private String phoneNumber;
 
-    @Column(columnDefinition = "TINYINT(1) default 0")
-    private boolean enable = false;
+    @Column(columnDefinition = "TINYINT(1) default 1")
+    private boolean enable = true;
 
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean approve = false;

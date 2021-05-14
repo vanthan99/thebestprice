@@ -15,6 +15,8 @@ import dtu.thebestprice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -256,7 +258,7 @@ public class RetailerServiceImpl implements RetailerService {
         return ResponseEntity.ok(
                 retailerRepository
                         .findByDeleteFlgFalseAndApproveOrderByCreatedAt(approve, pageable)
-                        .map(retailer -> retailerConverter.toRetailerResponse(retailer))
+                        .map(retailer -> retailerConverter.toRetailerForAdminResponse(retailer))
         );
     }
 
@@ -285,11 +287,21 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     public ResponseEntity<Object> findById(long retailerId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user =
+                userRepository
+                        .findByUsername(authentication.getName())
+                        .orElseThrow(() -> new RuntimeException("Phải đăng nhập vào hệ thống"));
+
         Retailer retailer = retailerRepository
                 .findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại nhà bán lẽ"));
 
-        return ResponseEntity.ok(retailerConverter.toRetailerResponse(retailer));
+        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER) || user.getId().equals(retailer.getUser().getId()))
+            return ResponseEntity.ok(retailerConverter.toRetailerForAdminResponse(retailer));
+        throw new RuntimeException("Không tồn tại nhà bán lẽ");
     }
 
     @Override

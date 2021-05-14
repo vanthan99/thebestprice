@@ -41,6 +41,7 @@ public class RetailerController {
 
     // xem nhà bán lẽ theo id
     @GetMapping("/{retailerId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_SUPER')")
     @ApiOperation(value = "Tìm nhà bán lẽ theo Id")
     public ResponseEntity<Object> findById(
             @PathVariable("retailerId") String strId
@@ -55,28 +56,28 @@ public class RetailerController {
     }
 
 
-    // danh sách nhà bán lẽ đang hoạt đông
-    @GetMapping("/isOn")
-    @ApiOperation(value = "Danh sách nhà bán lẽ đang hoạt động")
-    public ResponseEntity<Object> listRetailerIsOn() {
-        return ResponseEntity.ok(
-                retailerRepository
-                        .findByDeleteFlgAndEnableAndApprove(false, true, true)
-                        .stream().map(retailer -> retailerConverter.toRetailerResponse(retailer))
-        );
-    }
-
-    // danh sách nhà bán lẽ không hoạt động
-    @GetMapping("/isOff")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Danh sách nhà bán lẽ không hoạt động")
-    public ResponseEntity<Object> listRetailerIsOff() {
-        return ResponseEntity.ok(
-                retailerRepository
-                        .findByDeleteFlgAndEnable(false, false)
-                        .stream().map(retailer -> retailerConverter.toRetailerResponse(retailer))
-        );
-    }
+//    // danh sách nhà bán lẽ đang hoạt đông
+//    @GetMapping("/isOn")
+//    @ApiOperation(value = "Danh sách nhà bán lẽ đang hoạt động")
+//    public ResponseEntity<Object> listRetailerIsOn() {
+//        return ResponseEntity.ok(
+//                retailerRepository
+//                        .findByDeleteFlgAndEnableAndApprove(false, true, true)
+//                        .stream().map(retailer -> retailerConverter.toRetailerResponse(retailer))
+//        );
+//    }
+//
+//    // danh sách nhà bán lẽ không hoạt động
+//    @GetMapping("/isOff")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @ApiOperation(value = "Danh sách nhà bán lẽ không hoạt động")
+//    public ResponseEntity<Object> listRetailerIsOff() {
+//        return ResponseEntity.ok(
+//                retailerRepository
+//                        .findByDeleteFlgAndEnable(false, false)
+//                        .stream().map(retailer -> retailerConverter.toRetailerResponse(retailer))
+//        );
+//    }
 
     // page nhà bán lẽ chưa phê duyệt
     @GetMapping("/listRetailerApproveFalse")
