@@ -109,6 +109,11 @@ public class RetailerServiceImpl implements RetailerService {
         retailer.setUser(user);
         retailerRepository.save(retailer);
 
+        if (user.getRole().equals(ERole.ROLE_GUEST)) {
+            user.setRole(ERole.ROLE_RETAILER);
+            userRepository.save(user);
+        }
+
         return ResponseEntity.ok(new ApiResponse(true, "Thêm mới nhà bán lẽ thành công"));
     }
 

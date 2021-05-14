@@ -24,8 +24,7 @@ public class StatisticExcelExporter {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
         ) {
             CreationHelper createHelper = workbook.getCreationHelper();
-
-            Sheet sheet = workbook.createSheet("Customers");
+            Sheet sheet = workbook.createSheet("Thống kê thebestprice");
 
             Font headerFont = workbook.createFont();
             headerFont.setBold(true);
