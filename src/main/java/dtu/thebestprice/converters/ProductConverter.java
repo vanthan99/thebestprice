@@ -180,6 +180,7 @@ public class ProductConverter {
         response.setViewCount(product.getViewCount());
         response.setShortDescription(product.getShortDescription());
         response.setEnable(product.isEnable());
+        response.setApprove(product.isApprove());
 
         // set Rating
         response.setRate((double) Math.round(ratingRepository.getRateByProduct(product.getId()) * 10) / 10);
