@@ -16,4 +16,5 @@ public class ShortProductResponse {
     private Long lowestPrice;
     private Long highestPrice;
     private Long viewCount;
+    private boolean enable;
 }

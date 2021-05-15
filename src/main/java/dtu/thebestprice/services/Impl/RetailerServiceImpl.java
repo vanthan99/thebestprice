@@ -316,6 +316,7 @@ public class RetailerServiceImpl implements RetailerService {
             message = "Tắt trạng thái hoạt động của nhà bán lẽ thành công";
         else message = "Bật trạng thái hoạt động của nhà bán lẽ thành công";
 
+        retailer.setEnable(!retailer.isEnable());
         retailerRepository.save(retailer);
 
         return ResponseEntity.ok(new ApiResponse(true, message));

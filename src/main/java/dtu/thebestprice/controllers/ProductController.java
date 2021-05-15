@@ -143,4 +143,22 @@ public class ProductController {
 
         return rateService.rating(userDetails.getId(), rate, productId);
     }
+
+    // amdin khóa hoặc mở khóa san pham
+    @PutMapping("/toggle/{productId}")
+    @ApiOperation(value = "Tắt hoặc mở trạng thái hoạt động của sản phẩm")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> toggleEnable(
+            @PathVariable("productId") String strId
+    ) {
+        long productId;
+
+        try {
+            productId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id sản phẩm không hợp lệ");
+        }
+
+        return productService.toggleEnable(productId);
+    }
 }

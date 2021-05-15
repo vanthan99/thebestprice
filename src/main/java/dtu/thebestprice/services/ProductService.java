@@ -25,4 +25,6 @@ public interface ProductService {
 
     // page sản phẩm được xem nhiều nhất tháng hiện tại
     ResponseEntity<Object> pageProductMostViewMonth(String keyword,Pageable pageable,Integer month, Integer year);
+
+    ResponseEntity<Object> toggleEnable(long productId);
 }

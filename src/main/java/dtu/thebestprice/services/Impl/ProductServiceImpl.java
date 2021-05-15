@@ -1,10 +1,7 @@
 package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.converters.ProductConverter;
-import dtu.thebestprice.entities.Category;
-import dtu.thebestprice.entities.Image;
-import dtu.thebestprice.entities.Product;
-import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.*;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.request.ProductRequest;
@@ -265,6 +262,23 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return getResult(query, pageable);
+    }
+
+    @Override
+    public ResponseEntity<Object> toggleEnable(long productId) {
+        Product product = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại sản phẩm"));
+
+        String message = "";
+        if (product.isEnable())
+            message = "Tắt trạng thái hoạt động của sản phẩm thành công";
+        else message = "Bật trạng thái hoạt động của sản phẩm thành công";
+
+        product.setEnable(!product.isEnable());
+        productRepository.save(product);
+
+        return ResponseEntity.ok(new ApiResponse(true, message));
     }
 
     @Transactional
