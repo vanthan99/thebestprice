@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -100,16 +102,23 @@ public class RetailerController {
     @ApiOperation(value = "Admin Thêm mới nhà bán lẽ")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> createRetailer(@RequestBody @Valid RetailerRequest retailerRequest) {
-        long userIdRequest;
-        try {
-            userIdRequest = Long.parseLong(retailerRequest.getUserId());
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("User Id phải là số nguyên");
-        }
+        User user;
+        if (retailerRequest.getUserId() == null || retailerRequest.getUserId().equals("")) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            user = userRepository.findByUsername(auth.getName()).orElse(null);
+        } else {
 
-        User user = userRepository
-                .findById(userIdRequest)
-                .orElseThrow(() -> new RuntimeException("Không tồn tại user id"));
+            long userIdRequest;
+            try {
+                userIdRequest = Long.parseLong(retailerRequest.getUserId());
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("User Id phải là số nguyên");
+            }
+
+            user = userRepository
+                    .findById(userIdRequest)
+                    .orElseThrow(() -> new RuntimeException("Không tồn tại user id"));
+        }
 
         return retailerService.create(retailerRequest, user, false, true, true);
     }
