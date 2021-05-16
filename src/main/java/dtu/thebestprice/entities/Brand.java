@@ -22,4 +22,7 @@ public class Brand extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(columnDefinition = "TINYINT(1) default 1")
+    private boolean enable = true;
 }

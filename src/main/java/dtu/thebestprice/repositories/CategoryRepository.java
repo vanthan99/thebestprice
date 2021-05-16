@@ -11,6 +11,12 @@ import java.util.Set;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+    // danh sách category cha
+    List<Category> findByCategoryIsNullAndDeleteFlgFalse();
+
+    // danh sách category con
+    List<Category> findByCategoryIsNotNullAndDeleteFlgFalse();
+
     Category findByTitleAndCategory(String title, Category category);
 
     // Danh sách danh mục cha đang hoạt động

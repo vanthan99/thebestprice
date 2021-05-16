@@ -24,4 +24,7 @@ public class Price extends BaseEntity {
 
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean active = false;
+
+    @Column(columnDefinition = "TINYINT(1) default 0")
+    private boolean approve = false;
 }

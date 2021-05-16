@@ -25,4 +25,7 @@ public interface CategoryService {
     List<ParentCategoryResponse> listCategoryIsActive();
 
     ResponseEntity<Object> deleteById(Long id);
+
+    // danh sách danh mục con
+    ResponseEntity<Object> listChildCategory();
 }

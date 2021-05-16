@@ -6,6 +6,7 @@ import dtu.thebestprice.payload.request.CategoryChildRequest;
 import dtu.thebestprice.payload.request.CategoryParentRequest;
 import dtu.thebestprice.payload.request.CategoryRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
+import dtu.thebestprice.payload.response.ChildCategoryResponse;
 import dtu.thebestprice.payload.response.ParentCategoryResponse;
 import dtu.thebestprice.repositories.CategoryRepository;
 import dtu.thebestprice.services.CategoryService;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -192,6 +194,13 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         return ResponseEntity.ok(new ApiResponse(true, "Xóa danh mục thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> listChildCategory() {
+        List<Category> categories = categoryRepository.findByCategoryIsNotNullAndDeleteFlgFalse();
+        List<ChildCategoryResponse> result = categories.stream().map(category -> categoryConverter.toChildCategoryResponse(category)).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
     public Category toEntity(CategoryRequest categoryRequest) throws IllegalArgumentException {

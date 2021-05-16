@@ -28,6 +28,13 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.listCategoryIsActive());
     }
 
+    @ApiOperation(value = "Danh sách danh mục con")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    @GetMapping("/child")
+    public ResponseEntity<Object> listChildCategory() {
+        return categoryService.listChildCategory();
+    }
+
     @PostMapping("/parent")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Thêm mới danh mục cha")

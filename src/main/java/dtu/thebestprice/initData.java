@@ -460,7 +460,7 @@ public class initData {
             productRetailerRepository.save(productRetailer);
 
             // save price
-            priceRepository.save(new Price(productCrawler.getPrice(), productRetailer, true));
+            priceRepository.save(new Price(productCrawler.getPrice(), productRetailer, true,true));
 
             // save Images
             productCrawler.getImages().forEach(s -> imageRepository.save(new Image(s, product)));
@@ -2099,7 +2099,8 @@ public class initData {
             brandRepository.save(
                     new Brand(
                             s,
-                            "Nhà sản xuất " + s
+                            "Nhà sản xuất " + s,
+                            true
                     )
             );
         });

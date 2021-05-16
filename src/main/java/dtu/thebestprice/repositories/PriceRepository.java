@@ -11,4 +11,6 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
 
     @Query("select p.price from Price p where p.productRetailer = :productRetailer and p.active = true ")
     Long findByPriceLatestByProductRetailer(ProductRetailer productRetailer);
+
+    Price findByProductRetailerAndActive(ProductRetailer productRetailer, boolean active);
 }
