@@ -32,4 +32,7 @@ public class ProductRetailer extends BaseEntity {
 
     @Column(columnDefinition = "TINYINT(1) default 1")
     private boolean enable = true;
+
+    @Column(columnDefinition = "TINYINT(1) default 1")
+    private boolean approve = true;
 }

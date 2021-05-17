@@ -20,6 +20,8 @@ public class PriceConverter {
         priceResponse.setUrlProduct(productRetailer.getUrl());
         priceResponse.setLatestPrice(priceRepository.findByPriceLatestByProductRetailer(productRetailer));
         priceResponse.setProductRetailerId(productRetailer.getId());
+        priceResponse.setProductRetailerApprove(productRetailer.isApprove());
+        priceResponse.setProductRetailerEnable(productRetailer.isEnable());
         return priceResponse;
     }
 }
