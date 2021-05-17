@@ -2,8 +2,12 @@ package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.payload.request.price.RetailerUpdatePriceRequest;
 import dtu.thebestprice.services.PriceService;
+import dtu.thebestprice.services.ProductRetailerService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +20,34 @@ public class PriceController {
     @Autowired
     PriceService priceService;
 
+    @Autowired
+    ProductRetailerService productRetailerService;
+
+    @ApiOperation(value = "Admin bật tắt trạng thái của product retailer")
+    @PutMapping("/toggle/{productRetailerId}")
+    public ResponseEntity<Object> toggleEnable(
+            @PathVariable("productRetailerId") String strId
+    ) {
+        long productRetailerId;
+        try {
+            productRetailerId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id product retailer phải là số nguyên");
+        }
+
+        return productRetailerService.toggleEnable(productRetailerId);
+    }
+
     @GetMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ApiOperation(value = "Thông tin giá của theo sản phẩm")
     public ResponseEntity<Object> adminGetPriceByProduct(
             @PathVariable("productId") String strId
-    ){
+    ) {
         long productId;
-        try{
+        try {
             productId = Long.parseLong(strId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new RuntimeException("Id của sản phẩm phải là số nguyên");
         }
 
@@ -35,37 +57,62 @@ public class PriceController {
     // nhà bán lẽ cập nhật giá cho sản phẩm của mình
     @ApiOperation(value = "Nhà bán lẽ cập nhật giá bán cho sản phẩm của mình")
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
-    @PutMapping("/retailerUpdatePrice")
+    @PutMapping("/retailerUpdatePrice/{productRetailerId}")
     public ResponseEntity<Object> retailerUpdatePrice(
-            @RequestBody @Valid RetailerUpdatePriceRequest priceRequest
+            @RequestBody @Valid RetailerUpdatePriceRequest priceRequest,
+            @PathVariable("productRetailerId") String strId
     ) {
-        return priceService.retailerUpdatePrice(priceRequest);
+        long productRetailerId;
+        try {
+            productRetailerId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của product retailer là số nguyên");
+        }
+        return priceService.retailerUpdatePrice(productRetailerId, priceRequest);
     }
 
     // admin phê duyệt giá
     @ApiOperation(value = "Admin phê duyệt giá")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PutMapping("/adminApprovePrice/{priceId}")
+    @PutMapping("/adminApprovePrice/{productRetailerId}")
     public ResponseEntity<Object> adminApprovePrice(
-            @PathVariable("priceId") String strId
+            @PathVariable("productRetailerId") String strId
     ) {
-        long priceId;
+        long productRetailerId;
         try {
-            priceId = Long.parseLong(strId);
+            productRetailerId = Long.parseLong(strId);
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Id giá phải là số nguyên");
         }
-        return priceService.adminApprovePrice(priceId);
+        return priceService.adminApprovePrice(productRetailerId);
     }
 
 
     // admin câp nhất giá cho mọi sản phẩm
     @ApiOperation(value = "Admin cập nhật giá cho mọi sản phẩm")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PutMapping("/adminUpdatePrice")
+    @PutMapping("/adminUpdatePrice/{productRetailerId}")
     public ResponseEntity<Object> adminUpdatePrice(
-            @RequestBody @Valid RetailerUpdatePriceRequest priceRequest
+            @RequestBody @Valid RetailerUpdatePriceRequest priceRequest,
+            @PathVariable("productRetailerId") String strId
     ) {
-        return priceService.adminUpdatePrice(priceRequest);
+        long productRetailerId;
+        try {
+            productRetailerId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của product retailer là số nguyên");
+        }
+        return priceService.adminUpdatePrice(productRetailerId, priceRequest);
     }
+
+    // danh sách giá chưa approve
+    @ApiOperation(value = "Page giá chưa được phê duyệt")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/approveFalse")
+    public ResponseEntity<Object> approveFalse(
+            @PageableDefault(sort = "updatedAt",direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        return productRetailerService.findByApprove(false,pageable);
+    }
+
 }

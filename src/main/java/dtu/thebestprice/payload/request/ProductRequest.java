@@ -33,6 +33,6 @@ public class ProductRequest {
     @Size(min = 3,message = "Phải từ 3 hình ảnh trở lên")
     private List<
             @URL(message = "URL hình ảnh không đúng định dạng")
-            @Size(max = 255, message = "Hình ảnh không vượt quá 255 ký tự")
+            @Size(min = 50,max = 255, message = "Hình ảnh từ 50 - 255 ký tự")
                     String> images;
 }

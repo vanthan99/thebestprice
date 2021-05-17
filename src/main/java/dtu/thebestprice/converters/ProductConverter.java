@@ -153,7 +153,7 @@ public class ProductConverter {
 
 
         // set product retailer response
-        List<ProductRetailer> productRetailers = productRetailerRepository.findByDeleteFlgFalseAndEnableAndProduct(true, product);
+        List<ProductRetailer> productRetailers = productRetailerRepository.findByDeleteFlgFalseAndEnableAndApproveAndProduct(true, true, product);
         List<ProductRetailerResponse> productRetailerResponseList =
                 productRetailerConverter.toProductRetailerResponseList(productRetailers)
                         .stream()
@@ -190,11 +190,11 @@ public class ProductConverter {
 
 
         // set lowest and highest price
-        List<ProductRetailer> productRetailers = productRetailerRepository.findByDeleteFlgFalseAndEnableAndProduct(true, product);
+        List<ProductRetailer> productRetailers = productRetailerRepository.findByDeleteFlgFalseAndEnableAndApproveAndProduct(true, true, product);
         List<Long> prices = new ArrayList<>();
         productRetailers
                 .forEach(productRetailer -> {
-                    prices.add(priceRepository.findByPriceLatestByProductRetailer(productRetailer));
+                    prices.add(priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer).getPrice());
                 });
 
         LongSummaryStatistics statistics = this.summaryStatistics(prices);

@@ -9,6 +9,6 @@ public class PriceResponse {
     private String urlProduct;
     private Long latestPrice;
     private Long productRetailerId;
-    private boolean productRetailerEnable;
-    private boolean productRetailerApprove;
+    private boolean enable;
+    private boolean approve;
 }

@@ -460,7 +460,7 @@ public class initData {
             productRetailerRepository.save(productRetailer);
 
             // save price
-            priceRepository.save(new Price(productCrawler.getPrice(), productRetailer, true,true));
+            priceRepository.save(new Price(productCrawler.getPrice(), productRetailer));
 
             // save Images
             productCrawler.getImages().forEach(s -> imageRepository.save(new Image(s, product)));
@@ -1990,7 +1990,6 @@ public class initData {
     private void initPrice(ProductRetailer productRetailer, Long p) {
         Price price = new Price();
         price.setPrice(p);
-        price.setActive(true);
         price.setProductRetailer(productRetailer);
         priceRepository.save(price);
     }

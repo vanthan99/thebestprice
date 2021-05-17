@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,15 +39,8 @@ public class PriceServiceImpl implements PriceService {
     PriceConverter priceConverter;
 
     @Override
-    public ResponseEntity<Object> retailerUpdatePrice(RetailerUpdatePriceRequest priceRequest) {
-        long productRetailerId;
+    public ResponseEntity<Object> retailerUpdatePrice(long productRetailerId,RetailerUpdatePriceRequest priceRequest) {
         long price;
-
-        try {
-            productRetailerId = Long.parseLong(priceRequest.getProductRetailerId());
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Id của product retailer phải là số nguyên");
-        }
 
         try {
             price = Long.parseLong(priceRequest.getPrice());
@@ -66,59 +60,52 @@ public class PriceServiceImpl implements PriceService {
             throw new RuntimeException("Bạn không phải nhà bán lẽ này và không thể thay đổi giá");
 
 
+
         // lấy giá mới nhất
-        Long latestPrice = priceRepository.findByPriceLatestByProductRetailer(productRetailer);
+        Long latestPrice = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer).getPrice();
 
-        // nếu giá mới nhất là null thì tạo mới 1 giá
-        if (latestPrice == null) {
-            Price newPrice = new Price(price, productRetailer, false, false);
-            priceRepository.save(newPrice);
-        } else {
-            // ngược lại, so sánh xem giá hiện tại và giá chuẩn bị cập nhật có bị trùng nhau không?
-            if (latestPrice == price)
-                throw new RuntimeException("Giá bạn muốn cập nhật và giá hiện tại không có gì thay đổi");
 
-            // tiến hành cập nhật giá
-            // thêm giá
-            Price newPrice = new Price(price, productRetailer, false, false);
-            priceRepository.save(newPrice);
+        // ngược lại, so sánh xem giá hiện tại và giá chuẩn bị cập nhật có bị trùng nhau không?
+        if (latestPrice == price)
+            throw new RuntimeException("Giá bạn muốn cập nhật và giá hiện tại không có gì thay đổi");
+
+        // tiến hành cập nhật giá
+        // thêm giá
+        Price newPrice = new Price(price, productRetailer);
+        priceRepository.save(newPrice);
+
+        if (!productRetailer.getUrl().equals(priceRequest.getUrl())){
+            productRetailer.setUrl(priceRequest.getUrl());
         }
+
+        productRetailer.setApprove(false);
+        productRetailerRepository.save(productRetailer);
+
         return ResponseEntity.ok(new ApiResponse(true, "Yêu cầu cập nhật giá của bạn đã được ghi lại. Hãy đợi quản trị viên  phê duyệt giá"));
     }
 
     @Override
-    public ResponseEntity<Object> adminApprovePrice(long priceId) {
-        Price price = priceRepository
-                .findById(priceId)
-                .orElseThrow(() -> new RuntimeException("Không tồn tại id giá"));
+    @Transactional
+    public ResponseEntity<Object> adminApprovePrice(long productRetailerId) {
+        ProductRetailer productRetailer =
+                productRetailerRepository.findById(productRetailerId)
+                        .orElseThrow(() -> new RuntimeException("Product Retailer không tồn tại"));
 
-        // đưa giá trước đó về trạng thái active false
-        Price oldPrice = priceRepository
-                .findByProductRetailerAndActive(price.getProductRetailer(), true);
+        if (productRetailer.isApprove())
+            throw new RuntimeException("Product Retailer đã được approve giá trước đó");
 
-        if (oldPrice != null) {
-            oldPrice.setActive(false);
-            priceRepository.save(oldPrice);
-        }
+        productRetailer.setApprove(true);
 
-        // approve giá
-        price.setApprove(true);
-        price.setActive(true);
-        priceRepository.save(price);
+        productRetailerRepository.save(productRetailer);
+
 
         return ResponseEntity.ok(new ApiResponse(true, "Phê duyệt giá thành công"));
     }
 
     @Override
-    public ResponseEntity<Object> adminUpdatePrice(RetailerUpdatePriceRequest priceRequest) {
-        long productRetailerId;
+    @Transactional
+    public ResponseEntity<Object> adminUpdatePrice(long productRetailerId,RetailerUpdatePriceRequest priceRequest) {
         long price;
-
-        try {
-            productRetailerId = Long.parseLong(priceRequest.getProductRetailerId());
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("Id của product retailer phải là số nguyên");
-        }
 
         try {
             price = Long.parseLong(priceRequest.getPrice());
@@ -132,31 +119,24 @@ public class PriceServiceImpl implements PriceService {
                         .orElseThrow(() -> new RuntimeException("Không tồn tại product retailer"));
 
         // lấy giá mới nhất
-        Long latestPrice = priceRepository.findByPriceLatestByProductRetailer(productRetailer);
+        Long latestPrice = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer).getPrice();
 
-        // nếu giá mới nhất là null thì tạo mới 1 giá
-        if (latestPrice == null) {
-            Price newPrice = new Price(price, productRetailer, true, true);
-            priceRepository.save(newPrice);
-        } else {
-            // ngược lại, so sánh xem giá hiện tại và giá chuẩn bị cập nhật có bị trùng nhau không?
-            if (latestPrice == price)
-                throw new RuntimeException("Giá bạn muốn cập nhật và giá hiện tại không có gì thay đổi");
 
-            // tiến hành cập nhật giá
-            // đưa giá trước đó về trạng thái active false
-            Price oldPrice = priceRepository
-                    .findByProductRetailerAndActive(productRetailer, true);
+        // ngược lại, so sánh xem giá hiện tại và giá chuẩn bị cập nhật có bị trùng nhau không?
+        if (latestPrice == price)
+            throw new RuntimeException("Giá bạn muốn cập nhật và giá hiện tại không có gì thay đổi");
 
-            if (oldPrice != null) {
-                oldPrice.setActive(false);
-                priceRepository.save(oldPrice);
-            }
+        // thêm giá
+        Price newPrice = new Price(price, productRetailer);
+        priceRepository.save(newPrice);
 
-            // thêm giá
-            Price newPrice = new Price(price, productRetailer, true, true);
-            priceRepository.save(newPrice);
+        if (!productRetailer.getUrl().equals(priceRequest.getUrl())){
+            productRetailer.setUrl(priceRequest.getUrl());
         }
+
+
+        productRetailer.setApprove(true);
+        productRetailerRepository.save(productRetailer);
         return ResponseEntity.ok(new ApiResponse(true, "Cập nhật giá thành công"));
     }
 

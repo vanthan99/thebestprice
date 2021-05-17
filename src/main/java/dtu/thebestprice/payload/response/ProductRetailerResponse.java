@@ -11,5 +11,4 @@ public class ProductRetailerResponse {
     private RetailerResponse store;
     private String url;
     private Long price;
-
 }

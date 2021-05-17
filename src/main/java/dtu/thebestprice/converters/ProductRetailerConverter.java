@@ -38,7 +38,7 @@ public class ProductRetailerConverter {
 
         // set price
 //        Price price = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer);
-        Price price = priceRepository.findByProductRetailerAndActive(productRetailer, true);
+        Price price = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer);
         productRetailerResponse.setPrice(price.getPrice());
 
         return productRetailerResponse;
