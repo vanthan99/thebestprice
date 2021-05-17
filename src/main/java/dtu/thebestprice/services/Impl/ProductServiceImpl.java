@@ -283,6 +283,21 @@ public class ProductServiceImpl implements ProductService {
         return ResponseEntity.ok(new ApiResponse(true, message));
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<Object> adminApprove(long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+
+        if (product.isApprove())
+            throw new RuntimeException("Sản phẩm đã được phê duyệt trước đó");
+
+        product.setApprove(true);
+        product.setEnable(true);
+        productRepository.save(product);
+        return ResponseEntity.ok(new ApiResponse(true,"Phê duyệt sản phẩm thành công"));
+    }
+
     @Transactional
     public ResponseEntity<Object> getResult(Query query, Pageable pageable) {
         int totalElements = query.getResultList().size();

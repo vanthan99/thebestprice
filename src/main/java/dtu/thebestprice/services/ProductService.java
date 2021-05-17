@@ -27,4 +27,7 @@ public interface ProductService {
     ResponseEntity<Object> pageProductMostViewMonth(String keyword,Pageable pageable,Integer month, Integer year);
 
     ResponseEntity<Object> toggleEnable(long productId);
+
+    // admin approve sản phẩm
+    ResponseEntity<Object> adminApprove(long productId);
 }

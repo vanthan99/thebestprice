@@ -43,18 +43,18 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/catId/{catId}")
-    @ApiOperation(value = "Danh sách sản phẩm theo id danh mục")
-    public ResponseEntity<Object> findByCategoryId(
-            Pageable pageable,
-            @PathVariable("catId") String catId
-    ) {
-        try {
-            return ResponseEntity.ok(productService.findByCategoryId(pageable, catId));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
-        }
-    }
+//    @GetMapping("/catId/{catId}")
+//    @ApiOperation(value = "Danh sách sản phẩm theo id danh mục")
+//    public ResponseEntity<Object> findByCategoryId(
+//            Pageable pageable,
+//            @PathVariable("catId") String catId
+//    ) {
+//        try {
+//            return ResponseEntity.ok(productService.findByCategoryId(pageable, catId));
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PostMapping
     @ApiOperation(value = "Thêm mới sản phẩm")
@@ -161,4 +161,24 @@ public class ProductController {
 
         return productService.toggleEnable(productId);
     }
+
+
+    // amdin phê duyệt sản phẩm
+    @PutMapping("/approve/{productId}")
+    @ApiOperation(value = "admin phê duyệt của sản phẩm")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> adminApprove(
+            @PathVariable("productId") String strId
+    ) {
+        long productId;
+
+        try {
+            productId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Id sản phẩm không hợp lệ");
+        }
+
+        return productService.adminApprove(productId);
+    }
+
 }
