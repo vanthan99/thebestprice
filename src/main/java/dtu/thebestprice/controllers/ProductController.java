@@ -100,7 +100,7 @@ public class ProductController {
     @GetMapping("/approveTrue")
     @ApiOperation(value = "Page sản phẩm đã được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveTrue(Pageable pageable) {
+    public ResponseEntity<Object> findByApproveTrue(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
         return productService.findByApprove(true, pageable);
     }
 

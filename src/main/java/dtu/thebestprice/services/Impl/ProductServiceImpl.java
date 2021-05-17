@@ -120,6 +120,8 @@ public class ProductServiceImpl implements ProductService {
         if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
             throw new RuntimeException("id danh mục phải là danh mục con");
         Product product = productConverter.toEntity(productRequest);
+        product.setEnable(true);
+        product.setApprove(true);
 
         productRepository.save(product);
 
