@@ -13,4 +13,7 @@ public interface PriceService {
 
     // admin cập nhật giá cho mọi sản phẩm
     ResponseEntity<Object> adminUpdatePrice(RetailerUpdatePriceRequest priceRequest);
+
+    // admin lấy danh sách giá theo sản phẩm
+    ResponseEntity<Object> adminGetPriceByProduct(long productId);
 }

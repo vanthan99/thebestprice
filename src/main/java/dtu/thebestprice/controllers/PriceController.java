@@ -16,6 +16,22 @@ public class PriceController {
     @Autowired
     PriceService priceService;
 
+    @GetMapping("/product/{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Thông tin giá của sản phẩm")
+    public ResponseEntity<Object> adminGetPriceByProduct(
+            @PathVariable("productId") String strId
+    ){
+        long productId;
+        try{
+            productId = Long.parseLong(strId);
+        }catch (NumberFormatException e){
+            throw new RuntimeException("Id của sản phẩm phải là số nguyên");
+        }
+
+        return priceService.adminGetPriceByProduct(productId);
+    }
+
     // nhà bán lẽ cập nhật giá cho sản phẩm của mình
     @ApiOperation(value = "Nhà bán lẽ cập nhật giá bán cho sản phẩm của mình")
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")

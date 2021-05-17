@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
 
         // save hình ảnh
         List<String> images = productRequest.getImages();
-        if (images != null && images.size() > 0) {
+        if (images != null && images.size() >= 3) {
             images.forEach(imageItem -> {
                 if (!imageItem.trim().equalsIgnoreCase("")) {
                     saveImage(product, imageItem);
@@ -150,9 +150,20 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(newProduct);
 
+
+        // xóa những hình ảnh trước đó
+        List<Image> imageListInEntity = imageRepository.findByProductAndDeleteFlgFalse(newProduct);
+        if (imageListInEntity.size() > 0) {
+            // xóa những image hết
+            imageListInEntity.forEach(image -> {
+                image.setDeleteFlg(true);
+                imageRepository.save(image);
+            });
+        }
+
         // save image
         List<String> images = productRequest.getImages();
-        if (images != null && images.size() > 0) {
+        if (images != null && images.size() >= 3) {
             images.forEach(imageUrl -> {
 
                 /*
@@ -295,7 +306,7 @@ public class ProductServiceImpl implements ProductService {
         product.setApprove(true);
         product.setEnable(true);
         productRepository.save(product);
-        return ResponseEntity.ok(new ApiResponse(true,"Phê duyệt sản phẩm thành công"));
+        return ResponseEntity.ok(new ApiResponse(true, "Phê duyệt sản phẩm thành công"));
     }
 
     @Transactional

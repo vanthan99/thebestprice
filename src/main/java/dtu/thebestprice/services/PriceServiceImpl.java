@@ -1,10 +1,14 @@
 package dtu.thebestprice.services;
 
+import dtu.thebestprice.converters.PriceConverter;
 import dtu.thebestprice.entities.Price;
+import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
 import dtu.thebestprice.payload.request.price.RetailerUpdatePriceRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
+import dtu.thebestprice.payload.response.price.PriceResponse;
 import dtu.thebestprice.repositories.PriceRepository;
+import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PriceServiceImpl implements PriceService {
@@ -23,6 +30,12 @@ public class PriceServiceImpl implements PriceService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    PriceConverter priceConverter;
 
     @Override
     public ResponseEntity<Object> retailerUpdatePrice(RetailerUpdatePriceRequest priceRequest) {
@@ -145,5 +158,18 @@ public class PriceServiceImpl implements PriceService {
             priceRepository.save(newPrice);
         }
         return ResponseEntity.ok(new ApiResponse(true, "Cập nhật giá thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> adminGetPriceByProduct(long productId) {
+        Product product =
+                productRepository.findById(productId)
+                        .orElseThrow(() -> new RuntimeException("Không tồn tại sản phẩm"));
+
+        List<PriceResponse> priceResponses =
+                product.getProductRetailers()
+                        .stream().map(productRetailer -> priceConverter.toPriceResponse(productRetailer)).collect(Collectors.toList());
+
+        return ResponseEntity.ok(priceResponses);
     }
 }
