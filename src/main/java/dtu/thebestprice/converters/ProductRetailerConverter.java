@@ -24,7 +24,7 @@ public class ProductRetailerConverter {
     PriceRepository priceRepository;
 
 
-    public ProductRetailerResponse toProductRetailerResponse(ProductRetailer productRetailer){
+    public ProductRetailerResponse toProductRetailerResponse(ProductRetailer productRetailer) {
         ProductRetailerResponse productRetailerResponse = new ProductRetailerResponse();
 
         // kiểm tra nếu retailer null thì set product retailer là null.
@@ -37,13 +37,14 @@ public class ProductRetailerConverter {
         productRetailerResponse.setUrl(productRetailer.getUrl());
 
         // set price
-        Price price = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer);
+//        Price price = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer);
+        Price price = priceRepository.findByProductRetailerAndActive(productRetailer, true);
         productRetailerResponse.setPrice(price.getPrice());
 
         return productRetailerResponse;
     }
 
-    public List<ProductRetailerResponse> toProductRetailerResponseList(List<ProductRetailer> productRetailerResponses){
+    public List<ProductRetailerResponse> toProductRetailerResponseList(List<ProductRetailer> productRetailerResponses) {
         List<ProductRetailerResponse> list = new ArrayList<>();
         productRetailerResponses.forEach(productRetailerResponse -> list.add(this.toProductRetailerResponse(productRetailerResponse)));
         return list;

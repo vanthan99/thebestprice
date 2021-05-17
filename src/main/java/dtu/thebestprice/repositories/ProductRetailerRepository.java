@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface ProductRetailerRepository extends JpaRepository<ProductRetailer, Long> {
     List<ProductRetailer> findByProductAndDeleteFlgFalse(Product product);
+
+    List<ProductRetailer> findByDeleteFlgFalseAndEnableAndProduct(boolean enable, Product product);
 }

@@ -18,7 +18,7 @@ public class PriceController {
 
     @GetMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Thông tin giá của sản phẩm")
+    @ApiOperation(value = "Thông tin giá của theo sản phẩm")
     public ResponseEntity<Object> adminGetPriceByProduct(
             @PathVariable("productId") String strId
     ){
