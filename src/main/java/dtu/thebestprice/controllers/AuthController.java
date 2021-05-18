@@ -53,18 +53,12 @@ public class AuthController {
     @Autowired
     RedisTemplate template;
 
-//    @PostConstruct
-//    public void initUser(){
-//        authService.register(new RegisterRequest(
-//                "truongvanthan",
-//                "thanthan",
-//                "Trương Văn Thân",
-//                "vanthan.ad.it@gmail.com",
-//                "Triệu Phong - Quảng Trị",
-//                "0365843463"
-//        ), ERole.ROLE_ADMIN);
-//
-//    }
+    @GetMapping("/me")
+    @ApiOperation(value = "Thông tin của tôi")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Object> me(){
+        return authService.me();
+    }
 
     @PostMapping("/login")
     @ApiOperation(value = "Đăng nhập")

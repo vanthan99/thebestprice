@@ -1,5 +1,6 @@
 package dtu.thebestprice.services.Impl;
 
+import dtu.thebestprice.converters.UserConverter;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.VerificationToken;
 import dtu.thebestprice.entities.enums.ERole;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    UserConverter userConverter;
 
 
     @Autowired
@@ -102,6 +108,16 @@ public class AuthServiceImpl implements AuthService {
             userRepository.save(user);
             return ResponseEntity.ok(new ApiResponse(true, "Xác nhận email thành công. Chúng tối sẽ gửi 1 email thông báo đến bạn ngay sau khi tài khoản được quản trị viên phê duyệt"));
         }
+    }
+
+    @Override
+    public ResponseEntity<Object> me() {
+        Authentication authentication    = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
+
+        return ResponseEntity.ok(userConverter.toUserResponse(user));
     }
 
 

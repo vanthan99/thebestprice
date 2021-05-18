@@ -12,4 +12,5 @@ public interface AuthService {
     ResponseEntity<Object> registerConfirm(String token);
 
 
+    ResponseEntity<Object> me();
 }
