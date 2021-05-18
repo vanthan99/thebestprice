@@ -1,16 +1,11 @@
 package dtu.thebestprice.services;
 
 import dtu.thebestprice.converters.PriceConverter;
-import dtu.thebestprice.entities.Price;
-import dtu.thebestprice.entities.Product;
-import dtu.thebestprice.entities.ProductRetailer;
-import dtu.thebestprice.payload.request.price.RetailerUpdatePriceRequest;
+import dtu.thebestprice.entities.*;
+import dtu.thebestprice.payload.request.price.PriceRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.price.PriceResponse;
-import dtu.thebestprice.repositories.PriceRepository;
-import dtu.thebestprice.repositories.ProductRepository;
-import dtu.thebestprice.repositories.ProductRetailerRepository;
-import dtu.thebestprice.repositories.UserRepository;
+import dtu.thebestprice.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,8 +33,11 @@ public class PriceServiceImpl implements PriceService {
     @Autowired
     PriceConverter priceConverter;
 
+    @Autowired
+    RetailerRepository retailerRepository;
+
     @Override
-    public ResponseEntity<Object> retailerUpdatePrice(long productRetailerId,RetailerUpdatePriceRequest priceRequest) {
+    public ResponseEntity<Object> retailerUpdatePrice(long productRetailerId, PriceRequest priceRequest) {
         long price;
 
         try {
@@ -60,7 +58,6 @@ public class PriceServiceImpl implements PriceService {
             throw new RuntimeException("Bạn không phải nhà bán lẽ này và không thể thay đổi giá");
 
 
-
         // lấy giá mới nhất
         Long latestPrice = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer).getPrice();
 
@@ -74,7 +71,7 @@ public class PriceServiceImpl implements PriceService {
         Price newPrice = new Price(price, productRetailer);
         priceRepository.save(newPrice);
 
-        if (!productRetailer.getUrl().equals(priceRequest.getUrl())){
+        if (!productRetailer.getUrl().equals(priceRequest.getUrl())) {
             productRetailer.setUrl(priceRequest.getUrl());
         }
 
@@ -104,7 +101,7 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> adminUpdatePrice(long productRetailerId,RetailerUpdatePriceRequest priceRequest) {
+    public ResponseEntity<Object> adminUpdatePrice(long productRetailerId, PriceRequest priceRequest) {
         long price;
 
         try {
@@ -130,7 +127,7 @@ public class PriceServiceImpl implements PriceService {
         Price newPrice = new Price(price, productRetailer);
         priceRepository.save(newPrice);
 
-        if (!productRetailer.getUrl().equals(priceRequest.getUrl())){
+        if (!productRetailer.getUrl().equals(priceRequest.getUrl())) {
             productRetailer.setUrl(priceRequest.getUrl());
         }
 
@@ -151,5 +148,145 @@ public class PriceServiceImpl implements PriceService {
                         .stream().map(productRetailer -> priceConverter.toPriceResponse(productRetailer)).collect(Collectors.toList());
 
         return ResponseEntity.ok(priceResponses);
+    }
+
+    @Override
+    public ResponseEntity<Object> retailerCreateNewPrice(long productId, long retailerId, PriceRequest priceRequest) {
+        long priceLong;
+        try {
+            priceLong = Long.parseLong(priceRequest.getPrice());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Giá phải là số nguyên");
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại product"));
+
+        Retailer retailer = retailerRepository
+                .findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại nhà bán lẽ"));
+
+        if (!retailer.getUser().getUsername().equals(authentication.getName()))
+            throw new RuntimeException("Bạn không phải là chủ của nhà bán lẽ này");
+
+        if (retailer.isDeleteFlg())
+            throw new RuntimeException("Nhà bán lẽ này đã bị xóa");
+
+        if (!retailer.isEnable())
+            throw new RuntimeException("Nhà bán lẽ này đã bị khóa");
+
+        if (product.isDeleteFlg())
+            throw new RuntimeException("Sản phẩm đã bị xóa");
+
+        if (!product.isEnable())
+            throw new RuntimeException("Sản phẩm đã bị khóa");
+
+        if (productRetailerRepository.existsByProductAndRetailerAndDeleteFlgFalse(product, retailer))
+            throw new RuntimeException("Nhà bán lẽ này đã kinh doanh sản phẩm trước đó");
+
+        ProductRetailer productRetailer = new ProductRetailer(
+                priceRequest.getUrl(),
+                retailer,
+                product,
+                false,
+                false
+        );
+
+        productRetailerRepository.save(productRetailer);
+
+
+        Price price = new Price(priceLong, productRetailer);
+        priceRepository.save(price);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới giá thành công. hãy đợi admin phê duyệt"));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> retailerDelete(long productRetailerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        ProductRetailer productRetailer =
+                productRetailerRepository.findById(productRetailerId)
+                        .orElseThrow(() -> new RuntimeException("Không tồn tại product retailer"));
+
+        if (!productRetailer.getRetailer().getUser().getUsername().equals(authentication.getName()))
+            throw new RuntimeException("bạn không có quyền xóa product retailer này");
+
+        if (productRetailer.isDeleteFlg())
+            throw new RuntimeException("product retailer đã bị xóa trước đó");
+
+        productRetailer.setDeleteFlg(true);
+        productRetailerRepository.save(productRetailer);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Xóa thành công"));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> adminCreateNewPrice(long productId, long retailerId, PriceRequest priceRequest) {
+        long priceLong;
+        try {
+            priceLong = Long.parseLong(priceRequest.getPrice());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Giá phải là số nguyên");
+        }
+
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại product"));
+
+        Retailer retailer = retailerRepository
+                .findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại nhà bán lẽ"));
+
+        if (retailer.isDeleteFlg())
+            throw new RuntimeException("Nhà bán lẽ này đã bị xóa");
+
+        if (!retailer.isEnable())
+            throw new RuntimeException("Nhà bán lẽ này đã bị khóa");
+
+        if (product.isDeleteFlg())
+            throw new RuntimeException("Sản phẩm đã bị xóa");
+
+        if (!product.isEnable())
+            throw new RuntimeException("Sản phẩm đã bị khóa");
+
+        if (productRetailerRepository.existsByProductAndRetailerAndDeleteFlgFalse(product, retailer))
+            throw new RuntimeException("Nhà bán lẽ này đã kinh doanh sản phẩm trước đó");
+
+        ProductRetailer productRetailer = new ProductRetailer(
+                priceRequest.getUrl(),
+                retailer,
+                product,
+                true,
+                true
+        );
+
+        productRetailerRepository.save(productRetailer);
+
+
+        Price price = new Price(priceLong, productRetailer);
+        priceRepository.save(price);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới giá thành công."));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> adminDelete(long productRetailerId) {
+        ProductRetailer productRetailer =
+                productRetailerRepository.findById(productRetailerId)
+                        .orElseThrow(() -> new RuntimeException("Không tồn tại product retailer"));
+
+        if (productRetailer.isDeleteFlg())
+            throw new RuntimeException("product retailer đã bị xóa trước đó");
+
+        productRetailer.setDeleteFlg(true);
+        productRetailerRepository.save(productRetailer);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Xóa thành công"));
     }
 }

@@ -1,6 +1,6 @@
 package dtu.thebestprice.controllers;
 
-import dtu.thebestprice.payload.request.price.RetailerUpdatePriceRequest;
+import dtu.thebestprice.payload.request.price.PriceRequest;
 import dtu.thebestprice.services.PriceService;
 import dtu.thebestprice.services.ProductRetailerService;
 import io.swagger.annotations.ApiOperation;
@@ -59,7 +59,7 @@ public class PriceController {
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
     @PutMapping("/retailerUpdatePrice/{productRetailerId}")
     public ResponseEntity<Object> retailerUpdatePrice(
-            @RequestBody @Valid RetailerUpdatePriceRequest priceRequest,
+            @RequestBody @Valid PriceRequest priceRequest,
             @PathVariable("productRetailerId") String strId
     ) {
         long productRetailerId;
@@ -93,7 +93,7 @@ public class PriceController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/adminUpdatePrice/{productRetailerId}")
     public ResponseEntity<Object> adminUpdatePrice(
-            @RequestBody @Valid RetailerUpdatePriceRequest priceRequest,
+            @RequestBody @Valid PriceRequest priceRequest,
             @PathVariable("productRetailerId") String strId
     ) {
         long productRetailerId;
@@ -110,9 +110,91 @@ public class PriceController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/approveFalse")
     public ResponseEntity<Object> approveFalse(
-            @PageableDefault(sort = "updatedAt",direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return productRetailerService.findByApprove(false, pageable);
+    }
+
+    //retailer thêm mới 1 productretailer_price
+    @ApiOperation(value = "Retailer thêm mới giá")
+    @PostMapping("/retailerCreateNewPrice/{productId}/{retailerId}")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    public ResponseEntity<Object> retailerCreateNewPrice(
+            @PathVariable("productId") String strPId,
+            @PathVariable("retailerId") String stRId,
+            @RequestBody @Valid PriceRequest priceRequest
+    ) {
+        long productId;
+        long retailerId;
+        try {
+            productId = Long.parseLong(strPId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của sản phẩm phải là số nguyên");
+        }
+        try {
+            retailerId = Long.parseLong(stRId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của nhà bán lẽ phải là số nguyên");
+        }
+
+        return priceService.retailerCreateNewPrice(productId,retailerId,priceRequest);
+    }
+
+    // retailer xóa thông tin xóa product_retailer
+    @ApiOperation(value = "Retailer xóa 1 sản phẩm mà họ đang kinh doanh")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    @DeleteMapping("/retailerDelete/{productRetailerId}")
+    public  ResponseEntity<Object> retailerDelete(
+            @PathVariable("productRetailerId") String strId
     ){
-        return productRetailerService.findByApprove(false,pageable);
+        long productRetailerId;
+        try{
+            productRetailerId = Long.parseLong(strId);
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("product retailer id phải là số nguyên");
+        }
+        return priceService.retailerDelete(productRetailerId);
+    }
+
+    //admin thêm mới 1 productretailer_price
+    @ApiOperation(value = "Admin thêm mới giá")
+    @PostMapping("/adminCreateNewPrice/{productId}/{retailerId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> adminCreateNewPrice(
+            @PathVariable("productId") String strPId,
+            @PathVariable("retailerId") String stRId,
+            @RequestBody @Valid PriceRequest priceRequest
+    ) {
+        long productId;
+        long retailerId;
+        try {
+            productId = Long.parseLong(strPId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của sản phẩm phải là số nguyên");
+        }
+        try {
+            retailerId = Long.parseLong(stRId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của nhà bán lẽ phải là số nguyên");
+        }
+
+        return priceService.adminCreateNewPrice(productId,retailerId,priceRequest);
+    }
+
+    // admin xóa thông tin xóa product_retailer
+    @ApiOperation(value = "Admin xóa 1 product_retailer")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/AdminDelete/{productRetailerId}")
+    public  ResponseEntity<Object> AdminDelete(
+            @PathVariable("productRetailerId") String strId
+    ){
+        long productRetailerId;
+        try{
+            productRetailerId = Long.parseLong(strId);
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("product retailer id phải là số nguyên");
+        }
+        return priceService.adminDelete(productRetailerId);
     }
 
 }

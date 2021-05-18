@@ -2,6 +2,7 @@ package dtu.thebestprice.converters;
 
 import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
+import dtu.thebestprice.entities.Rating;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.ProductRequest;
@@ -149,7 +150,11 @@ public class ProductConverter {
         longProductResponse.setImages(images);
 
         // set Rating
-        longProductResponse.setRate((double) Math.round(ratingRepository.getRateByProduct(product.getId()) * 10) / 10);
+        Double rate = ratingRepository.getRateByProduct(product.getId());
+        if (rate == null)
+            longProductResponse.setRate(0D);
+        else
+            longProductResponse.setRate((double) Math.round(rate * 10) / 10);
 
 
         // set product retailer response

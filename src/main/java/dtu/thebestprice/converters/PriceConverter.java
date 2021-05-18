@@ -35,6 +35,7 @@ public class PriceConverter {
         result.setPrice(priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer).getPrice());
         result.setUrl(productRetailer.getUrl());
         result.setEnable(productRetailer.isEnable());
+        result.setRetailerName(productRetailer.getRetailer().getName());
 
         return result;
     }
