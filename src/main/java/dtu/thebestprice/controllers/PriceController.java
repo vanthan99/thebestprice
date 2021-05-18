@@ -184,7 +184,7 @@ public class PriceController {
     // admin xóa thông tin xóa product_retailer
     @ApiOperation(value = "Admin xóa 1 product_retailer")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/AdminDelete/{productRetailerId}")
+    @DeleteMapping("/adminDelete/{productRetailerId}")
     public  ResponseEntity<Object> AdminDelete(
             @PathVariable("productRetailerId") String strId
     ){
