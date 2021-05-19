@@ -1,6 +1,7 @@
 package dtu.thebestprice.services;
 
 import dtu.thebestprice.payload.request.price.PriceRequest;
+import dtu.thebestprice.payload.request.price.PriceRetailerRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface PriceService {
@@ -18,13 +19,13 @@ public interface PriceService {
     ResponseEntity<Object> adminGetPriceByProduct(long productId);
 
     // retailer tạo mới 1 price
-    ResponseEntity<Object> retailerCreateNewPrice(long productId,long retailerId, PriceRequest priceRequest);
+    ResponseEntity<Object> retailerCreateNewPrice(long productId, PriceRetailerRequest priceRetailerRequest);
 
     // retailer xóa product_retailer
     ResponseEntity<Object> retailerDelete(long productRetailerId);
 
     // amdin thêm mới giá
-    ResponseEntity<Object> adminCreateNewPrice(long productId, long retailerId, PriceRequest priceRequest);
+    ResponseEntity<Object> adminCreateNewPrice(long productId, PriceRetailerRequest priceRetailerRequest);
 
     // admin xoa gia
     ResponseEntity<Object> adminDelete(long productRetailerId);

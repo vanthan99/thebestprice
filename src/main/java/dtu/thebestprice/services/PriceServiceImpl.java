@@ -3,6 +3,7 @@ package dtu.thebestprice.services;
 import dtu.thebestprice.converters.PriceConverter;
 import dtu.thebestprice.entities.*;
 import dtu.thebestprice.payload.request.price.PriceRequest;
+import dtu.thebestprice.payload.request.price.PriceRetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.price.PriceResponse;
 import dtu.thebestprice.repositories.*;
@@ -151,10 +152,17 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public ResponseEntity<Object> retailerCreateNewPrice(long productId, long retailerId, PriceRequest priceRequest) {
+    public ResponseEntity<Object> retailerCreateNewPrice(long productId, PriceRetailerRequest priceRetailerRequest) {
+        long retailerId;
+        try {
+            retailerId = Long.parseLong(priceRetailerRequest.getRetailerId());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của nhà bán lẽ phải là số nguyên");
+        }
+
         long priceLong;
         try {
-            priceLong = Long.parseLong(priceRequest.getPrice());
+            priceLong = Long.parseLong(priceRetailerRequest.getPrice());
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Giá phải là số nguyên");
         }
@@ -187,7 +195,7 @@ public class PriceServiceImpl implements PriceService {
             throw new RuntimeException("Nhà bán lẽ này đã kinh doanh sản phẩm trước đó");
 
         ProductRetailer productRetailer = new ProductRetailer(
-                priceRequest.getUrl(),
+                priceRetailerRequest.getUrl(),
                 retailer,
                 product,
                 false,
@@ -226,12 +234,18 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> adminCreateNewPrice(long productId, long retailerId, PriceRequest priceRequest) {
+    public ResponseEntity<Object> adminCreateNewPrice(long productId, PriceRetailerRequest priceRequest) {
         long priceLong;
         try {
             priceLong = Long.parseLong(priceRequest.getPrice());
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Giá phải là số nguyên");
+        }
+        long retailerId;
+        try {
+            retailerId = Long.parseLong(priceRequest.getRetailerId());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Id của nhà bán lẽ phải là số nguyên");
         }
 
 

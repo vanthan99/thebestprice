@@ -1,6 +1,7 @@
 package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.payload.request.price.PriceRequest;
+import dtu.thebestprice.payload.request.price.PriceRetailerRequest;
 import dtu.thebestprice.services.PriceService;
 import dtu.thebestprice.services.ProductRetailerService;
 import io.swagger.annotations.ApiOperation;
@@ -117,27 +118,20 @@ public class PriceController {
 
     //retailer thêm mới 1 productretailer_price
     @ApiOperation(value = "Retailer thêm mới giá")
-    @PostMapping("/retailerCreateNewPrice/{productId}/{retailerId}")
+    @PostMapping("/retailerCreateNewPrice/{productId}")
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
     public ResponseEntity<Object> retailerCreateNewPrice(
             @PathVariable("productId") String strPId,
-            @PathVariable("retailerId") String stRId,
-            @RequestBody @Valid PriceRequest priceRequest
+            @RequestBody @Valid PriceRetailerRequest priceRequest
     ) {
         long productId;
-        long retailerId;
         try {
             productId = Long.parseLong(strPId);
         } catch (NumberFormatException e) {
             throw new RuntimeException("Id của sản phẩm phải là số nguyên");
         }
-        try {
-            retailerId = Long.parseLong(stRId);
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("Id của nhà bán lẽ phải là số nguyên");
-        }
 
-        return priceService.retailerCreateNewPrice(productId,retailerId,priceRequest);
+        return priceService.retailerCreateNewPrice(productId,priceRequest);
     }
 
     // retailer xóa thông tin xóa product_retailer
@@ -158,27 +152,21 @@ public class PriceController {
 
     //admin thêm mới 1 productretailer_price
     @ApiOperation(value = "Admin thêm mới giá")
-    @PostMapping("/adminCreateNewPrice/{productId}/{retailerId}")
+    @PostMapping("/adminCreateNewPrice/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> adminCreateNewPrice(
             @PathVariable("productId") String strPId,
-            @PathVariable("retailerId") String stRId,
-            @RequestBody @Valid PriceRequest priceRequest
+            @RequestBody @Valid PriceRetailerRequest priceRetailerRequest
     ) {
         long productId;
-        long retailerId;
+
         try {
             productId = Long.parseLong(strPId);
         } catch (NumberFormatException e) {
             throw new RuntimeException("Id của sản phẩm phải là số nguyên");
         }
-        try {
-            retailerId = Long.parseLong(stRId);
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("Id của nhà bán lẽ phải là số nguyên");
-        }
 
-        return priceService.adminCreateNewPrice(productId,retailerId,priceRequest);
+        return priceService.adminCreateNewPrice(productId,priceRetailerRequest);
     }
 
     // admin xóa thông tin xóa product_retailer
