@@ -145,7 +145,7 @@ public class PriceServiceImpl implements PriceService {
                         .orElseThrow(() -> new RuntimeException("Không tồn tại sản phẩm"));
 
         List<PriceResponse> priceResponses =
-                product.getProductRetailers()
+                productRetailerRepository.findByDeleteFlgFalseAndProduct(product)
                         .stream().map(productRetailer -> priceConverter.toPriceResponse(productRetailer)).collect(Collectors.toList());
 
         return ResponseEntity.ok(priceResponses);
