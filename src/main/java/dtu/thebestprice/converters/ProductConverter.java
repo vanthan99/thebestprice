@@ -188,7 +188,11 @@ public class ProductConverter {
         response.setApprove(product.isApprove());
 
         // set Rating
-        response.setRate((double) Math.round(ratingRepository.getRateByProduct(product.getId()) * 10) / 10);
+        Double rate = ratingRepository.getRateByProduct(product.getId());
+        if (rate == null)
+            response.setRate(0D);
+        else
+            response.setRate((double) Math.round(rate * 10) / 10);
 
         // set list image
         response.setImage(imageRepository.findFirstByProduct(product).getUrl());

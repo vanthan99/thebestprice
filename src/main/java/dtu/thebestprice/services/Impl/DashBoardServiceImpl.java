@@ -121,7 +121,7 @@ public class DashBoardServiceImpl implements DashBoardService {
 
                 statisticSearch.add(searchStatisticRepository.countByQuarter(year, months));
                 statisticAccess.add(statisticAccessRepository.countByQuarter(year, months));
-                statisticViewCount.add(viewCountStatisticRepository.countByQuarter(year,months));
+                statisticViewCount.add(viewCountStatisticRepository.countByQuarter(year, months));
             }
 
             dashBoard.setStatisticAccess(statisticAccess.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
@@ -212,7 +212,35 @@ public class DashBoardServiceImpl implements DashBoardService {
         overView.setUser(userRepository.countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole.ROLE_GUEST));
         overView.setRetailer(userRepository.countByRoleAndEnableTrueAndApproveTrueAndDeleteFlgFalse(ERole.ROLE_RETAILER));
 
-        ByteArrayInputStream in = StatisticExcelExporter.customersToExcel(overView);
+        Long auth = statisticAccessRepository.countByYearAndAuth(year, true);
+        Long anonymous = statisticAccessRepository.countByYearAndAuth(year, false);
+
+        User userRate = new User();
+
+        userRate.setAuth((double) Math.round(((1.0) * auth / (auth + anonymous)) * 100 * 100) / 100);
+        userRate.setAnonymous(100 - userRate.getAuth());
+
+        DashBoard dashBoard = new DashBoard();
+        // set User rate
+        dashBoard.setRateUser(userRate);
+
+        List<Long> statisticAccess = new ArrayList<>();
+        List<Long> statisticSearch = new ArrayList<>();
+        List<Long> statisticViewCount = new ArrayList<>();
+
+        // set statistic access // set statistic search
+        for (int i = 1; i <= month; i++) {
+            statisticAccess.add(statisticAccessRepository.countByMonth(year, i));
+            statisticSearch.add(searchStatisticRepository.countByMonth(year, i));
+            statisticViewCount.add(viewCountStatisticRepository.countByMonth(year, i));
+        }
+
+        dashBoard.setStatisticAccess(statisticAccess.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+        dashBoard.setStatisticSearch(statisticSearch.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+        dashBoard.setStatisticViewCount(statisticViewCount.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
+
+
+        ByteArrayInputStream in = StatisticExcelExporter.customersToExcel(overView, dashBoard);
         // return IOUtils.toByteArray(in);
 
         HttpHeaders headers = new HttpHeaders();
@@ -220,8 +248,12 @@ public class DashBoardServiceImpl implements DashBoardService {
 
         return ResponseEntity
                 .ok()
-                .headers(headers)
-                .body(new InputStreamResource(in));
+                .
+
+                        headers(headers)
+                .
+
+                        body(new InputStreamResource(in));
     }
 
     private SearchResponse toSearchResponse(Search search) {
