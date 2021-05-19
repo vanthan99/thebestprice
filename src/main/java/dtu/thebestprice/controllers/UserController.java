@@ -6,6 +6,7 @@ import dtu.thebestprice.payload.request.*;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.securities.MyUserDetails;
+import dtu.thebestprice.services.RetailerService;
 import dtu.thebestprice.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,18 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RetailerService retailerService;
+
+    @ApiOperation(value = "Retailer lấy danh sách những cửa hàng mà mình quản lý")
+    @GetMapping("/listRetailer")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    public ResponseEntity<Object> findRetailerByUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
+        return retailerService.getRetailerByUser(user);
+    }
 
     @PostMapping("/registerRetailerAccount")
     @ApiOperation(value = "Guest đăng ký tài khoản nhà bán lẽ ")

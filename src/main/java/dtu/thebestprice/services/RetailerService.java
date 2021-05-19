@@ -37,4 +37,7 @@ public interface RetailerService {
     ResponseEntity<Object> findById(long retailerId);
 
     ResponseEntity<Object> toggleEnable(long retailerId);
+
+    // lấy danh sách retailer do user quản lý
+    ResponseEntity<Object> getRetailerByUser(User user);
 }

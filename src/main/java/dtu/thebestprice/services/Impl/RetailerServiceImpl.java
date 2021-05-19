@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -320,5 +321,13 @@ public class RetailerServiceImpl implements RetailerService {
         retailerRepository.save(retailer);
 
         return ResponseEntity.ok(new ApiResponse(true, message));
+    }
+
+    @Override
+    public ResponseEntity<Object> getRetailerByUser(User user) {
+        List<Retailer> retailers = retailerRepository.findByDeleteFlgFalseAndEnableAndUser(true, user);
+
+        List<RetailerResponse> result = retailers.stream().map(retailer -> retailerConverter.toRetailerResponse(retailer)).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 }
