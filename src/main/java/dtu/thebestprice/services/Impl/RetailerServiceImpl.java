@@ -328,7 +328,7 @@ public class RetailerServiceImpl implements RetailerService {
 
         if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER) || user.getId().equals(retailer.getUser().getId()))
             return ResponseEntity.ok(retailerConverter.toRetailerForAdminResponse(retailer));
-        throw new RuntimeException("Không tồn tại nhà bán lẽ");
+        throw new RuntimeException("Bạn không thể xem thông tin vì nhà bán lẽ này không thuộc bạn sở hữu");
     }
 
     @Override
