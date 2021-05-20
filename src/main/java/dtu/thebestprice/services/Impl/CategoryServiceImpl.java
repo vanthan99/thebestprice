@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = toEntity(categoryRequest);
 
             // check equal name
-            if (categoryRepository.existsByTitleAndCategory(category.getTitle(), category.getCategory()))
+            if (categoryRepository.existsByDeleteFlgFalseAndTitleAndCategory(category.getTitle(), category.getCategory()))
                 return new ApiResponse(false, "Already Exists Name In Same Level");
 
             categoryRepository.save(category);
@@ -66,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         // check current category name
-        if (oldCategory.getTitle().equalsIgnoreCase(newCategory.getTitle()) || !categoryRepository.existsByTitleAndCategory(newCategory.getTitle(), newCategory.getCategory())) {
+        if (oldCategory.getTitle().equalsIgnoreCase(newCategory.getTitle()) || !categoryRepository.existsByDeleteFlgFalseAndTitleAndCategory(newCategory.getTitle(), newCategory.getCategory())) {
             oldCategory.setTitle(newCategory.getTitle());
             oldCategory.setDescription(newCategory.getDescription());
             oldCategory.setCategory(newCategory.getCategory());
@@ -78,11 +78,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<Object> createChildCategory(CategoryChildRequest request) {
-        if (!categoryRepository.existsByIdAndCategoryIsNull(request.getParentId()))
+        if (!categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(request.getParentId()))
             throw new RuntimeException("Id parent không phải là danh mục cha");
 
         Category parentCategory = categoryRepository.getOne(request.getParentId());
-        if (categoryRepository.existsByTitleAndCategory(request.getTitle(), parentCategory))
+        if (categoryRepository.existsByDeleteFlgFalseAndTitleAndCategory(request.getTitle(), parentCategory))
             throw new RuntimeException("Đã tồn tại tiêu đề danh mục cùng cấp.");
 
         Category category = categoryConverter.toCategoryChild(request);
@@ -93,10 +93,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<Object> updateChildCategory(CategoryChildRequest request, Long childCategoryId) {
-        if (categoryRepository.existsByIdAndCategoryIsNull(childCategoryId))
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(childCategoryId))
             throw new RuntimeException("Id Không phải là danh mục con.");
 
-        if (categoryRepository.existsByIdAndCategoryIsNotNull(request.getParentId()))
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNotNull(request.getParentId()))
             throw new RuntimeException("Id parent không phải là danh mục cha");
 
         Category currentCategory = categoryRepository
@@ -108,7 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (currentCategory.getCategory().getId() != request.getParentId()) {
 
             // kiểm tra title có bị trùng khi có cùng danh mục cha
-            if (categoryRepository.existsByTitleAndCategory(
+            if (categoryRepository.existsByDeleteFlgFalseAndTitleAndCategory(
                     request.getTitle(),
                     categoryRepository.getOne(request.getParentId())
             ))
@@ -117,7 +117,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category parentCategory = categoryRepository.getOne(request.getParentId());
         // kiểm tra tiêu đề danh mục có bị trung nếu trường hợp cập nhật tiêu đề
-        if (categoryRepository.existsByTitleAndCategory(request.getTitle(), parentCategory)
+        if (categoryRepository.existsByDeleteFlgFalseAndTitleAndCategory(request.getTitle(), parentCategory)
                 && !currentCategory.getTitle().equalsIgnoreCase(request.getTitle())
         )
             throw new RuntimeException("Tiêu đề đã bị trùng.");
@@ -132,7 +132,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Object> createParentCategory(CategoryParentRequest request) {
         // kiểm tra xem tên của danh mục có bị trùng với những danh mục cùng cấp khác?
-        if (categoryRepository.existsByTitleAndCategoryIsNull(request.getTitle().trim()))
+        if (categoryRepository.existsByDeleteFlgFalseAndTitleAndCategoryIsNull(request.getTitle().trim()))
             throw new RuntimeException("Đã bị trùng tên với một tên danh mục cùng cấp khác");
 
         Category category = categoryConverter.toCategoryParent(request);
@@ -147,7 +147,7 @@ public class CategoryServiceImpl implements CategoryService {
         // trường hợp cập nhật category cha
 
         // kiểm tra nếu id truyền vào thuộc danh mục con?
-        if (categoryRepository.existsByIdAndCategoryIsNotNull(parentCategoryId))
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNotNull(parentCategoryId))
             throw new RuntimeException("Id danh mục cần cập nhật thuộc vào danh mục con.");
 
         Category currentCategory = categoryRepository
@@ -155,7 +155,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new RuntimeException("Không tồn tại id danh mục"));
 
         // kiểm tra xem tên sau khi thay đổi có bị trùng với danh mục cùng cấp không?
-        if (categoryRepository.existsByTitleAndCategoryIsNull(request.getTitle().trim())
+        if (categoryRepository.existsByDeleteFlgFalseAndTitleAndCategoryIsNull(request.getTitle().trim())
                 && !currentCategory.getTitle().equalsIgnoreCase(request.getTitle()))
             throw new RuntimeException("Têu đề danh mục mới đã bị trùng với những danh mục khác.");
 

@@ -240,7 +240,7 @@ public class DashBoardServiceImpl implements DashBoardService {
         dashBoard.setStatisticViewCount(statisticViewCount.stream().map(item -> item == null ? 0 : item).collect(Collectors.toList()));
 
 
-        ByteArrayInputStream in = StatisticExcelExporter.customersToExcel(overView, dashBoard);
+        ByteArrayInputStream in = StatisticExcelExporter.customersToExcel(overView, dashBoard,searchRepository.findTop20ByOrderByNumberOfSearchDesc());
         // return IOUtils.toByteArray(in);
 
         HttpHeaders headers = new HttpHeaders();
@@ -248,12 +248,8 @@ public class DashBoardServiceImpl implements DashBoardService {
 
         return ResponseEntity
                 .ok()
-                .
-
-                        headers(headers)
-                .
-
-                        body(new InputStreamResource(in));
+                .headers(headers)
+                .body(new InputStreamResource(in));
     }
 
     private SearchResponse toSearchResponse(Search search) {

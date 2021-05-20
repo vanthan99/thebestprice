@@ -54,7 +54,7 @@ public class HotDealServiceImpl implements HotDealService {
                 .createQuery(
                         "select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                                 "from ViewCountStatistic s " +
-                                "where YEAR(s.statisticDay) = ?1 " +
+                                "where s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and YEAR(s.statisticDay) = ?1 " +
                                 "and MONTH(s.statisticDay) = ?2 " +
                                 "group by s.product " +
                                 "order by viewcount desc"
@@ -77,7 +77,7 @@ public class HotDealServiceImpl implements HotDealService {
                 .createQuery(
                         "select new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                                 "from ViewCountStatistic s " +
-                                "where s.product.category.category.id = ?3  " +
+                                "where s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and s.product.category.category.id = ?3  " +
                                 "and YEAR(s.statisticDay) = ?1 " +
                                 "and MONTH(s.statisticDay) = ?2 " +
                                 "group by s.product " +

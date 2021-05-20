@@ -5,6 +5,7 @@ import dtu.thebestprice.payload.request.RetailerForUserRequest;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.payload.response.RetailerResponse;
 import dtu.thebestprice.payload.response.retailer.RetailerForAdminResponse;
+import dtu.thebestprice.payload.response.retailer.RetailerForUserRetailerResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,18 @@ public class RetailerConverter {
                 retailer.getDescription(),
                 retailer.getHomePage(),
                 retailer.getLogoImage()
+        );
+    }
+
+    public RetailerForUserRetailerResponse toRetailerForUserRetailerResponse(Retailer retailer) {
+        return new RetailerForUserRetailerResponse(
+                retailer.getId(),
+                retailer.getName(),
+                retailer.getDescription(),
+                retailer.getHomePage(),
+                retailer.getLogoImage(),
+                retailer.isEnable(),
+                retailer.isApprove()
         );
     }
 

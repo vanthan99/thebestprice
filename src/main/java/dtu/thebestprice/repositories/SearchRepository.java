@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 public interface SearchRepository extends JpaRepository<Search, Long> {
@@ -27,4 +28,6 @@ public interface SearchRepository extends JpaRepository<Search, Long> {
     boolean existsByKeyword(String keyword);
 
     Page<Search> findByOrderByNumberOfSearchDesc(Pageable pageable);
+
+    List<Search> findTop20ByOrderByNumberOfSearchDesc();
 }

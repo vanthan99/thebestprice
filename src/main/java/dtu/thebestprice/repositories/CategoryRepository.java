@@ -34,34 +34,34 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     void deleteChildCategoryByParentId(Long parentId);
 
     // kiểm tra id truyền vào có phải là danh mục con hay không?
-    boolean existsByIdAndCategoryIsNotNull(Long id);
+    boolean existsByDeleteFlgFalseAndIdAndCategoryIsNotNull(Long id);
 
     /*
      * Kiểm tra id truyền vào có phải là danh mục cha hay khôgn */
-    boolean existsByIdAndCategoryIsNull(Long id);
+    boolean existsByDeleteFlgFalseAndIdAndCategoryIsNull(Long id);
 
     /*
      * Kiểm tra danh sách con có tồn tại titleInput hay chưa?
      * */
-    boolean existsByTitleAndCategory(String titleInput, Category category);
+    boolean existsByDeleteFlgFalseAndTitleAndCategory(String titleInput, Category category);
 
     /*
      * Kiểm tra xem danh sách danh mục cha có tồn tại titleInput hay chưa?
      * */
-    boolean existsByTitleAndCategoryIsNull(String titleInput);
+    boolean existsByDeleteFlgFalseAndTitleAndCategoryIsNull(String titleInput);
 
     /*
      * Tìm danh mục cha có Id truyền vào và đang hoạt động
      * */
-    Category findByIdAndCategoryIsNull(Long categoryId);
+    Category findByDeleteFlgFalseAndIdAndCategoryIsNull(Long categoryId);
 
     /*
      * Lấy tất cả category id con khi truyền vào id của cat cha.
      * */
-    @Query("SELECT c.id FROM Category c WHERE c.category.id = :id")
+    @Query("SELECT c.id FROM Category c WHERE c.category.id = :id and c.deleteFlg = false")
     Set<Long> findAllCatIdOfParent(Long id);
 
-    List<Category> findByCategoryIsNull();
+    List<Category> findByDeleteFlgFalseAndCategoryIsNull();
 
     // Lấy danh sách category có category truyền vào là parent.
     List<Category> findByOrderByCategory();

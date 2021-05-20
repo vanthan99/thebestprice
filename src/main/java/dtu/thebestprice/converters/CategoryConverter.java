@@ -50,7 +50,7 @@ public class CategoryConverter {
 
         Category parentCategory =
                 categoryRepository
-                        .findByIdAndCategoryIsNull(categoryChildRequest.getParentId());
+                        .findByDeleteFlgFalseAndIdAndCategoryIsNull(categoryChildRequest.getParentId());
 
 
         category.setCategory(parentCategory);
@@ -68,7 +68,7 @@ public class CategoryConverter {
         if (categoryChildRequest.getParentId() != category.getCategory().getId()) {
             Category parentCategory =
                     categoryRepository
-                            .findByIdAndCategoryIsNull(categoryChildRequest.getParentId());
+                            .findByDeleteFlgFalseAndIdAndCategoryIsNull(categoryChildRequest.getParentId());
 
             category.setCategory(parentCategory);
         }

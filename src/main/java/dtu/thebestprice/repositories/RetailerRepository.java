@@ -26,6 +26,8 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long> {
 
     List<Retailer> findByDeleteFlgFalseAndEnableAndUser(boolean enable, User user);
 
+    List<Retailer> findByDeleteFlgFalseAndUser(User user);
+
     // Danh sách nhà bán lẽ đã bị xóa
     Set<Retailer> findByDeleteFlgTrue();
 

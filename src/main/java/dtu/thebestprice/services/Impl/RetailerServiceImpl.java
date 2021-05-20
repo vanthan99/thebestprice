@@ -8,6 +8,7 @@ import dtu.thebestprice.payload.request.RetailerForUserRequest;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.RetailerResponse;
+import dtu.thebestprice.payload.response.retailer.RetailerForUserRetailerResponse;
 import dtu.thebestprice.repositories.RetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.RetailerService;
@@ -325,9 +326,9 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     public ResponseEntity<Object> getRetailerByUser(User user) {
-        List<Retailer> retailers = retailerRepository.findByDeleteFlgFalseAndEnableAndUser(true, user);
+        List<Retailer> retailers = retailerRepository.findByDeleteFlgFalseAndUser(user);
 
-        List<RetailerResponse> result = retailers.stream().map(retailer -> retailerConverter.toRetailerResponse(retailer)).collect(Collectors.toList());
+        List<RetailerForUserRetailerResponse> result = retailers.stream().map(retailer -> retailerConverter.toRetailerForUserRetailerResponse(retailer)).collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 }

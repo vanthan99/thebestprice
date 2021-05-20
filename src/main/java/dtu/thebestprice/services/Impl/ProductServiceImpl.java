@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<Object> create(ProductRequest productRequest) {
-        if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productRequest.getCategoryId()))
             throw new RuntimeException("id danh mục phải là danh mục con");
         Product product = productConverter.toEntity(productRequest);
         product.setEnable(true);
@@ -141,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<Object> update(ProductRequest productRequest, Long productId) {
-        if (categoryRepository.existsByIdAndCategoryIsNull(productRequest.getCategoryId()))
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productRequest.getCategoryId()))
             throw new RuntimeException("id danh mục phải là danh mục con");
 
         Product currentProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("id sản phẩm không tồn tại"));
@@ -207,7 +207,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
+                            "WHERE s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, year)
@@ -218,7 +218,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE lower(s.product.title) like concat('%',lower(?1) ,'%') " +
+                            "WHERE s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  lower(s.product.title) like concat('%',lower(?1) ,'%') " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, keyword);
@@ -227,7 +227,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 " +
+                            "WHERE s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, year)
@@ -237,7 +237,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE  YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "WHERE s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and   YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, year)
@@ -246,13 +246,13 @@ public class ProductServiceImpl implements ProductService {
             // trả về tất cả
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
-                            "FROM ViewCountStatistic s " +
+                            "FROM s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  ViewCountStatistic s " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ");
         } else if (keyword == null && year == null && month != null) {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
-                            "FROM ViewCountStatistic s where month(s.statisticDay) = ?1 " +
+                            "FROM ViewCountStatistic s where  s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  month(s.statisticDay) = ?1 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, month);
@@ -260,7 +260,7 @@ public class ProductServiceImpl implements ProductService {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
                             "FROM ViewCountStatistic s " +
-                            "WHERE lower(s.product.title) like concat('%',lower(?2) ,'%') and month(s.statisticDay) = ?1 " +
+                            "WHERE s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  lower(s.product.title) like concat('%',lower(?2) ,'%') and month(s.statisticDay) = ?1 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, month)
@@ -268,7 +268,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             query = entityManager
                     .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
-                            "FROM ViewCountStatistic s where year(s.statisticDay) = ?1 " +
+                            "FROM ViewCountStatistic s where  s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  year(s.statisticDay) = ?1 " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ")
                     .setParameter(1, year);
