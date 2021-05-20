@@ -245,8 +245,8 @@ public class ProductServiceImpl implements ProductService {
         } else if (keyword == null && year == null && month == null) {
             // trả về tất cả
             query = entityManager
-                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
-                            "FROM s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true and  ViewCountStatistic s " +
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product ) " +
+                            "FROM ViewCountStatistic s where s.product.deleteFlg = false and s.product.enable = true and s.product.approve = true " +
                             "GROUP BY s.product " +
                             "ORDER BY viewcount desc ");
         } else if (keyword == null && year == null && month != null) {
