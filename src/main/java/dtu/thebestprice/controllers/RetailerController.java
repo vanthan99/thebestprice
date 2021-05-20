@@ -45,7 +45,7 @@ public class RetailerController {
 
     // xem nhà bán lẽ theo id
     @GetMapping("/{retailerId}")
-//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_SUPER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_SUPER')")
     @ApiOperation(value = "Tìm nhà bán lẽ theo Id")
     public ResponseEntity<Object> findById(
             @PathVariable("retailerId") String strId

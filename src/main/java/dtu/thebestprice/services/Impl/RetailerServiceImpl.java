@@ -312,12 +312,12 @@ public class RetailerServiceImpl implements RetailerService {
     @Override
     public ResponseEntity<Object> findById(long retailerId) {
 
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        User user =
-//                userRepository
-//                        .findByUsername(authentication.getName())
-//                        .orElseThrow(() -> new RuntimeException("Phải đăng nhập vào hệ thống"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user =
+                userRepository
+                        .findByUsername(authentication.getName())
+                        .orElseThrow(() -> new RuntimeException("Phải đăng nhập vào hệ thống"));
 
         Retailer retailer = retailerRepository
                 .findById(retailerId)
@@ -326,9 +326,9 @@ public class RetailerServiceImpl implements RetailerService {
         if (retailer.isDeleteFlg())
             throw new RuntimeException("Nhà bán lẽ này đã bị xóa khỏi hệ thống");
 
-//        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER) || user.getId().equals(retailer.getUser().getId()))
+        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER) || user.getId().equals(retailer.getUser().getId()))
             return ResponseEntity.ok(retailerConverter.toRetailerForAdminResponse(retailer));
-//        throw new RuntimeException("Không tồn tại nhà bán lẽ");
+        throw new RuntimeException("Không tồn tại nhà bán lẽ");
     }
 
     @Override
