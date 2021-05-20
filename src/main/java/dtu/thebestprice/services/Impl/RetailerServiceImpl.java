@@ -366,8 +366,12 @@ public class RetailerServiceImpl implements RetailerService {
                 .findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("id của nhà bán lẽ không tồn tại"));
 
+
         User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Không tồn tại user"));
+
+        if (retailer.getUser().getRole().equals(ERole.ROLE_RETAILER) && user.getRole().equals(ERole.ROLE_RETAILER) && !retailer.getUser().getUsername().equals(authentication.getName()))
+            throw new RuntimeException("Bạn không phải là chủ sở hữu của nhà bán lẽ này");
 
         // kiểm tra xem thông tin trước và sau khi update có giống nhau hay không?
         if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
