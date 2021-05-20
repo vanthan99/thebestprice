@@ -21,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @Api
@@ -41,7 +42,7 @@ public class UserController {
     @ApiOperation(value = "Retailer lấy danh sách những cửa hàng mà mình quản lý")
     @GetMapping("/listRetailer")
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
-    public ResponseEntity<Object> findRetailerByUser(){
+    public ResponseEntity<Object> findRetailerByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
         return retailerService.getRetailerByUser(user);
@@ -49,20 +50,17 @@ public class UserController {
 
     @PostMapping("/registerRetailerAccount")
     @ApiOperation(value = "Guest đăng ký tài khoản nhà bán lẽ ")
-    @PreAuthorize("hasAuthority('ROLE_GUEST')")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST','ROLE_RETAILER')")
     public ResponseEntity<Object> registerRetailerAccount(
             @RequestBody @Valid RetailerForUserRequest retailerRequest
-    ) {
+    ) throws MessagingException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
-        if (!userDetails.isGuest()) {
-            throw new RuntimeException("Chỉ có tài khoản guest mới được đăng ký tài khoản nhà cung cấp");
-        }
 
         User user = userRepository.getOne(userDetails.getId());
 
         return userService.guestRegisterRetailerAccount(
-                userRepository.getOne(userDetails.getId()),
+                user,
                 retailerRequest
         );
     }
@@ -70,14 +68,14 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/listGuestAccount")
     @ApiOperation(value = "Page tài khoản guest")
-    public ResponseEntity<Object> listGuestAccount(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Object> listGuestAccount(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return userService.findByRole(pageable, ERole.ROLE_GUEST);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/listRetailerAccount")
     @ApiOperation(value = "Page tài khoản retailer")
-    public ResponseEntity<Object> listRetailerAccount(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Object> listRetailerAccount(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return userService.findByRole(pageable, ERole.ROLE_RETAILER);
     }
 
@@ -171,17 +169,17 @@ public class UserController {
     @ApiOperation(value = "Admin cập nhật mật khẩu cho guest hoặc retailer")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> adminEditPasswordForGuestOrRetailer(
-           @PathVariable("userId") String strUserId,
-           @RequestBody @Valid PasswordByAdminRequest request
-    ){
+            @PathVariable("userId") String strUserId,
+            @RequestBody @Valid PasswordByAdminRequest request
+    ) {
         long userId;
-        try{
-            userId= Long.parseLong(strUserId);
-        }catch (NumberFormatException e){
+        try {
+            userId = Long.parseLong(strUserId);
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("Id người dùng không được để trống và phải là số nguyên");
         }
 
-        return userService.adminEditPasswordForGuestOrRetailer(userId,request);
+        return userService.adminEditPasswordForGuestOrRetailer(userId, request);
     }
 
     // admin xóa tài khoản retailer hoặc guest
@@ -218,10 +216,9 @@ public class UserController {
     }
 
 
-
     /*
-    * QUYỀN SUPER
-    * */
+     * QUYỀN SUPER
+     * */
     // quyền supper thêm tài khoản admin
     @PreAuthorize("hasAuthority('ROLE_SUPER')")
     @PostMapping("/createAdminAccount")

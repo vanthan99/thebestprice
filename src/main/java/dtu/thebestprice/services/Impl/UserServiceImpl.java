@@ -2,10 +2,13 @@ package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.converters.RetailerConverter;
 import dtu.thebestprice.converters.UserConverter;
+import dtu.thebestprice.entities.Retailer;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.mail.MailTransport;
 import dtu.thebestprice.payload.request.*;
 import dtu.thebestprice.payload.response.ApiResponse;
+import dtu.thebestprice.repositories.RetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.RetailerService;
 import dtu.thebestprice.services.UserService;
@@ -16,6 +19,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.management.RuntimeMBeanException;
 import javax.transaction.Transactional;
 
@@ -38,6 +42,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    RetailerRepository retailerRepository;
+
+    @Autowired
+    MailTransport mailTransport;
 
     // danh sách các nhà bán lẽ chưa được phê duyệt
     @Override
@@ -87,11 +97,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerForUserRequest retailerRequest) {
+    public ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerForUserRequest retailerRequest) throws MessagingException {
 
-        retailerService.create(retailerRequest, user, false, false, false);
+//        retailerService.create(retailerRequest, user, false, false, false);
 
-        return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản retailer thành công. hãy đợi quản trị viên phê duyệt"));
+        // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
+        if (retailerRepository.existsByName(retailerRequest.getName().trim()))
+            throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
+
+        // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
+        if (retailerRepository.existsByLogoImage(retailerRequest.getLogo().trim()))
+            throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
+
+        // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
+        if (retailerRepository.existsByHomePage(retailerRequest.getHomePage().trim()))
+            throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
+
+
+        Retailer retailer = retailerConverter.toEntity(retailerRequest);
+
+        retailer.setApprove(false);
+        retailer.setUser(user);
+        retailer.setDeleteFlg(false);
+        retailer.setEnable(false);
+        retailerRepository.save(retailer);
+
+        // gửi email thông báo
+        mailTransport.send(user.getEmail(), "Chúng tôi đã tiếp nhận yêu cầu của bạn.Chúng tôi sẽ gửi lại email cho bạn một khi yêu cầu được phê duyệt", "The best price thông báo");
+
+        return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản nhà bán lẽ thành công. Bạn hãy kiểm tra lại email của mình"));
     }
 
     @Override

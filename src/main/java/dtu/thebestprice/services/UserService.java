@@ -6,6 +6,8 @@ import dtu.thebestprice.payload.request.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import javax.mail.MessagingException;
+
 public interface UserService {
     // phê duyệt tài khoản retailer
 //    ResponseEntity<Object> approveRetailerAccount(Long userId);
@@ -22,7 +24,7 @@ public interface UserService {
     User createNew(RegisterRequest request, boolean enable, boolean approve, ERole role, boolean checkValidate);
 
     // guest Đăng ký tài khoản retailer
-    ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerForUserRequest retailerRequest);
+    ResponseEntity<Object> guestRegisterRetailerAccount(User user, RetailerForUserRequest retailerRequest) throws MessagingException;
 
     // admin đăng ký tài khoản retailer
     ResponseEntity<Object> adminRegisterRetailerAccount(UserRetailerRequest request);

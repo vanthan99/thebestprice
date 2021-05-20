@@ -62,6 +62,15 @@ public class RetailerConverter {
         return retailer;
     }
 
+    public Retailer toEntity(RetailerForUserRequest retailerRequest, Retailer retailer) {
+
+        retailer.setName(retailerRequest.getName().trim());
+        retailer.setDescription(retailerRequest.getDescription().trim());
+        retailer.setLogoImage(retailerRequest.getLogo().trim());
+        retailer.setHomePage(retailerRequest.getHomePage().trim());
+        return retailer;
+    }
+
     public Retailer toEntity(RetailerRequest retailerRequest, Retailer retailer) {
         retailer.setName(retailerRequest.getName().trim());
         retailer.setDescription(retailerRequest.getDescription().trim());

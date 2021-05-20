@@ -8,6 +8,7 @@ import dtu.thebestprice.payload.response.RetailerResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public interface RetailerService {
     ResponseEntity<Object> pageRetailerByApprove(boolean approve, Pageable pageable);
 
     // phê duyệt retailer
-    ResponseEntity<Object> approveRetailer(Long retailerId);
+    ResponseEntity<Object> approveRetailer(Long retailerId) throws MessagingException;
 
     ResponseEntity<Object> findById(long retailerId);
 
@@ -40,4 +41,7 @@ public interface RetailerService {
 
     // lấy danh sách retailer do user quản lý
     ResponseEntity<Object> getRetailerByUser(User user);
+
+    // role retailer update
+    ResponseEntity<Object> roleRetailerUpdate(RetailerForUserRequest retailerForUserRequest, long retailerId);
 }

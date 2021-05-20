@@ -4,6 +4,7 @@ import dtu.thebestprice.converters.RetailerConverter;
 import dtu.thebestprice.entities.Retailer;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.mail.MailTransport;
 import dtu.thebestprice.payload.request.RetailerForUserRequest;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
@@ -20,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +42,9 @@ public class RetailerServiceImpl implements RetailerService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    MailTransport mailTransport;
+
     @Override
     public Set<RetailerResponse> findAll() {
         return retailerRepository.findByDeleteFlgAndEnableAndApprove(false, true, true).stream().map(retailer -> retailerConverter.toRetailerResponse(retailer)).collect(Collectors.toSet());
@@ -47,6 +52,9 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     public ResponseEntity<Object> deleteById(String id) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         Long retailerId = null;
         try {
             retailerId = Long.parseLong(id);
@@ -61,10 +69,19 @@ public class RetailerServiceImpl implements RetailerService {
             return ResponseEntity.status(404).body(new ApiResponse(false, "id của nhà cung cấp không tồn tại"));
 
         Retailer retailer = retailerRepository.getOne(retailerId);
-        retailer.setDeleteFlg(true);
-        retailerRepository.save(retailer);
 
-        return ResponseEntity.ok().body(new ApiResponse(true, "Xóa nhà cung cấp: " + retailer.getName() + " thành công"));
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Hệ thống không thể nhận biết bạn là ai"));
+
+
+        if (retailer.getUser().equals(user) || user.getRole().equals(ERole.ROLE_ADMIN)) {
+            retailer.setDeleteFlg(true);
+            retailerRepository.save(retailer);
+
+            return ResponseEntity.ok().body(new ApiResponse(true, "Xóa nhà cung cấp: " + retailer.getName() + " thành công"));
+        }
+        throw new RuntimeException("Bạn không đủ quyền để xóa nhà bán lẽ này");
+
     }
 
     @Override
@@ -179,12 +196,12 @@ public class RetailerServiceImpl implements RetailerService {
 
         retailerRepository.save(retailer);
 
-        if (user.getRole().equals(ERole.ROLE_GUEST)) {
-            user.setRole(ERole.ROLE_RETAILER);
-            userRepository.save(user);
-        }
+//        if (user.getRole().equals(ERole.ROLE_GUEST)) {
+//            user.setRole(ERole.ROLE_RETAILER);
+//            userRepository.save(user);
+//        }
 
-        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới nhà bán lẽ thành công"));
+        return ResponseEntity.ok(new ApiResponse(true, "Thêm mới nhà bán lẽ thành công.Hãy đợi quản trị viên phê duyệt"));
     }
 
     @Override
@@ -266,7 +283,7 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     @Transactional
-    public ResponseEntity<Object> approveRetailer(Long retailerId) {
+    public ResponseEntity<Object> approveRetailer(Long retailerId) throws MessagingException {
         Retailer retailer = retailerRepository
                 .findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại nhà bán lẽ"));
@@ -284,26 +301,34 @@ public class RetailerServiceImpl implements RetailerService {
             userRepository.save(user);
         }
 
-        return ResponseEntity.ok(new ApiResponse(true, "Xác nhận nhà bán lẽ thành công"));
+        // gửi mail thông báo cho user
+        mailTransport.send(user.getEmail(),
+                "Yêu cầu tạo nhà cung cấp " + retailer.getName() + " của bạn đã được phê duyệt. Hãy trở lại trang web để tiếp túc sử dụng các dịch vụ của chúng tôi",
+                "The best price thông báo");
+
+        return ResponseEntity.ok(new ApiResponse(true, "Xác nhận nhà bán lẽ thành công, Hệ thống đã gửi mail thông báo đến " + user.getUsername()));
     }
 
     @Override
     public ResponseEntity<Object> findById(long retailerId) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user =
-                userRepository
-                        .findByUsername(authentication.getName())
-                        .orElseThrow(() -> new RuntimeException("Phải đăng nhập vào hệ thống"));
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        User user =
+//                userRepository
+//                        .findByUsername(authentication.getName())
+//                        .orElseThrow(() -> new RuntimeException("Phải đăng nhập vào hệ thống"));
 
         Retailer retailer = retailerRepository
                 .findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại nhà bán lẽ"));
 
-        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER) || user.getId().equals(retailer.getUser().getId()))
+        if (retailer.isDeleteFlg())
+            throw new RuntimeException("Nhà bán lẽ này đã bị xóa khỏi hệ thống");
+
+//        if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER) || user.getId().equals(retailer.getUser().getId()))
             return ResponseEntity.ok(retailerConverter.toRetailerForAdminResponse(retailer));
-        throw new RuntimeException("Không tồn tại nhà bán lẽ");
+//        throw new RuntimeException("Không tồn tại nhà bán lẽ");
     }
 
     @Override
@@ -330,5 +355,54 @@ public class RetailerServiceImpl implements RetailerService {
 
         List<RetailerForUserRetailerResponse> result = retailers.stream().map(retailer -> retailerConverter.toRetailerForUserRetailerResponse(retailer)).collect(Collectors.toList());
         return ResponseEntity.ok(result);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> roleRetailerUpdate(RetailerForUserRequest retailerForUserRequest, long retailerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Retailer retailer = retailerRepository
+                .findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("id của nhà bán lẽ không tồn tại"));
+
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Không tồn tại user"));
+
+        // kiểm tra xem thông tin trước và sau khi update có giống nhau hay không?
+        if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
+                retailerId,
+                retailerForUserRequest.getName(),
+                retailerForUserRequest.getDescription(),
+                retailerForUserRequest.getLogo(),
+                retailerForUserRequest.getHomePage(),
+                user
+        ))
+            throw new RuntimeException("Thông tin trước và sau khi thay đổi là giống nhau");
+
+        // kiểm tra tên mới có trùng với tên của một nhà bán lẽ khác hay không?
+        if (
+                retailerRepository.existsByName(retailerForUserRequest.getName())
+                        && !retailer.getName().equalsIgnoreCase(retailerForUserRequest.getName())
+        )
+            throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
+
+        // kiểm tra hình ảnh có trung với tên của một nhà bán lẽ khác hay không?
+        if (
+                retailerRepository.existsByLogoImage(retailerForUserRequest.getLogo())
+                        && !retailer.getLogoImage().equalsIgnoreCase(retailerForUserRequest.getLogo())
+        )
+            throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
+
+        // kiểm tra homepage có trùng với homepage của nhà bán lẽ khác hay không?
+        if (
+                retailerRepository.existsByHomePage(retailerForUserRequest.getHomePage())
+                        && !retailer.getHomePage().equalsIgnoreCase(retailerForUserRequest.getHomePage())
+        )
+            throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
+
+
+        retailerRepository.save(retailerConverter.toEntity(retailerForUserRequest, retailer));
+        return ResponseEntity.ok(new ApiResponse(true, "Cập nhật nhà bán lẽ thành công"));
     }
 }

@@ -2,6 +2,7 @@ package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.converters.RetailerConverter;
 import dtu.thebestprice.entities.User;
+import dtu.thebestprice.payload.request.RetailerForUserRequest;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.repositories.RetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @Api
@@ -43,7 +45,7 @@ public class RetailerController {
 
     // xem nhà bán lẽ theo id
     @GetMapping("/{retailerId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_SUPER')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_SUPER')")
     @ApiOperation(value = "Tìm nhà bán lẽ theo Id")
     public ResponseEntity<Object> findById(
             @PathVariable("retailerId") String strId
@@ -123,6 +125,16 @@ public class RetailerController {
         return retailerService.create(retailerRequest, user, false, true, true);
     }
 
+//    // retailer user tạo mới nhà bán lẽ
+//    @PostMapping("/retailerCreate")
+//    @ApiOperation(value = "role retailer thêm mới nhà bán lẽ")
+//    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+//    public ResponseEntity<Object> userRetailerCreateRetailer(@RequestBody @Valid RetailerForUserRequest retailerForUserRequest) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        User user = userRepository.findByUsername(auth.getName()).orElse(null);
+//        return retailerService.create(retailerForUserRequest,user,false,false,false);
+//    }
+
     // admin cập nhật nhà bán lẽ
     @PutMapping("/{retailerId}")
     @ApiOperation(value = "Admin cập nhật nhà bán lẽ")
@@ -143,13 +155,32 @@ public class RetailerController {
         return retailerService.update(retailerRequest, retailerId);
     }
 
+    // retailer cập nhật nhà bán lẽ cả mình
+    @PutMapping("/retailerUpdate/{retailerId}")
+    @ApiOperation(value = "retailer cập nhật nhà bán lẽ của mình")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    public ResponseEntity<Object> roleRetailerUpdateRetailer(
+            @RequestBody @Valid RetailerForUserRequest retailerForUserRequest,
+            @PathVariable("retailerId") String trRetailerId
+    ) {
+        long retailerId;
+        try {
+            if (trRetailerId.trim().equalsIgnoreCase(""))
+                throw new RuntimeException("Không được để trống id");
+            retailerId = Long.parseLong(trRetailerId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("id phải là số nguyên");
+        }
+        return retailerService.roleRetailerUpdate(retailerForUserRequest, retailerId);
+    }
+
     // phê duyệt nhà bán lẽ
     @PutMapping("/approveRetailer/{retailerId}")
     @ApiOperation(value = "Admin phê duyệt nhà bán lẽ")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> approveRetailer(
             @PathVariable("retailerId") String strId
-    ) {
+    ) throws MessagingException {
         long retailerId;
 
         try {
@@ -182,8 +213,8 @@ public class RetailerController {
 
     // xóa nhà bán lẽ
     @DeleteMapping("/{retailerId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @ApiOperation(value = "Admin xóa nhà nhà bán lẽ")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    @ApiOperation(value = "Admin, retailer xóa nhà nhà bán lẽ")
     public ResponseEntity<Object> deleteById(@PathVariable("retailerId") String id) {
         return retailerService.deleteById(id);
     }
