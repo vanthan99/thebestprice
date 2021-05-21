@@ -96,23 +96,23 @@ public class ProductServiceImpl implements ProductService {
                 .findById(productId)
                 .orElseThrow(() -> new RuntimeException("id của sản phẩm không tồn tại"));
 
-        if (!product.isEnable())
-            throw new RuntimeException("Sản phẩm đang bị khóa");
+        if (!product.isEnable()) {
 
-        if (SecurityContextHolder.getContext().getAuthentication() != null &&
-                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
-                //when Anonymous Authentication is enabled
-                !(SecurityContextHolder.getContext().getAuthentication()
-                        instanceof AnonymousAuthenticationToken)) {
+            // kiểm tra chủ sản phẩm
+            if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                    SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                    //when Anonymous Authentication is enabled
+                    !(SecurityContextHolder.getContext().getAuthentication()
+                            instanceof AnonymousAuthenticationToken)) {
 
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            User user = userRepository.findByUsername(username).orElse(null);
+                String username = SecurityContextHolder.getContext().getAuthentication().getName();
+                User user = userRepository.findByUsername(username).orElse(null);
 
-            if (product.getCreatedBy().equals(username))
-                return ResponseEntity.ok(productConverter.toLongProductResponse(product));
+                if (product.getCreatedBy().equals(username))
+                    return ResponseEntity.ok(productConverter.toLongProductResponse(product));
+            }
+            throw new RuntimeException("Sản phẩm không hoạt động");
         }
-        if (!product.isApprove())
-            throw new RuntimeException("Sản phẩm này chưa được phê duyệt");
 
         return ResponseEntity.ok(productConverter.toLongProductResponse(product));
     }
@@ -403,7 +403,7 @@ public class ProductServiceImpl implements ProductService {
 
 
         // tạo mới product_retailer
-        ProductRetailer productRetailer = new ProductRetailer(productFullRequest.getUrl(), retailer, product, false, false);
+        ProductRetailer productRetailer = new ProductRetailer(productFullRequest.getUrl(), retailer, product, true, true);
         productRetailerRepository.save(productRetailer);
 
         priceRepository.save(new Price(price, productRetailer));

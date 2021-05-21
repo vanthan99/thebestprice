@@ -266,8 +266,8 @@ public class ProductConverter {
                 });
 
         LongSummaryStatistics statistics = this.summaryStatistics(prices);
-        response.setHighestPrice(statistics.getMax());
-        response.setLowestPrice(statistics.getMin());
+        response.setHighestPrice(statistics.getCount() == 0 ? 0 : statistics.getMax());
+        response.setLowestPrice(statistics.getCount() == 0 ? 0 : statistics.getMin());
 
         return response;
     }
