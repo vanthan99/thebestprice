@@ -180,6 +180,8 @@ public class ProductServiceImpl implements ProductService {
         if (user.getRole().equals(ERole.ROLE_ADMIN)) {
             newProduct.setEnable(true);
             newProduct.setApprove(true);
+        } else {
+            newProduct.setApprove(false);
         }
 
         productRepository.save(newProduct);
