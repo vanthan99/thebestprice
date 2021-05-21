@@ -8,7 +8,8 @@ public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Pro
 
     @Override
     public IndexingOverride onAdd(Product product) {
-        if (!product.isApprove() && !product.isEnable()) {
+
+        if (!product.isApprove() || !product.isEnable() || product.isDeleteFlg()) {
             return IndexingOverride.SKIP;
         }
         return IndexingOverride.APPLY_DEFAULT;
