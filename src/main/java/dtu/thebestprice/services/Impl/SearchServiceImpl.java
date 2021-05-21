@@ -74,6 +74,17 @@ public class SearchServiceImpl implements SearchService {
             return page;
         }
 
+//        BooleanJunction<?> boolForEnable = queryBuilder.bool();
+//        boolForEnable.must(queryBuilder.keyword().onField("enable").matching(1).createQuery());
+//        boolForWholeQuery.must(boolForEnable.createQuery());
+//
+//        BooleanJunction<?> boolForApprove = queryBuilder.bool();
+//        boolForApprove.must(queryBuilder.keyword().onField("approve").matching(1).createQuery());
+//        boolForWholeQuery.must(boolForApprove.createQuery());
+
+//        BooleanJunction<?> boolForDelete = queryBuilder.bool();
+//        boolForDelete.must(queryBuilder.keyword().onField("deleteFlg").matching(0).createQuery());
+//        boolForWholeQuery.must(boolForDelete.createQuery());
 
         if (filterRequest.getCatId() != null) {
             BooleanJunction<?> boolForCategoryIds = queryBuilder.bool();

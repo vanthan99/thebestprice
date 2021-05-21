@@ -6,7 +6,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.Store;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -41,6 +43,7 @@ public abstract class BaseEntity {
     private LocalDateTime updatedAt;
 
     @Column(columnDefinition = "TINYINT(1) default 0")
+    @Field(index = Index.YES, store = Store.YES)
     private boolean deleteFlg = false;
 
     @Column
