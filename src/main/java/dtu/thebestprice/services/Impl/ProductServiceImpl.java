@@ -97,8 +97,6 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("id của sản phẩm không tồn tại"));
 
         if (!product.isEnable()) {
-
-
             // kiểm tra chủ sản phẩm
             if (SecurityContextHolder.getContext().getAuthentication() != null &&
                     SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
@@ -109,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
                 String username = SecurityContextHolder.getContext().getAuthentication().getName();
                 User user = userRepository.findByUsername(username).orElse(null);
 
-                if (product.getCreatedBy().equals(username) && !product.isApprove())
+                if ((product.getCreatedBy().equals(username) || user.getRole().equals(ERole.ROLE_ADMIN)) && !product.isApprove())
                     return ResponseEntity.ok(productConverter.toLongProductResponse(product));
             }
             throw new RuntimeException("Sản phẩm không hoạt động");
