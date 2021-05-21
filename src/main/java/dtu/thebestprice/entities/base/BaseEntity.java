@@ -43,7 +43,6 @@ public abstract class BaseEntity {
     private LocalDateTime updatedAt;
 
     @Column(columnDefinition = "TINYINT(1) default 0")
-    @Field(index = Index.YES, store = Store.YES)
     private boolean deleteFlg = false;
 
     @Column

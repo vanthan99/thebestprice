@@ -30,7 +30,7 @@ public class IndexingService {
     public void initiateIndexing() {
         try {
             FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-            fullTextEntityManager.createIndexer().startAndWait();
+            fullTextEntityManager.createIndexer().threadsToLoadObjects(2).startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
