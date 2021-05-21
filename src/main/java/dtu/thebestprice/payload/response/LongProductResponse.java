@@ -22,6 +22,7 @@ public class LongProductResponse {
     private Long highestPrice;
     private List<ProductRetailerResponse> prices;
     private Long totalRate;
+    private boolean approve;
 
     // kiểm tra xem người xem hiện tại đã rate hay chưa?
     private boolean rated;

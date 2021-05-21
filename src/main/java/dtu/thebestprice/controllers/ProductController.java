@@ -35,13 +35,15 @@ public class ProductController {
     @GetMapping("/{productId}")
     @ApiOperation(value = "Tìm sản phẩm theo id")
     public ResponseEntity<Object> findById(
-            @PathVariable(name = "productId") String productId
+            @PathVariable(name = "productId") String strId
     ) {
+        long productId;
         try {
-            return ResponseEntity.ok(productService.findById(productId));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
+            productId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Product Id phải là số nguyên");
         }
+        return productService.findById(productId);
     }
 
     @GetMapping("/onlyProduct/{productId}")
@@ -63,7 +65,7 @@ public class ProductController {
     @ApiOperation(value = "Page danh sách sản phẩm của retailer")
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
     public ResponseEntity<Object> listProductForRetailer(
-          Pageable pageable
+            Pageable pageable
     ) {
         return productService.listProductForRetailer(pageable);
     }

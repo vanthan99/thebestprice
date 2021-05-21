@@ -91,34 +91,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public LongProductResponse findById(String productId) throws Exception {
-        long id;
-        try {
-            id = Long.parseLong(productId);
-        } catch (Exception e) {
-            throw new Exception("id sản phẩm không đúng định dạng");
-        }
+    public ResponseEntity<Object> findById(long productId) {
+        Product product = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new RuntimeException("id của sản phẩm không tồn tại"));
 
-        Product product = productRepository.findById(id).orElseThrow(() -> new Exception("id của sản phẩm không tồn tại"));
-
-        if (product.isEnable())
-            return productConverter.toLongProductResponse(product);
-
+        if (!product.isEnable())
+            throw new RuntimeException("Sản phẩm đang bị khóa");
 
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
                 SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
                 //when Anonymous Authentication is enabled
                 !(SecurityContextHolder.getContext().getAuthentication()
                         instanceof AnonymousAuthenticationToken)) {
+
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userRepository.findByUsername(username).orElse(null);
 
-            assert user != null;
-            if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER)) {
-                return productConverter.toLongProductResponse(product);
-            }
+            if (product.getCreatedBy().equals(username))
+                return ResponseEntity.ok(productConverter.toLongProductResponse(product));
         }
-        throw new RuntimeException("Sẩn phẩm đã bị khóa");
+        if (!product.isApprove())
+            throw new RuntimeException("Sản phẩm này chưa được phê duyệt");
+
+        return ResponseEntity.ok(productConverter.toLongProductResponse(product));
     }
 
 

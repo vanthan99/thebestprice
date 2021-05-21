@@ -8,6 +8,8 @@ import dtu.thebestprice.repositories.ViewCountStatisticRepository;
 import dtu.thebestprice.services.ProductTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,9 +27,15 @@ public class ProductTrackingServiceImpl implements ProductTrackingService {
 
     @Override
     public ResponseEntity<Object> productTracking(Long productId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (!productRepository.existsById(productId)) {
             throw new RuntimeException("Id sản phẩn không tồn tại");
         }
+
+        Product product = productRepository.getOne(productId);
+        if (product.getCreatedBy().equals(authentication.getName()))
+            throw new RuntimeException("Bạn là chủ sản phẩm. vì vậy không thể tracking cho sản phẩm này");
 
         /*
          * Cập nhật viewcount trong product lên 1 đơn vị
@@ -39,10 +47,10 @@ public class ProductTrackingServiceImpl implements ProductTrackingService {
          *
          * */
         LocalDate nowDate = LocalDate.now();
-        Product product = productRepository.getOne(productId);
-        if (viewCountStatisticRepository.existsByStatisticDayAndProduct(nowDate,product)) {
+
+        if (viewCountStatisticRepository.existsByStatisticDayAndProduct(nowDate, product)) {
             // Cập nhật lên 1 đơn vị
-            ViewCountStatistic viewCountStatistic = viewCountStatisticRepository.findByStatisticDayAndProduct(nowDate,product);
+            ViewCountStatistic viewCountStatistic = viewCountStatisticRepository.findByStatisticDayAndProduct(nowDate, product);
 
             viewCountStatistic.setViewCount(viewCountStatistic.getViewCount() + 1);
 
@@ -50,8 +58,8 @@ public class ProductTrackingServiceImpl implements ProductTrackingService {
         }
 
         /*
-        * Ngược lại nếu ngày hôm nay chưa có thống kê nào thì tạo mới bảng thống kê của ngày hôm nay.
-        * */
+         * Ngược lại nếu ngày hôm nay chưa có thống kê nào thì tạo mới bảng thống kê của ngày hôm nay.
+         * */
         else {
             ViewCountStatistic viewCountStatistic = new ViewCountStatistic();
             viewCountStatistic.setProduct(product);

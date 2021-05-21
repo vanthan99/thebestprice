@@ -13,7 +13,7 @@ public interface ProductService {
 
     Page<LongProductResponse> findByCategoryId(Pageable pageable, String catId) throws Exception;
 
-    LongProductResponse findById(String productId) throws Exception;
+    ResponseEntity<Object> findById(long productId);
 
     ResponseEntity<Object> create(ProductRequest productRequest);
 

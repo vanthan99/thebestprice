@@ -63,13 +63,13 @@ public class ProductConverter {
         long brandId;
         try {
             categoryId = Long.parseLong(productRequest.getCategoryId());
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("category id phải là số nguyên");
         }
 
-        try{
+        try {
             brandId = Long.parseLong(productRequest.getBrandId());
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("brand id phải là số nguyên");
         }
 
@@ -92,13 +92,13 @@ public class ProductConverter {
         long brandId;
         try {
             categoryId = Long.parseLong(productFullRequest.getCategoryId());
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("category id phải là số nguyên");
         }
 
-        try{
+        try {
             brandId = Long.parseLong(productFullRequest.getBrandId());
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("brand id phải là số nguyên");
         }
 
@@ -124,13 +124,13 @@ public class ProductConverter {
         long brandId;
         try {
             categoryId = Long.parseLong(productRequest.getCategoryId());
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("category id phải là số nguyên");
         }
 
-        try{
+        try {
             brandId = Long.parseLong(productRequest.getBrandId());
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("brand id phải là số nguyên");
         }
 
@@ -160,6 +160,7 @@ public class ProductConverter {
         LongProductResponse longProductResponse = new LongProductResponse();
         Long totalRate = ratingRepository.countByProduct(product);
 
+        longProductResponse.setApprove(product.isApprove());
 
         // check auth
         if (SecurityContextHolder.getContext().getAuthentication() != null &&
@@ -287,7 +288,7 @@ public class ProductConverter {
         return productItem;
     }
 
-    public ProductResponse toProductResponse(Product product){
+    public ProductResponse toProductResponse(Product product) {
         ProductResponse productResponse = new ProductResponse();
 
 

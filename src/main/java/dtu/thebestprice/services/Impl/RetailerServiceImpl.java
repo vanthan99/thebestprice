@@ -405,6 +405,7 @@ public class RetailerServiceImpl implements RetailerService {
         )
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
 
+        retailer.setApprove(false);
 
         retailerRepository.save(retailerConverter.toEntity(retailerForUserRequest, retailer));
         return ResponseEntity.ok(new ApiResponse(true, "Cập nhật nhà bán lẽ thành công"));
