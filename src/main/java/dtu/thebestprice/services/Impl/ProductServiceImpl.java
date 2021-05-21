@@ -434,6 +434,14 @@ public class ProductServiceImpl implements ProductService {
         return ResponseEntity.ok(productConverter.toProductResponse(product));
     }
 
+    @Override
+    public ResponseEntity<Object> listProductForRetailer(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Page<Product> productPage = productRepository.findByDeleteFlgFalseAndCreatedBy(authentication.getName(), pageable);
+        Page<ShortProductResponse> page = productPage.map(product -> productConverter.toShortProductResponse(product));
+        return ResponseEntity.ok(page);
+    }
+
     @Transactional
     public ResponseEntity<Object> getResult(Query query, Pageable pageable) {
         int totalElements = query.getResultList().size();

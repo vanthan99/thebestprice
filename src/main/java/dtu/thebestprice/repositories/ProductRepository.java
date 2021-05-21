@@ -25,4 +25,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     void updateViewCount(Long productId);
 
     Page<Product> findByApproveAndDeleteFlgFalse(boolean approve, Pageable pageable);
+
+    Page<Product> findByDeleteFlgFalseAndCreatedBy(String createdBy, Pageable pageable);
 }

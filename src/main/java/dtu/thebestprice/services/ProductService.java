@@ -25,7 +25,7 @@ public interface ProductService {
     ResponseEntity<Object> findByApprove(boolean b, Pageable pageable);
 
     // page sản phẩm được xem nhiều nhất tháng hiện tại
-    ResponseEntity<Object> pageProductMostViewMonth(String keyword,Pageable pageable,Integer month, Integer year);
+    ResponseEntity<Object> pageProductMostViewMonth(String keyword, Pageable pageable, Integer month, Integer year);
 
     ResponseEntity<Object> toggleEnable(long productId);
 
@@ -37,4 +37,7 @@ public interface ProductService {
 
     // admin, retailer tìm sản phẩm
     ResponseEntity<Object> findProductById(long productId);
+
+    // danh sách sản phẩm của role retailer
+    ResponseEntity<Object> listProductForRetailer(Pageable pageable);
 }

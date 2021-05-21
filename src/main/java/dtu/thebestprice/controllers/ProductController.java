@@ -59,6 +59,15 @@ public class ProductController {
         return productService.findProductById(productId);
     }
 
+    @GetMapping("/listProductForRetailer")
+    @ApiOperation(value = "Page danh sách sản phẩm của retailer")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    public ResponseEntity<Object> listProductForRetailer(
+          Pageable pageable
+    ) {
+        return productService.listProductForRetailer(pageable);
+    }
+
 //    @GetMapping("/catId/{catId}")
 //    @ApiOperation(value = "Danh sách sản phẩm theo id danh mục")
 //    public ResponseEntity<Object> findByCategoryId(
@@ -123,7 +132,7 @@ public class ProductController {
     // danh sách sản phẩm đã được phê duyệt
     @GetMapping("/approveTrue")
     @ApiOperation(value = "Page sản phẩm đã được phê duyệt")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
     public ResponseEntity<Object> findByApproveTrue(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return productService.findByApprove(true, pageable);
     }
