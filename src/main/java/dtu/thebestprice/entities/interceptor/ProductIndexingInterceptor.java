@@ -30,8 +30,8 @@ public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Pro
 
     @Override
     public IndexingOverride onCollectionUpdate(Product product) {
-        if (!product.isApprove() && !product.isEnable()) {
-            return IndexingOverride.SKIP;
+        if (!product.isApprove() && !product.isEnable() || product.isDeleteFlg()) {
+            return IndexingOverride.REMOVE;
         }
         return onUpdate(product);
     }
