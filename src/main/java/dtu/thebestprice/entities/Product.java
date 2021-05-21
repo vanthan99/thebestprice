@@ -1,13 +1,13 @@
 package dtu.thebestprice.entities;
 
 import dtu.thebestprice.entities.base.BaseEntity;
+import dtu.thebestprice.entities.interceptor.ProductIndexingInterceptor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Indexed
+@Indexed(interceptor = ProductIndexingInterceptor.class)
 public class Product extends BaseEntity {
     @Column
     @Field(store = Store.YES)
@@ -58,10 +58,8 @@ public class Product extends BaseEntity {
     private Long viewCount = 0L;
 
     @Column(columnDefinition = "TINYINT(1) default 0")
-    @Field(index = Index.YES, store = Store.YES)
     private boolean approve = false;
 
     @Column(columnDefinition = "TINYINT(1) default 1")
-    @Field(index = Index.YES, store = Store.YES)
     private boolean enable = true;
 }
