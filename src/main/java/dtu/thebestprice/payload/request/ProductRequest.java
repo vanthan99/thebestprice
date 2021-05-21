@@ -24,10 +24,10 @@ public class ProductRequest {
     private String shortDescription;
 
     @NotNull(message = "Không được để trống id của danh mục")
-    private Long categoryId;
+    private String categoryId;
 
     @NotNull(message = "Không được để trống id của nhà sản xuất")
-    private Long brandId;
+    private String brandId;
 
     // list hình ảnh
     @Size(min = 3,message = "Phải từ 3 hình ảnh trở lên")

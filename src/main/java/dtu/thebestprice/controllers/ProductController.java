@@ -44,6 +44,21 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/onlyProduct/{productId}")
+    @ApiOperation(value = "Admin, Retailer tìm thông tin sản phẩm theo id")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    public ResponseEntity<Object> findProductById(
+            @PathVariable(name = "productId") String strId
+    ) {
+        long productId;
+        try {
+            productId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Product Id phải là số nguyên");
+        }
+        return productService.findProductById(productId);
+    }
+
 //    @GetMapping("/catId/{catId}")
 //    @ApiOperation(value = "Danh sách sản phẩm theo id danh mục")
 //    public ResponseEntity<Object> findByCategoryId(

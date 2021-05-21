@@ -25,6 +25,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
+import javax.naming.AuthenticationNotSupportedException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -91,8 +92,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public LongProductResponse findById(String productId) throws Exception {
-
-
         long id;
         try {
             id = Long.parseLong(productId);
@@ -125,7 +124,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<Object> create(ProductRequest productRequest) {
-        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productRequest.getCategoryId()))
+        long categoryId;
+        try {
+            categoryId = Long.parseLong(productRequest.getCategoryId());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("categoryId phải là số nguyên");
+        }
+
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(categoryId))
             throw new RuntimeException("id danh mục phải là danh mục con");
         Product product = productConverter.toEntity(productRequest);
         product.setEnable(true);
@@ -153,7 +159,14 @@ public class ProductServiceImpl implements ProductService {
 
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("Chỉnh sửa thất bại. hệ thống không biết bạn là ai"));
 
-        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productRequest.getCategoryId()))
+        long categoryId;
+        try {
+            categoryId = Long.parseLong(productRequest.getCategoryId());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("categoryId phải là số nguyên");
+        }
+
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(categoryId))
             throw new RuntimeException("id danh mục phải là danh mục con");
 
         Product currentProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("id sản phẩm không tồn tại"));
@@ -164,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = productConverter.toEntity(productRequest, currentProduct);
 
         // nếu mà admin cập nhật thì set approve và enable là true
-        if (user.getRole().equals(ERole.ROLE_ADMIN)){
+        if (user.getRole().equals(ERole.ROLE_ADMIN)) {
             newProduct.setEnable(true);
             newProduct.setApprove(true);
         }
@@ -366,15 +379,22 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Giá phải là số nguyên");
         }
 
-        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productFullRequest.getProduct().getCategoryId()))
+        long categoryId;
+        try {
+            categoryId = Long.parseLong(productFullRequest.getCategoryId());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("categoryId phải là số nguyên");
+        }
+
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(categoryId))
             throw new RuntimeException("id danh mục phải là danh mục con");
-        Product product = productConverter.toEntity(productFullRequest.getProduct());
+        Product product = productConverter.toEntity(productFullRequest);
         product.setEnable(false);
         product.setApprove(false);
         productRepository.save(product);
 
         // save hình ảnh
-        List<String> images = productFullRequest.getProduct().getImages();
+        List<String> images = productFullRequest.getImages();
         if (images != null && images.size() >= 3) {
             images.forEach(imageItem -> {
                 if (!imageItem.trim().equalsIgnoreCase("")) {
@@ -391,6 +411,27 @@ public class ProductServiceImpl implements ProductService {
         priceRepository.save(new Price(price, productRetailer));
 
         return ResponseEntity.ok(new ApiResponse(true, "Yêu cầu thêm mới sản phẩm thành công.Hãy đợi quản trị viên phê duyệt"));
+    }
+
+    @Override
+    public ResponseEntity<Object> findProductById(long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("không tồn tại sản phẩm"));
+
+        if (product.isDeleteFlg())
+            throw new RuntimeException("Sản phẩm này đã bị xóa khỏi hệ thống");
+
+        if (!product.isEnable())
+            throw new RuntimeException("Sản phẩm này đang bị khóa");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("hệ thống không thể nhận biết được bạn"));
+
+        if (user.getRole().equals(ERole.ROLE_RETAILER) && !product.getCreatedBy().equals(authentication))
+            throw new RuntimeException("Bạn không đủ quyền để xem thông tin sản phẩm này");
+
+        return ResponseEntity.ok(productConverter.toProductResponse(product));
     }
 
     @Transactional

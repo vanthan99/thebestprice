@@ -34,4 +34,7 @@ public interface ProductService {
 
     // retailer đăng sản phẩm (kèm giá và url tới nơi bán)
     ResponseEntity<Object> retailerCreateProduct(ProductFullRequest productFullRequest);
+
+    // admin, retailer tìm sản phẩm
+    ResponseEntity<Object> findProductById(long productId);
 }

@@ -6,10 +6,13 @@ import dtu.thebestprice.entities.Rating;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.ProductRequest;
+import dtu.thebestprice.payload.request.price.ProductRetailerRequest;
+import dtu.thebestprice.payload.request.product.ProductFullRequest;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import dtu.thebestprice.payload.response.ProductItem;
 import dtu.thebestprice.payload.response.ProductRetailerResponse;
 import dtu.thebestprice.payload.response.ShortProductResponse;
+import dtu.thebestprice.payload.response.product.ProductResponse;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.securities.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,15 +62,58 @@ public class ProductConverter {
     public Product toEntity(ProductRequest productRequest) {
         Product product = new Product();
 
+        long categoryId;
+        long brandId;
+        try {
+            categoryId = Long.parseLong(productRequest.getCategoryId());
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("category id phải là số nguyên");
+        }
+
+        try{
+            brandId = Long.parseLong(productRequest.getBrandId());
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("brand id phải là số nguyên");
+        }
+
         product.setTitle(productRequest.getTitle());
         product.setLongDescription(productRequest.getLongDescription());
         product.setShortDescription(productRequest.getShortDescription());
 
         // set category
-        product.setCategory(categoryRepository.findByDeleteFlgFalseAndId(productRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
+        product.setCategory(categoryRepository.findByDeleteFlgFalseAndId(categoryId).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
 
         // set brand
-        product.setBrand(brandRepository.findByDeleteFlgFalseAndIdAndEnableTrue(productRequest.getBrandId()).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
+        product.setBrand(brandRepository.findByDeleteFlgFalseAndIdAndEnableTrue(brandId).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
+        return product;
+    }
+
+    public Product toEntity(ProductFullRequest productFullRequest) {
+        Product product = new Product();
+
+        long categoryId;
+        long brandId;
+        try {
+            categoryId = Long.parseLong(productFullRequest.getCategoryId());
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("category id phải là số nguyên");
+        }
+
+        try{
+            brandId = Long.parseLong(productFullRequest.getBrandId());
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("brand id phải là số nguyên");
+        }
+
+        product.setTitle(productFullRequest.getTitle());
+        product.setLongDescription(productFullRequest.getLongDescription());
+        product.setShortDescription(productFullRequest.getShortDescription());
+
+        // set category
+        product.setCategory(categoryRepository.findByDeleteFlgFalseAndId(categoryId).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
+
+        // set brand
+        product.setBrand(brandRepository.findByDeleteFlgFalseAndIdAndEnableTrue(brandId).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
         return product;
     }
 
@@ -76,6 +122,21 @@ public class ProductConverter {
         /*
          * Trường nào có giá trị thì mới cập nhật
          * */
+
+        long categoryId;
+        long brandId;
+        try {
+            categoryId = Long.parseLong(productRequest.getCategoryId());
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("category id phải là số nguyên");
+        }
+
+        try{
+            brandId = Long.parseLong(productRequest.getBrandId());
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("brand id phải là số nguyên");
+        }
+
 
         if (productRequest.getTitle() != null && !productRequest.getTitle().trim().equalsIgnoreCase(""))
             product.setTitle(productRequest.getTitle());
@@ -88,11 +149,11 @@ public class ProductConverter {
 
         // set category
         if (productRequest.getCategoryId() != null)
-            product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
+            product.setCategory(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
 
         // set brand
         if (productRequest.getBrandId() != null)
-            product.setBrand(brandRepository.findById(productRequest.getBrandId()).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
+            product.setBrand(brandRepository.findById(brandId).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
 
         return product;
     }
@@ -227,6 +288,31 @@ public class ProductConverter {
 
         productItem.setTotalStore((long) productRetailers.size());
         return productItem;
+    }
+
+    public ProductResponse toProductResponse(Product product){
+        ProductResponse productResponse = new ProductResponse();
+
+
+        productResponse.setId(product.getId());
+        productResponse.setTitle(product.getTitle());
+        productResponse.setShortDescription(product.getShortDescription());
+        productResponse.setLongDescription(product.getLongDescription());
+
+        // set category
+        productResponse.setCategory(categoryConverter.toShortCategoryResponse(product.getCategory()));
+
+        // set brand
+        productResponse.setBrand(brandConverter.toBrandResponse(product.getBrand()));
+
+        // set list image
+        List<String> images = new ArrayList<>();
+        imageRepository.findByProductAndDeleteFlgFalse(product).forEach(image -> {
+            images.add(image.getUrl());
+        });
+        productResponse.setImages(images);
+
+        return productResponse;
     }
 
     /*
