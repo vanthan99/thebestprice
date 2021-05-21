@@ -2,9 +2,13 @@ package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.payload.request.price.PriceRequest;
 import dtu.thebestprice.payload.request.price.PriceRetailerRequest;
+import dtu.thebestprice.payload.request.price.ProductRetailerRequest;
+import dtu.thebestprice.repositories.ProductRetailerRepository;
 import dtu.thebestprice.services.PriceService;
 import dtu.thebestprice.services.ProductRetailerService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -88,7 +92,6 @@ public class PriceController {
         return priceService.adminApprovePrice(productRetailerId);
     }
 
-
     // admin câp nhất giá cho mọi sản phẩm
     @ApiOperation(value = "Admin cập nhật giá cho mọi sản phẩm")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -105,6 +108,26 @@ public class PriceController {
         }
         return priceService.adminUpdatePrice(productRetailerId, priceRequest);
     }
+
+    // retailer or admin chỉnh sửa product retailer
+    @ApiOperation(value = "Admin, Retailer chỉnh sửa Product_Retailer")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
+    @PutMapping("/editProductRetailer/{productRetailerId}")
+    public ResponseEntity<Object> updateProductRetailer(
+            @RequestBody @Valid ProductRetailerRequest productRetailerRequest,
+            @PathVariable("productRetailerId") String strId
+    ) {
+        long productRetailerId;
+        try {
+            productRetailerId = Long.parseLong(strId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("productRetailerId phải là số nguyên");
+        }
+
+        return productRetailerService.update(productRetailerId,productRetailerRequest);
+
+    }
+
 
     // danh sách giá chưa approve
     @ApiOperation(value = "Page giá chưa được phê duyệt")
@@ -131,20 +154,20 @@ public class PriceController {
             throw new RuntimeException("Id của sản phẩm phải là số nguyên");
         }
 
-        return priceService.retailerCreateNewPrice(productId,priceRequest);
+        return priceService.retailerCreateNewPrice(productId, priceRequest);
     }
 
     // retailer xóa thông tin xóa product_retailer
     @ApiOperation(value = "Retailer xóa 1 sản phẩm mà họ đang kinh doanh")
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
     @DeleteMapping("/retailerDelete/{productRetailerId}")
-    public  ResponseEntity<Object> retailerDelete(
+    public ResponseEntity<Object> retailerDelete(
             @PathVariable("productRetailerId") String strId
-    ){
+    ) {
         long productRetailerId;
-        try{
+        try {
             productRetailerId = Long.parseLong(strId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("product retailer id phải là số nguyên");
         }
         return priceService.retailerDelete(productRetailerId);
@@ -166,20 +189,20 @@ public class PriceController {
             throw new RuntimeException("Id của sản phẩm phải là số nguyên");
         }
 
-        return priceService.adminCreateNewPrice(productId,priceRetailerRequest);
+        return priceService.adminCreateNewPrice(productId, priceRetailerRequest);
     }
 
     // admin xóa thông tin xóa product_retailer
     @ApiOperation(value = "Admin xóa 1 product_retailer")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/adminDelete/{productRetailerId}")
-    public  ResponseEntity<Object> AdminDelete(
+    public ResponseEntity<Object> AdminDelete(
             @PathVariable("productRetailerId") String strId
-    ){
+    ) {
         long productRetailerId;
-        try{
+        try {
             productRetailerId = Long.parseLong(strId);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new NumberFormatException("product retailer id phải là số nguyên");
         }
         return priceService.adminDelete(productRetailerId);

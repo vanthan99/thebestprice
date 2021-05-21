@@ -2,6 +2,7 @@ package dtu.thebestprice.services;
 
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.request.ProductRequest;
+import dtu.thebestprice.payload.request.product.ProductFullRequest;
 import dtu.thebestprice.payload.response.LongProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,7 @@ public interface ProductService {
 
     // admin approve sản phẩm
     ResponseEntity<Object> adminApprove(long productId);
+
+    // retailer đăng sản phẩm (kèm giá và url tới nơi bán)
+    ResponseEntity<Object> retailerCreateProduct(ProductFullRequest productFullRequest);
 }

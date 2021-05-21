@@ -64,10 +64,10 @@ public class ProductConverter {
         product.setShortDescription(productRequest.getShortDescription());
 
         // set category
-        product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
+        product.setCategory(categoryRepository.findByDeleteFlgFalseAndId(productRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("id danh mục không tồn tại!")));
 
         // set brand
-        product.setBrand(brandRepository.findById(productRequest.getBrandId()).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
+        product.setBrand(brandRepository.findByDeleteFlgFalseAndIdAndEnableTrue(productRequest.getBrandId()).orElseThrow(() -> new RuntimeException("id nhà sản xuất không tồn tại")));
         return product;
     }
 

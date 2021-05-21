@@ -5,12 +5,10 @@ import dtu.thebestprice.entities.*;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.FilterRequest;
 import dtu.thebestprice.payload.request.ProductRequest;
+import dtu.thebestprice.payload.request.product.ProductFullRequest;
 import dtu.thebestprice.payload.response.*;
 import dtu.thebestprice.payload.response.query.ViewCountModel;
-import dtu.thebestprice.repositories.CategoryRepository;
-import dtu.thebestprice.repositories.ImageRepository;
-import dtu.thebestprice.repositories.ProductRepository;
-import dtu.thebestprice.repositories.UserRepository;
+import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.specifications.ProductSpecification;
 import dtu.thebestprice.specifications.ViewCountStatisticSpecification;
@@ -23,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
@@ -54,6 +53,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RetailerRepository retailerRepository;
+
+    @Autowired
+    ProductRetailerRepository productRetailerRepository;
+
+    @Autowired
+    PriceRepository priceRepository;
 
     @Override
     public Page<LongProductResponse> filter(FilterRequest filterRequest, Pageable pageable) throws Exception {
@@ -141,12 +149,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<Object> update(ProductRequest productRequest, Long productId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("Chỉnh sửa thất bại. hệ thống không biết bạn là ai"));
+
         if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productRequest.getCategoryId()))
             throw new RuntimeException("id danh mục phải là danh mục con");
 
         Product currentProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("id sản phẩm không tồn tại"));
 
+        if (user.getRole().equals(ERole.ROLE_RETAILER) && !currentProduct.getCreatedBy().equals(authentication.getName()))
+            throw new RuntimeException("Không thể chỉnh sửa sản phẩm này. bạn không phải là người tạo ra sản phẩm");
+
         Product newProduct = productConverter.toEntity(productRequest, currentProduct);
+
+        // nếu mà admin cập nhật thì set approve và enable là true
+        if (user.getRole().equals(ERole.ROLE_ADMIN)){
+            newProduct.setEnable(true);
+            newProduct.setApprove(true);
+        }
 
         productRepository.save(newProduct);
 
@@ -181,6 +202,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<Object> deleteById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Id sản phẩm không tồn tại"));
+
+        if (product.isDeleteFlg())
+            throw new RuntimeException("Sản phẩm này đã bị xóa ra khỏi hệ thống trước đó");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Hệ thống không biết bạn là ai"));
+
+        if (user.getRole().equals(ERole.ROLE_RETAILER) && !product.getCreatedBy().equals(authentication.getName()))
+            throw new RuntimeException("Bạn không thể xóa sản phẩm này vì không đủ điều kiện");
 
         product.setDeleteFlg(true);
 
@@ -307,6 +339,58 @@ public class ProductServiceImpl implements ProductService {
         product.setEnable(true);
         productRepository.save(product);
         return ResponseEntity.ok(new ApiResponse(true, "Phê duyệt sản phẩm thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> retailerCreateProduct(ProductFullRequest productFullRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        long retailerId;
+        try {
+            retailerId = Long.parseLong(productFullRequest.getRetailerId());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("retailer Id phải là số nguyên");
+        }
+
+        Retailer retailer = retailerRepository.findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại retailer này"));
+
+        if (!authentication.getName().equals(retailer.getUser().getUsername()))
+            throw new RuntimeException("Bạn không phải chủ của nhà bán lẽ này");
+
+
+        long price;
+        try {
+            price = Long.parseLong(productFullRequest.getPrice());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Giá phải là số nguyên");
+        }
+
+        if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(productFullRequest.getProduct().getCategoryId()))
+            throw new RuntimeException("id danh mục phải là danh mục con");
+        Product product = productConverter.toEntity(productFullRequest.getProduct());
+        product.setEnable(false);
+        product.setApprove(false);
+        productRepository.save(product);
+
+        // save hình ảnh
+        List<String> images = productFullRequest.getProduct().getImages();
+        if (images != null && images.size() >= 3) {
+            images.forEach(imageItem -> {
+                if (!imageItem.trim().equalsIgnoreCase("")) {
+                    saveImage(product, imageItem);
+                }
+            });
+        }
+
+
+        // tạo mới product_retailer
+        ProductRetailer productRetailer = new ProductRetailer(productFullRequest.getUrl(), retailer, product, false, false);
+        productRetailerRepository.save(productRetailer);
+
+        priceRepository.save(new Price(price, productRetailer));
+
+        return ResponseEntity.ok(new ApiResponse(true, "Yêu cầu thêm mới sản phẩm thành công.Hãy đợi quản trị viên phê duyệt"));
     }
 
     @Transactional

@@ -1,16 +1,28 @@
 package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.converters.PriceConverter;
+import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
+import dtu.thebestprice.entities.Retailer;
+import dtu.thebestprice.entities.User;
+import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.payload.request.price.ProductRetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.price.PriceDetailResponse;
+import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
+import dtu.thebestprice.repositories.RetailerRepository;
+import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.ProductRetailerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 public class ProductRetailerServiceImpl implements ProductRetailerService {
@@ -20,6 +32,15 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
 
     @Autowired
     PriceConverter priceConverter;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    RetailerRepository retailerRepository;
 
     @Override
     public ResponseEntity<Object> toggleEnable(long productRetailerId) {
@@ -44,5 +65,30 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
                 productRetailerRepository.findByDeleteFlgFalseAndApprove(approve, pageable)
                         .map(productRetailer -> priceConverter.toPriceDetailResponse(productRetailer));
         return ResponseEntity.ok(result);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> update(long productRetailerId, ProductRetailerRequest productRetailerRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Hệ thống không thể nhận biết bạn là ai"));
+
+        ProductRetailer productRetailer = productRetailerRepository.findById(productRetailerId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại produc retailer"));
+
+        if (user.getRole().equals(ERole.ROLE_RETAILER) && !productRetailer.getRetailer().getUser().getUsername().equals(authentication.getName()))
+            throw new RuntimeException("Bạn không phải là chủ sở hữu của nhà bán lẽ này");
+
+        if (productRetailer.isDeleteFlg())
+            throw new RuntimeException("product retailer này đã bị xóa trước đó");
+
+        if (productRetailer.getUrl().equals(productRetailerRequest.getUrl()))
+            throw new RuntimeException("Không có thay đổi mới");
+
+        productRetailer.setUrl(productRetailerRequest.getUrl());
+        productRetailerRepository.save(productRetailer);
+        return ResponseEntity.ok(new ApiResponse(true, "Cập nhật thành công"));
     }
 }

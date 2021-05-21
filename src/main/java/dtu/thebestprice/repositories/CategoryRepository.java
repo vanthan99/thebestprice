@@ -7,12 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // danh sách category cha
     List<Category> findByCategoryIsNullAndDeleteFlgFalse();
+
+    Optional<Category> findByDeleteFlgFalseAndId(Long categoryId);
 
     // danh sách category con
     List<Category> findByCategoryIsNotNullAndDeleteFlgFalse();

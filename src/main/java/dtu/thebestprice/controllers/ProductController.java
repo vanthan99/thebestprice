@@ -2,6 +2,7 @@ package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.payload.request.ProductRequest;
 import dtu.thebestprice.payload.request.RatingRequest;
+import dtu.thebestprice.payload.request.product.ProductFullRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.securities.MyUserDetails;
 import dtu.thebestprice.services.ProductService;
@@ -63,13 +64,21 @@ public class ProductController {
         return productService.create(productRequest);
     }
 
+    @PostMapping("/retailerCreateProduct")
+    @ApiOperation(value = "Quyền Retailer thêm mới sản phẩm (bao gồm cả giá,retailer)")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    public ResponseEntity<Object> retailerCreateProduct(
+            @RequestBody @Valid ProductFullRequest productFullRequest
+    ) {
+        return productService.retailerCreateProduct(productFullRequest);
+    }
+
     @PutMapping("/{productId}")
-    @ApiOperation(value = "Cập nhật sản phẩm")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Admin, Retailer Cập nhật sản phẩm")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
     public ResponseEntity<Object> updateProduct(
             @RequestBody @Valid ProductRequest productRequest,
             @PathVariable("productId") String strProductId
-
     ) {
         Long productId;
         try {
@@ -84,8 +93,8 @@ public class ProductController {
 
 
     @DeleteMapping("/{productId}")
-    @ApiOperation(value = "Xóa sản phẩm theo id")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ApiOperation(value = "Admin, Retailer xóa sản phẩm theo id")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
     public ResponseEntity<Object> deleteById(@PathVariable("productId") String strId) {
         long id;
         try {
@@ -100,7 +109,7 @@ public class ProductController {
     @GetMapping("/approveTrue")
     @ApiOperation(value = "Page sản phẩm đã được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveTrue(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Object> findByApproveTrue(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return productService.findByApprove(true, pageable);
     }
 
@@ -108,7 +117,7 @@ public class ProductController {
     @GetMapping("/approveFalse")
     @ApiOperation(value = "Page sản phẩm chưa được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveFalse(@PageableDefault(sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Object> findByApproveFalse(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return productService.findByApprove(false, pageable);
     }
 
