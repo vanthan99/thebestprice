@@ -55,7 +55,7 @@ public class PriceServiceImpl implements PriceService {
         // kiểm tra xem người dùng hiện tại có phải chủ của retailer hay không
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!productRetailer.getRetailer().getUser().getUsername().equals(auth.getName()))
+        if (!productRetailer.getCreatedBy().equals(auth.getName()))
             throw new RuntimeException("Bạn không phải nhà bán lẽ này và không thể thay đổi giá");
 
 
@@ -220,7 +220,7 @@ public class PriceServiceImpl implements PriceService {
                 productRetailerRepository.findById(productRetailerId)
                         .orElseThrow(() -> new RuntimeException("Không tồn tại product retailer"));
 
-        if (!productRetailer.getRetailer().getUser().getUsername().equals(authentication.getName()))
+        if (!productRetailer.getCreatedBy().equals(authentication.getName()))
             throw new RuntimeException("bạn không có quyền xóa product retailer này");
 
         if (productRetailer.isDeleteFlg())

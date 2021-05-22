@@ -78,7 +78,7 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
         ProductRetailer productRetailer = productRetailerRepository.findById(productRetailerId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại produc retailer"));
 
-        if (user.getRole().equals(ERole.ROLE_RETAILER) && !productRetailer.getRetailer().getUser().getUsername().equals(authentication.getName()))
+        if (user.getRole().equals(ERole.ROLE_RETAILER) && !productRetailer.getCreatedBy().equals(authentication.getName()))
             throw new RuntimeException("Bạn không phải là chủ sở hữu của nhà bán lẽ này");
 
         if (productRetailer.isDeleteFlg())
@@ -88,6 +88,13 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
             throw new RuntimeException("Không có thay đổi mới");
 
         productRetailer.setUrl(productRetailerRequest.getUrl());
+        if (user.getRole().equals(ERole.ROLE_ADMIN)) {
+            productRetailer.setApprove(true);
+            productRetailer.setEnable(true);
+        } else {
+            productRetailer.setApprove(false);
+        }
+
         productRetailerRepository.save(productRetailer);
         return ResponseEntity.ok(new ApiResponse(true, "Cập nhật thành công"));
     }

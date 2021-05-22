@@ -3,12 +3,9 @@ package dtu.thebestprice.controllers;
 import dtu.thebestprice.payload.request.price.PriceRequest;
 import dtu.thebestprice.payload.request.price.PriceRetailerRequest;
 import dtu.thebestprice.payload.request.price.ProductRetailerRequest;
-import dtu.thebestprice.repositories.ProductRetailerRepository;
 import dtu.thebestprice.services.PriceService;
 import dtu.thebestprice.services.ProductRetailerService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,7 +41,7 @@ public class PriceController {
     }
 
     @GetMapping("/product/{productId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
     @ApiOperation(value = "Thông tin giá của theo sản phẩm")
     public ResponseEntity<Object> adminGetPriceByProduct(
             @PathVariable("productId") String strId
@@ -55,7 +52,6 @@ public class PriceController {
         } catch (NumberFormatException e) {
             throw new RuntimeException("Id của sản phẩm phải là số nguyên");
         }
-
         return priceService.adminGetPriceByProduct(productId);
     }
 
@@ -182,7 +178,6 @@ public class PriceController {
             @RequestBody @Valid PriceRetailerRequest priceRetailerRequest
     ) {
         long productId;
-
         try {
             productId = Long.parseLong(strPId);
         } catch (NumberFormatException e) {
