@@ -31,152 +31,155 @@ public class StatisticExcelExporter {
 
             sheet.getPrintSetup().setLandscape(true);
             sheet.getPrintSetup().setPaperSize(PrintSetup.A4_EXTRA_PAPERSIZE);
+            sheet.setDisplayGridlines(false);
 
             Row row;
             Cell cell;
-            Font font;
-            CellStyle cellStyle;
+
+            Font bigFont;
+            Font catAndValFont;
+            Font descFont;
+
+            CellStyle bigCellStyle;
+            CellStyle catCellStyle;
+            CellStyle valCellStyle;
+            CellStyle descCellStyle;
 
             //start row nav
-            font = workbook.createFont();
-            font.setBold(true);
-            font.setColor(IndexedColors.RED.getIndex());
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 22);
+            bigFont = workbook.createFont();
+            bigFont.setBold(true);
+            bigFont.setColor(IndexedColors.RED.getIndex());
+            bigFont.setFontName("Times New Roman");
+            bigFont.setFontHeightInPoints((short) 22);
 
-            cellStyle = workbook.createCellStyle();
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            bigCellStyle = workbook.createCellStyle();
+            bigCellStyle.setFont(bigFont);
+            bigCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
             row = sheet.createRow(1);
             cell = row.createCell(0);
-            cell.setCellValue("THỐNG KÊ THE BEST PRICE THÁNG " + YearMonth.now().getMonthValue() + " Năm " + YearMonth.now().getYear());
-            cell.setCellStyle(cellStyle);
+            cell.setCellValue("THỐNG KÊ THE BEST PRICE THÁNG " + YearMonth.now().getMonthValue() + " NĂM " + YearMonth.now().getYear());
+            cell.setCellStyle(bigCellStyle);
 
             // end row nav
 
             // start Block Overview
 
-            cellStyle = workbook.createCellStyle();
-            font = workbook.createFont();
+            catCellStyle = workbook.createCellStyle();
+            catAndValFont = workbook.createFont();
 
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 14);
+            catAndValFont.setFontName("Times New Roman");
+            catAndValFont.setFontHeightInPoints((short) 14);
 
-            cellStyle.setFont(font);
-            cellStyle.setBorderLeft(BorderStyle.THIN);
-            cellStyle.setBorderTop(BorderStyle.THIN);
-            cellStyle.setBorderRight(BorderStyle.THIN);
-            cellStyle.setBorderBottom(BorderStyle.THIN);
+            catCellStyle.setFont(catAndValFont);
+            catCellStyle.setBorderLeft(BorderStyle.THIN);
+            catCellStyle.setBorderTop(BorderStyle.THIN);
+            catCellStyle.setBorderRight(BorderStyle.THIN);
+            catCellStyle.setBorderBottom(BorderStyle.THIN);
+            catCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            catCellStyle.setFillForegroundColor(IndexedColors.LIME.index);
+            catCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            valCellStyle = workbook.createCellStyle();
+            valCellStyle.setFont(catAndValFont);
+            valCellStyle.setBorderLeft(BorderStyle.THIN);
+            valCellStyle.setBorderTop(BorderStyle.THIN);
+            valCellStyle.setBorderRight(BorderStyle.THIN);
+            valCellStyle.setBorderBottom(BorderStyle.THIN);
+            valCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            valCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.index);
+            valCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            descFont = workbook.createFont();
+            descFont.setFontName("Times New Roman");
+            descFont.setFontHeightInPoints((short) 12);
+            descFont.setItalic(true);
+
+
+
+
+            descCellStyle = workbook.createCellStyle();
+            descCellStyle.setFont(descFont);
+            descCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
 
             // số người truy cập
             row = sheet.createRow(3);
             cell = row.createCell(1);
             cell.setCellValue("Lượt truy cập (tháng)");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(2);
             cell.setCellValue(overView.getVisitor() + " lượt");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(valCellStyle);
 
             // lượt tìm kiếm
             row = sheet.createRow(4);
             cell = row.createCell(1);
             cell.setCellValue("Lượt tìm kiếm (tháng)");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(2);
             cell.setCellValue(overView.getSearch() + " lượt");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(valCellStyle);
 
             // người dùng
             row = sheet.createRow(5);
             cell = row.createCell(1);
             cell.setCellValue("Người dùng");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(2);
             cell.setCellValue(overView.getUser() + " người");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(valCellStyle);
 
             // chủ cửa hàng
             row = sheet.createRow(6);
             cell = row.createCell(1);
             cell.setCellValue("Chủ cửa hàng");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(2);
             cell.setCellValue(overView.getRetailer() + " người");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(valCellStyle);
 
             // sản phẩm
             row = sheet.createRow(7);
             cell = row.createCell(1);
             cell.setCellValue("Sản phẩm");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(2);
             cell.setCellValue(overView.getProduct() + " sản phẩm");
-            cell.setCellStyle(cellStyle);
-
+            cell.setCellStyle(valCellStyle);
 
             row = sheet.createRow(8);
             cell = row.createCell(1);
-            font = workbook.createFont();
-            cellStyle = workbook.createCellStyle();
-
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 12);
-            font.setItalic(true);
-
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(descCellStyle);
             cell.setCellValue("Tổng quan");
             // end overview
 
 
             // tỷ lệ người dùng có tài khoản
-            row = sheet.getRow(3);
-            cell = row.createCell(4);
-            font = workbook.createFont();
-            cellStyle = workbook.createCellStyle();
-
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 14);
-
-            cellStyle.setFont(font);
-            cellStyle.setBorderBottom(BorderStyle.THIN);
-            cellStyle.setBorderTop(BorderStyle.THIN);
-            cellStyle.setBorderLeft(BorderStyle.THIN);
-            cellStyle.setBorderRight(BorderStyle.THIN);
+            row = sheet.createRow(10);
+            cell = row.createCell(1);
 
             cell.setCellValue("Người dùng có tài khoản");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
 
-            cell = row.createCell(5);
+            cell = row.createCell(2);
             cell.setCellValue(dashBoard.getRateUser().getAuth());
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(valCellStyle);
 
 
-            row = sheet.getRow(4);
-            cell = row.createCell(4);
+            row = sheet.createRow(11);
+            cell = row.createCell(1);
             cell.setCellValue("Khách vãng lai");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
 
-            cell = row.createCell(5);
+            cell = row.createCell(2);
             cell.setCellValue(dashBoard.getRateUser().getAnonymous());
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(valCellStyle);
 
             ///////////////////////////////////////////////
-            row = sheet.getRow(5);
-            cell = row.createCell(4);
-            font = workbook.createFont();
-            cellStyle = workbook.createCellStyle();
-
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 12);
-            font.setItalic(true);
-
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-
-            cell.setCellStyle(cellStyle);
+            row = sheet.createRow(12);
+            cell = row.createCell(1);
+            cell.setCellStyle(descCellStyle);
             cell.setCellValue("Tỷ lệ người truy cập");
             // end tỷ le ngươi dung co tai khoan
 
@@ -185,7 +188,7 @@ public class StatisticExcelExporter {
 
             // create drawing and anchor
             XSSFDrawing drawing = sheet.createDrawingPatriarch();
-            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 7, 3, 11, 15);
+            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 4, 3, 8, 13);
 
             // create chart
             XSSFChart chart = drawing.createChart(anchor);
@@ -195,9 +198,9 @@ public class StatisticExcelExporter {
             legend.setPosition(LegendPosition.TOP_RIGHT);
 
             XDDFDataSource<String> cat = XDDFDataSourcesFactory.fromStringCellRange(sheet,
-                    new CellRangeAddress(3, 4, 4, 4));
+                    new CellRangeAddress(10, 11, 1, 1));
             XDDFNumericalDataSource<Double> val = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                    new CellRangeAddress(3, 4, 5, 5));
+                    new CellRangeAddress(10, 11, 2, 2));
 
             XDDFChartData chartData = chart.createData(ChartTypes.PIE, null, null);
             chartData.setVaryColors(true);
@@ -237,72 +240,47 @@ public class StatisticExcelExporter {
             // end hình tỉ lệ người dùng có tài khoản
 
             // start tông quan lượt truy cập
-            font = workbook.createFont();
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 14);
-
-            cellStyle = workbook.createCellStyle();
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-            cellStyle.setBorderTop(BorderStyle.THIN);
-            cellStyle.setBorderRight(BorderStyle.THIN);
-            cellStyle.setBorderBottom(BorderStyle.THIN);
-            cellStyle.setBorderLeft(BorderStyle.THIN);
-
-
-            row = sheet.createRow(10);
+            row = sheet.createRow(14);
             cell = row.createCell(2);
             cell.setCellValue("Số lượt truy cập");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(3);
             cell.setCellValue("Số lượt tìm kiếm");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(4);
             cell.setCellValue("Số lượt xem sản phẩm");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
 
             cell = row.createCell(1);
             cell.setCellValue("Tháng");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
 
-            for (int i = 1; i <= dashBoard.getStatisticAccess().size(); i++) {
-                row = sheet.createRow(i + 10);
+            for (int i = 0; i < dashBoard.getStatisticAccess().size(); i++) {
+                row = sheet.createRow(i + 15);
                 cell = row.createCell(1);
                 cell.setCellValue(i);
-                cell.setCellStyle(cellStyle);
+                cell.setCellStyle(valCellStyle);
                 cell = row.createCell(2);
-                cell.setCellValue(dashBoard.getStatisticAccess().get(i - 1));
-                cell.setCellStyle(cellStyle);
+                cell.setCellValue(dashBoard.getStatisticAccess().get(i));
+                cell.setCellStyle(valCellStyle);
                 cell = row.createCell(3);
-                cell.setCellValue(dashBoard.getStatisticSearch().get(i - 1));
-                cell.setCellStyle(cellStyle);
+                cell.setCellValue(dashBoard.getStatisticSearch().get(i));
+                cell.setCellStyle(valCellStyle);
                 cell = row.createCell(4);
-                cell.setCellValue(dashBoard.getStatisticViewCount().get(i - 1));
-                cell.setCellStyle(cellStyle);
+                cell.setCellValue(dashBoard.getStatisticViewCount().get(i));
+                cell.setCellStyle(valCellStyle);
             }
 
-            row = sheet.createRow(16);
+            row = sheet.createRow(16 + dashBoard.getStatisticAccess().size());
             cell = row.createCell(2);
-            font = workbook.createFont();
-            cellStyle = workbook.createCellStyle();
-
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 12);
-            font.setItalic(true);
-
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(descCellStyle);
             cell.setCellValue("Tổng quan lược truy cập");
 
 //             end tổng quan lượt truy cập
 
 
-
-
             XSSFDrawing drawing2 = sheet.createDrawingPatriarch();
-            XSSFClientAnchor anchor2 = drawing2.createAnchor(0, 0, 0, 0, 1, 18,5, 30);
+            XSSFClientAnchor anchor2 = drawing2.createAnchor(0, 0, 0, 0, 1, 16 + dashBoard.getStatisticAccess().size(), 5, 28 + dashBoard.getStatisticAccess().size());
 
             XSSFChart chart2 = drawing2.createChart(anchor2);
             chart2.setTitleText("Tổng quan lược truy cập");
@@ -317,16 +295,16 @@ public class StatisticExcelExporter {
             leftAxis.setTitle("Lượt");
 
             XDDFNumericalDataSource<Double> thang = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                    new CellRangeAddress(11, dashBoard.getStatisticAccess().size() + 10, 1, 1));
+                    new CellRangeAddress(15, dashBoard.getStatisticAccess().size() + 14, 1, 1));
 
             XDDFNumericalDataSource<Double> luotTruyCap = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                    new CellRangeAddress(11, dashBoard.getStatisticAccess().size() + 10, 2, 2));
+                    new CellRangeAddress(15, dashBoard.getStatisticAccess().size() + 14, 2, 2));
 
             XDDFNumericalDataSource<Double> luotTimKiem = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                    new CellRangeAddress(11, dashBoard.getStatisticSearch().size() + 10, 3, 3));
+                    new CellRangeAddress(15, dashBoard.getStatisticSearch().size() + 14, 3, 3));
 
             XDDFNumericalDataSource<Double> luotXemSanPham = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
-                    new CellRangeAddress(11, dashBoard.getStatisticViewCount().size() + 10, 4, 4));
+                    new CellRangeAddress(15, dashBoard.getStatisticViewCount().size() + 14, 4, 4));
 
             XDDFLineChartData data = (XDDFLineChartData) chart2.createData(ChartTypes.LINE, bottomAxis, leftAxis);
 
@@ -339,7 +317,7 @@ public class StatisticExcelExporter {
             series1.setMarkerStyle(MarkerStyle.CIRCLE);
 
             XDDFLineChartData.Series series2 = (XDDFLineChartData.Series) data.addSeries(thang, luotTimKiem);
-             color = "#185adb";
+            color = "#185adb";
             lineSeriesColor(series2, XDDFColor.from(hex2Rgb(color)));
             series2.setTitle("Lượt tìm kiếm", null);
             series2.setSmooth(true);
@@ -357,72 +335,40 @@ public class StatisticExcelExporter {
             chart2.plot(data);
 
 
-
-
-
             // start thống kê từ khóa được tìm kiếm nhiều nhất
 //
-            row = sheet.createRow(31);
-            font = workbook.createFont();
-            cellStyle = workbook.createCellStyle();
-
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 14);
-
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-            cellStyle.setBorderTop(BorderStyle.THIN);
-            cellStyle.setBorderRight(BorderStyle.THIN);
-            cellStyle.setBorderBottom(BorderStyle.THIN);
-            cellStyle.setBorderLeft(BorderStyle.THIN);
-
+            row = sheet.createRow(30 + dashBoard.getStatisticAccess().size());
             cell = row.createCell(1);
             cell.setCellValue("Từ khóa");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
             cell = row.createCell(2);
             cell.setCellValue("Số lần được tìm kiếm");
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(catCellStyle);
 
-            for (int i = 0; i <searchList.size(); i++) {
-                row = sheet.createRow(i+32);
+            for (int i = 0; i < searchList.size(); i++) {
+                row = sheet.createRow(i + 31 + dashBoard.getStatisticAccess().size());
                 cell = row.createCell(1);
                 cell.setCellValue(searchList.get(i).getKeyword());
-                cell.setCellStyle(cellStyle);
+                cell.setCellStyle(valCellStyle);
 
                 cell = row.createCell(2);
                 cell.setCellValue(searchList.get(i).getNumberOfSearch());
-                cell.setCellStyle(cellStyle);
+                cell.setCellStyle(valCellStyle);
             }
 
-            row = sheet.createRow(32 + searchList.size());
+            row = sheet.createRow(31 + dashBoard.getStatisticAccess().size() + searchList.size());
             cell = row.createCell(1);
-            font = workbook.createFont();
-            cellStyle = workbook.createCellStyle();
 
-            font.setFontName("Times New Roman");
-            font.setFontHeightInPoints((short) 12);
-            font.setItalic(true);
-
-            cellStyle.setFont(font);
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(descCellStyle);
             cell.setCellValue("Thống kê từ khóa được tìm kiếm nhiều nhất");
-//
-//
-//
-//            // end thống kê từ khóa được tìm kiếm nhiều nhất
 
-
-
-            //
-
+            // end thống kê từ khóa được tìm kiếm nhiều nhất
 
             sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 7));
-            sheet.addMergedRegion(new CellRangeAddress(5, 5, 4, 5));
             sheet.addMergedRegion(new CellRangeAddress(8, 8, 1, 2));
-            sheet.addMergedRegion(new CellRangeAddress(16, 16, 2, 3));
-            sheet.addMergedRegion(new CellRangeAddress(32+ searchList.size(), 32 + searchList.size(), 1, 2));
+            sheet.addMergedRegion(new CellRangeAddress(12, 12, 1, 2));
+            sheet.addMergedRegion(new CellRangeAddress(16 + dashBoard.getStatisticAccess().size(), 16 + dashBoard.getStatisticAccess().size(), 2, 3));
+            sheet.addMergedRegion(new CellRangeAddress(31 + dashBoard.getStatisticAccess().size() + searchList.size(), 31 + dashBoard.getStatisticAccess().size() + searchList.size(), 1, 2));
 
 
 //            auto with
