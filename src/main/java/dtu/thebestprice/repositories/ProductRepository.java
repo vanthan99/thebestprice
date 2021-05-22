@@ -26,5 +26,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Page<Product> findByApproveAndDeleteFlgFalse(boolean approve, Pageable pageable);
 
+    @Query("select p from Product p where p.deleteFlg = false and p.approve = :approve and lower(p.title) like concat('%',lower(:keyword) ,'%') ")
+    Page<Product> findByApproveAndDeleteFlgFalseAndKeyword(boolean approve, String keyword, Pageable pageable);
+
     Page<Product> findByDeleteFlgFalseAndCreatedBy(String createdBy, Pageable pageable);
 }

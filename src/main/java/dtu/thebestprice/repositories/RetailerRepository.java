@@ -5,12 +5,14 @@ import dtu.thebestprice.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public interface RetailerRepository extends JpaRepository<Retailer, Long> {
+public interface RetailerRepository extends JpaRepository<Retailer, Long>, JpaSpecificationExecutor<Retailer> {
     Retailer findByHomePage(String homePage);
 
     Retailer findByName(String name);
@@ -50,7 +52,8 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long> {
     Page<Retailer> findByDeleteFlgFalseAndApprove(boolean approve, Pageable pageable);
 
     // page retailer chưa được phê duyệt hoặc đã được phê duyệt sắp xếp giảm giầm theo thời gian
-    Page<Retailer> findByDeleteFlgFalseAndApproveOrderByCreatedAt(boolean approve, Pageable pageable);
+    @Query("select r from Retailer r where r.deleteFlg = false and r.approve = :approve and lower(r.name) like concat('%',lower(:keyword) ,'%') ")
+    Page<Retailer> findByDeleteFlgFalseAndApproveAndKeyword(boolean approve, String keyword, Pageable pageable);
 
 
 }

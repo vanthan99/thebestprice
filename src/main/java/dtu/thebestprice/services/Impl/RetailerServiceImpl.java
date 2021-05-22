@@ -9,13 +9,17 @@ import dtu.thebestprice.payload.request.RetailerForUserRequest;
 import dtu.thebestprice.payload.request.RetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.RetailerResponse;
+import dtu.thebestprice.payload.response.retailer.RetailerForAdminResponse;
 import dtu.thebestprice.payload.response.retailer.RetailerForUserRetailerResponse;
 import dtu.thebestprice.repositories.RetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.RetailerService;
 import dtu.thebestprice.services.UserService;
+import dtu.thebestprice.specifications.RetailerSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -273,12 +277,32 @@ public class RetailerServiceImpl implements RetailerService {
     }
 
     @Override
-    public ResponseEntity<Object> pageRetailerByApprove(boolean approve, Pageable pageable) {
-        return ResponseEntity.ok(
-                retailerRepository
-                        .findByDeleteFlgFalseAndApproveOrderByCreatedAt(approve, pageable)
-                        .map(retailer -> retailerConverter.toRetailerForAdminResponse(retailer))
+    public ResponseEntity<Object> pageRetailerByApprove(boolean approve, String keyword, Pageable pageable) {
+
+        Specification<Retailer> condition = Specification.where(
+                RetailerSpecification.nameContaining(keyword)
+                        .or(RetailerSpecification.descContaining(keyword)))
+                .and(RetailerSpecification.deleteFlgFalse())
+                .and(RetailerSpecification.isApprove(approve)
         );
+
+        Page<Retailer> entityPage = retailerRepository.findAll(condition, pageable);
+        Page<RetailerForAdminResponse> responsePage = entityPage.map(retailer -> retailerConverter.toRetailerForAdminResponse(retailer));
+
+        return ResponseEntity.ok(responsePage);
+
+//        if (keyword.trim().equals(""))
+//            return ResponseEntity.ok(
+//                    retailerRepository
+//                            .findByDeleteFlgFalseAndApprove(approve, pageable)
+//                            .map(retailer -> retailerConverter.toRetailerForAdminResponse(retailer))
+//            );
+//
+//        return ResponseEntity.ok(
+//                retailerRepository
+//                        .findByDeleteFlgFalseAndApproveAndKeyword(approve, keyword, pageable)
+//                        .map(retailer -> retailerConverter.toRetailerForAdminResponse(retailer))
+//        );
     }
 
     @Override

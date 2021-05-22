@@ -135,16 +135,22 @@ public class ProductController {
     @GetMapping("/approveTrue")
     @ApiOperation(value = "Page sản phẩm đã được phê duyệt")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER')")
-    public ResponseEntity<Object> findByApproveTrue(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return productService.findByApprove(true, pageable);
+    public ResponseEntity<Object> findByApproveTrue(
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "keyword",required = false) String keyword
+    ) {
+        return productService.findByApprove(true,keyword, pageable);
     }
 
     // danh sách sản phẩm chưa được phê duyệt
     @GetMapping("/approveFalse")
     @ApiOperation(value = "Page sản phẩm chưa được phê duyệt")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> findByApproveFalse(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return productService.findByApprove(false, pageable);
+    public ResponseEntity<Object> findByApproveFalse(
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "keyword",required = false) String keyword
+            ) {
+        return productService.findByApprove(false,keyword, pageable);
     }
 
 

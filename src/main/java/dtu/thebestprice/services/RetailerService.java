@@ -30,7 +30,7 @@ public interface RetailerService {
     ResponseEntity<Object> update(RetailerRequest retailerRequest, Long retailerId);
 
     // page retailer đã xác nhận hoặc chưa xác nhận
-    ResponseEntity<Object> pageRetailerByApprove(boolean approve, Pageable pageable);
+    ResponseEntity<Object> pageRetailerByApprove(boolean approve, String keyword, Pageable pageable);
 
     // phê duyệt retailer
     ResponseEntity<Object> approveRetailer(Long retailerId) throws MessagingException;

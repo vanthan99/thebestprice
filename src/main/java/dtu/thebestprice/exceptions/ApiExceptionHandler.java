@@ -17,16 +17,16 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<Object> handleAllException(Exception ex) {
-//        // quá trình kiểm soat lỗi diễn ra ở đây
-//        return ResponseEntity.status(400).body(new ApiResponse(false, ex.getLocalizedMessage()));
-//    }
-//
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<Object> undeclaredThrowableException(RuntimeException e){
-//        return ResponseEntity.status(400).body(new ApiResponse(false, e.getMessage()));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleAllException(Exception ex) {
+        // quá trình kiểm soat lỗi diễn ra ở đây
+        return ResponseEntity.status(400).body(new ApiResponse(false, ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> undeclaredThrowableException(RuntimeException e){
+        return ResponseEntity.status(400).body(new ApiResponse(false, e.getMessage()));
+    }
 
     // lỗi 403
     @ExceptionHandler(AccessDeniedException.class)

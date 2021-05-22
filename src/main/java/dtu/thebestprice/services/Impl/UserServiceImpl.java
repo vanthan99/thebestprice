@@ -8,12 +8,16 @@ import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.mail.MailTransport;
 import dtu.thebestprice.payload.request.*;
 import dtu.thebestprice.payload.response.ApiResponse;
+import dtu.thebestprice.payload.response.UserRetailerResponse;
 import dtu.thebestprice.repositories.RetailerRepository;
 import dtu.thebestprice.repositories.UserRepository;
 import dtu.thebestprice.services.RetailerService;
 import dtu.thebestprice.services.UserService;
+import dtu.thebestprice.specifications.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -161,12 +165,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Object> findByRole(Pageable pageable, ERole role) {
-        return ResponseEntity.ok(
-                userRepository
-                        .findByDeleteFlgFalseAndRole(pageable, role)
-                        .map(user -> userConverter.toUserRetailerResponse(user))
-        );
+    public ResponseEntity<Object> findByRole(Pageable pageable, String keyword, ERole role) {
+        Specification<User> condition = Specification.where(
+                UserSpecification.userNameContaining(keyword)
+                        .or(UserSpecification.fullNameContaining(keyword))
+                        .or(UserSpecification.addressContaining(keyword))
+                        .or(UserSpecification.emailContaining(keyword))
+                        .or(UserSpecification.phoneNumberContaining(keyword))
+        ).and(UserSpecification.deleteFlgFalse()).and(UserSpecification.isRole(role));
+
+        Page<User> entityPage = userRepository.findAll(condition, pageable);
+
+        Page<UserRetailerResponse> responsePage = entityPage.map(user -> userConverter.toUserRetailerResponse(user));
+        return ResponseEntity.ok(responsePage);
+
+//        if (keyword.trim().equals(""))
+//            return ResponseEntity.ok(
+//                    userRepository
+//                            .findByDeleteFlgFalseAndRole(pageable, role)
+//                            .map(user -> userConverter.toUserRetailerResponse(user))
+//            );
+//
+//        return ResponseEntity.ok(
+//                userRepository
+//                        .findByDeleteFlgFalseAndRoleAndKeyword(pageable, role, keyword)
+//                        .map(user -> userConverter.toUserRetailerResponse(user))
+//        );
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class PriceResponse {
+    private String productTitle;
     private RetailerResponse retailer;
     private String urlProduct;
     private Long latestPrice;

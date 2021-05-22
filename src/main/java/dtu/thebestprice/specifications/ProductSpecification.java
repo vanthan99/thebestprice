@@ -13,13 +13,40 @@ public final class ProductSpecification {
     @Autowired
     CategoryRepository categoryRepository;
 
-    public static Specification<Product> titleContaining(String title) {
+    public static Specification<Product> titleContaining(String keyword) {
         return (root, criteriaQuery, criteriaBuilder) -> {
-            if (title == null)
+            if (keyword == null || keyword.trim().equals(""))
                 return criteriaBuilder.conjunction();
-            return criteriaBuilder.like(criteriaBuilder.upper(root.get("title")), "%" + title.toUpperCase() + "%");
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + keyword.toLowerCase() + "%");
         };
     }
+
+    public static Specification<Product> deleteFlgFalse() {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.isFalse(root.get("deleteFlg"));
+    }
+
+    public static Specification<Product> shortDescContaining(String keyword) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (keyword == null || keyword.trim().equals(""))
+                return criteriaBuilder.conjunction();
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("shortDescription")), "%" + keyword.toLowerCase() + "%");
+        };
+    }
+
+    public static Specification<Product> longDescContaining(String keyword) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (keyword == null || keyword.trim().equals(""))
+                return criteriaBuilder.conjunction();
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("longDescription")), "%" + keyword.toLowerCase() + "%");
+        };
+    }
+
+    public static Specification<Product> isApprove(boolean approve) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("approve"), approve);
+    }
+
 
     public static Specification<Product> categoryIs(Set<Long> categoryIds) {
         return (root, criteriaQuery, criteriaBuilder) -> {

@@ -35,7 +35,7 @@ public class ProductTrackingServiceImpl implements ProductTrackingService {
 
         Product product = productRepository.getOne(productId);
         if (product.getCreatedBy().equals(authentication.getName()))
-            throw new RuntimeException("Bạn là chủ sản phẩm. vì vậy không thể tracking cho sản phẩm này");
+            return ResponseEntity.ok().build();
 
         /*
          * Cập nhật viewcount trong product lên 1 đơn vị

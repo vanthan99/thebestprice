@@ -33,7 +33,7 @@ public interface UserService {
     boolean validateWhileCreateUser(RegisterRequest registerRequest);
 
     // page người dùng guest hoặc retailer
-    ResponseEntity<Object> findByRole(Pageable pageable, ERole role);
+    ResponseEntity<Object> findByRole(Pageable pageable,String keyword, ERole role);
 
     // sửa profile
     ResponseEntity<Object> editProfile(UserUpdateRequest request, Long userId);

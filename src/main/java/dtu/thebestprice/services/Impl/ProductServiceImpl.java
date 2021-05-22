@@ -232,12 +232,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<Object> findByApprove(boolean b, Pageable pageable) {
-        Page<ShortProductResponse> page =
-                productRepository
-                        .findByApproveAndDeleteFlgFalse(b, pageable)
-                        .map(product -> productConverter.toShortProductResponse(product));
-        return ResponseEntity.ok(page);
+    public ResponseEntity<Object> findByApprove(boolean b, String keyword, Pageable pageable) {
+        Specification<Product> condition = Specification.where(
+                ProductSpecification.titleContaining(keyword)
+                        .or(ProductSpecification.shortDescContaining(keyword))
+                        .or(ProductSpecification.longDescContaining(keyword)))
+                .and(ProductSpecification.isApprove(b))
+                .and(ProductSpecification.deleteFlgFalse());
+
+        Page<Product> entityPage = productRepository.findAll(condition, pageable);
+
+        Page<ShortProductResponse> responsePage = entityPage.map(product -> productConverter.toShortProductResponse(product));
+
+        return ResponseEntity.ok(responsePage);
+//        Page<ShortProductResponse> page;
+//        if (keyword.trim().equals(""))
+//            page = productRepository
+//                    .findByApproveAndDeleteFlgFalse(b, pageable)
+//                    .map(product -> productConverter.toShortProductResponse(product));
+//        else
+//            page = productRepository
+//                    .findByApproveAndDeleteFlgFalseAndKeyword(b, keyword, pageable)
+//                    .map(product -> productConverter.toShortProductResponse(product));
+//
+//        return ResponseEntity.ok(page);
     }
 
     @Override

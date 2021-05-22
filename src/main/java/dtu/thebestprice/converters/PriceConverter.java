@@ -18,6 +18,7 @@ public class PriceConverter {
 
     public PriceResponse toPriceResponse(ProductRetailer productRetailer) {
         PriceResponse priceResponse = new PriceResponse();
+        priceResponse.setProductTitle(productRetailer.getProduct().getTitle());
         priceResponse.setCreatedBy(productRetailer.getCreatedBy());
         priceResponse.setRetailer(retailerConverter.toRetailerResponse(productRetailer.getRetailer()));
         priceResponse.setUrlProduct(productRetailer.getUrl());

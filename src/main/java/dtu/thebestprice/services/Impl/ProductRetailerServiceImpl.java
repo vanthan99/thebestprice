@@ -9,6 +9,7 @@ import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.price.ProductRetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.price.PriceDetailResponse;
+import dtu.thebestprice.payload.response.price.PriceResponse;
 import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
 import dtu.thebestprice.repositories.RetailerRepository;
@@ -61,9 +62,9 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
 
     @Override
     public ResponseEntity<Object> findByApprove(boolean approve, Pageable pageable) {
-        Page<PriceDetailResponse> result =
+        Page<PriceResponse> result =
                 productRetailerRepository.findByDeleteFlgFalseAndApprove(approve, pageable)
-                        .map(productRetailer -> priceConverter.toPriceDetailResponse(productRetailer));
+                        .map(productRetailer -> priceConverter.toPriceResponse(productRetailer));
         return ResponseEntity.ok(result);
     }
 

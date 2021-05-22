@@ -68,15 +68,21 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/listGuestAccount")
     @ApiOperation(value = "Page tài khoản guest")
-    public ResponseEntity<Object> listGuestAccount(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return userService.findByRole(pageable, ERole.ROLE_GUEST);
+    public ResponseEntity<Object> listGuestAccount(
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "keyword", required = false) String keyword
+    ) {
+        return userService.findByRole(pageable, keyword, ERole.ROLE_GUEST);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/listRetailerAccount")
     @ApiOperation(value = "Page tài khoản retailer")
-    public ResponseEntity<Object> listRetailerAccount(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return userService.findByRole(pageable, ERole.ROLE_RETAILER);
+    public ResponseEntity<Object> listRetailerAccount(
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "keyword", required = false) String keyword
+    ) {
+        return userService.findByRole(pageable, keyword, ERole.ROLE_RETAILER);
     }
 
     @PreAuthorize("isAuthenticated()")

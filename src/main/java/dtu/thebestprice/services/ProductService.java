@@ -22,7 +22,7 @@ public interface ProductService {
     ResponseEntity<Object> deleteById(Long id);
 
     // page sản phẩm đã phê duyệt hoặc chưa phê duyệt
-    ResponseEntity<Object> findByApprove(boolean b, Pageable pageable);
+    ResponseEntity<Object> findByApprove(boolean b,String keyword, Pageable pageable);
 
     // page sản phẩm được xem nhiều nhất tháng hiện tại
     ResponseEntity<Object> pageProductMostViewMonth(String keyword, Pageable pageable, Integer month, Integer year);
