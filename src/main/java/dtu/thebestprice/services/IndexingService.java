@@ -26,7 +26,7 @@ public class IndexingService {
         this.entityManager = entityManagerFactory.createEntityManager();
     }
 
-//    @PostConstruct
+    @PostConstruct
     public void initiateIndexing() {
         try {
             FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
