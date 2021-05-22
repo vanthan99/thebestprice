@@ -23,7 +23,7 @@ import java.util.Date;
 @RestController
 @Api
 @RequestMapping("/api/v1/dashboard")
-//@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class DashboardController {
 
     @Autowired
