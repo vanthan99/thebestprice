@@ -96,8 +96,6 @@ public class StatisticExcelExporter {
             descFont.setItalic(true);
 
 
-
-
             descCellStyle = workbook.createCellStyle();
             descCellStyle.setFont(descFont);
             descCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -258,7 +256,7 @@ public class StatisticExcelExporter {
             for (int i = 0; i < dashBoard.getStatisticAccess().size(); i++) {
                 row = sheet.createRow(i + 15);
                 cell = row.createCell(1);
-                cell.setCellValue(i);
+                cell.setCellValue(i + 1);
                 cell.setCellStyle(valCellStyle);
                 cell = row.createCell(2);
                 cell.setCellValue(dashBoard.getStatisticAccess().get(i));
