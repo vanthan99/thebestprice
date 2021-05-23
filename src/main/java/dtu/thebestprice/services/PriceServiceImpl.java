@@ -93,6 +93,7 @@ public class PriceServiceImpl implements PriceService {
             throw new RuntimeException("Product Retailer đã được approve giá trước đó");
 
         productRetailer.setApprove(true);
+        productRetailer.setEnable(true);
 
         productRetailerRepository.save(productRetailer);
 

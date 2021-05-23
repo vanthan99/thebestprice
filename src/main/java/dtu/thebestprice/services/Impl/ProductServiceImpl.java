@@ -420,7 +420,7 @@ public class ProductServiceImpl implements ProductService {
 
 
         // tạo mới product_retailer
-        ProductRetailer productRetailer = new ProductRetailer(productFullRequest.getUrl(), retailer, product, true, true);
+        ProductRetailer productRetailer = new ProductRetailer(productFullRequest.getUrl(), retailer, product, false, false);
         productRetailerRepository.save(productRetailer);
 
         priceRepository.save(new Price(price, productRetailer));

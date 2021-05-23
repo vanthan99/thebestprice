@@ -258,7 +258,7 @@ public class ProductConverter {
 
 
         // set lowest and highest price
-        List<ProductRetailer> productRetailers = productRetailerRepository.findByDeleteFlgFalseAndEnableAndApproveAndProduct(true, true, product);
+        List<ProductRetailer> productRetailers = productRetailerRepository.findByDeleteFlgFalseAndProduct(product);
         List<Long> prices = new ArrayList<>();
         productRetailers
                 .forEach(productRetailer -> {
