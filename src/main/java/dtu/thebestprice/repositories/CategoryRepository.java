@@ -25,8 +25,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // Danh sách danh mục cha đang hoạt động
     List<Category> findByCategoryIsNullAndDeleteFlgFalseOrderByCreatedAtDesc();
 
+    List<Category> findByCategoryIsNullAndDeleteFlgFalseOrderByTitle();
+
     // danh sách các danh mục con có cùng 1 danh mục cha truyền vào
     List<Category> findByCategoryAndDeleteFlgFalseOrderByCreatedAtDesc(Category parentCategory);
+
+    List<Category> findByCategoryAndDeleteFlgFalseOrderByTitle(Category parentCategory);
 
     Category findByTitle(String title);
 
