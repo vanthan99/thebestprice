@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.xml.ws.Response;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -199,7 +200,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Object> listChildCategory() {
         List<Category> categories = categoryRepository.findByCategoryIsNotNullAndDeleteFlgFalse();
-        List<ChildCategoryResponse> result = categories.stream().map(category -> categoryConverter.toChildCategoryResponse(category)).collect(Collectors.toList());
+        List<ChildCategoryResponse> result = categories
+                .stream()
+                .map(category -> categoryConverter.toChildCategoryResponse(category))
+                .sorted(Comparator.comparing(ChildCategoryResponse::getTitle))
+                .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 
