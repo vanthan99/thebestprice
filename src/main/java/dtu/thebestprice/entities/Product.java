@@ -29,6 +29,9 @@ public class Product extends BaseEntity {
     @Field(store = Store.YES)
     private String shortDescription;
 
+    @Column
+    private String code;
+
     @Column(columnDefinition = "TEXT")
     @Field(store = Store.YES)
     private String longDescription;

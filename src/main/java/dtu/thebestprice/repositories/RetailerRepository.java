@@ -17,6 +17,8 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long>, JpaSp
 
     Retailer findByName(String name);
 
+    Retailer findByDeleteFlgFalseAndHomePage(String homepage);
+
     // Danh sách nhà bán lẽ đang hoạt động
     Set<Retailer> findByDeleteFlgFalse();
 

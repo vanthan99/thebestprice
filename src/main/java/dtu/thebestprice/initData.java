@@ -1,14 +1,12 @@
 package dtu.thebestprice;
 
-import dtu.thebestprice.crawlers.Impl.ShopDunkCrawlerImpl;
-import dtu.thebestprice.crawlers.PhiLongCrawler;
-import dtu.thebestprice.crawlers.ShopDunkCrawler;
+import dtu.thebestprice.crawlers.*;
+import dtu.thebestprice.crawlers.model.CrawlerModel;
 import dtu.thebestprice.crawlers.model.ProductCrawler;
 import dtu.thebestprice.entities.*;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.BannerRequest;
 import dtu.thebestprice.payload.request.CategoryRequest;
-import dtu.thebestprice.payload.request.RegisterRequest;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.AuthService;
 import dtu.thebestprice.services.BannerService;
@@ -22,9 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class initData {
@@ -168,8 +166,31 @@ public class initData {
     private final String SHUPDUNK_IPHONEXr = "https://shopdunk.com/iphone-xr/";
     private final String SHUPDUNK_IPHONESE = "https://shopdunk.com/iphone-se-2020/";
 
-    //    @PostConstruct
+
+    @Autowired
+    XuanVinhCrawler xuanVinhCrawler;
+
+    @Autowired
+    AppleTAndTCrawler appleTAndTCrawler;
+
+    @Autowired
+    AnhDucDigitalCrawler anhDucDigitalCrawler;
+
+    @Autowired
+    HaNoiComputerCrawler haNoiComputerCrawler;
+
+    @Autowired
+    AnPhatPCCrawler anPhatPCCrawler;
+
+    @Autowired
+    GearVNCrawler gearVNCrawler;
+
+    @Autowired
+    DiDongVietCrawler diDongVietCrawler;
+
+//    @PostConstruct
     public void init() {
+
 //        System.out.println("Bắt đầu lưu user");
 //        initUser();
 //
@@ -182,19 +203,394 @@ public class initData {
 //        System.out.println("Bắt đầu lưu brand");
 //        initBrand();
 //
+//        Retailer phiLongretailer = retailerRepository.findByHomePage("https://philong.com.vn/");
+//        Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
+//        Retailer shupDunkRetailer = retailerRepository.findByHomePage("https://shopdunk.com/");
+//        Retailer anhDucDigitalRetailer = retailerRepository.findByHomePage("https://anhducdigital.vn/");
+//        Retailer anPhatPCRetailer = retailerRepository.findByHomePage("https://www.anphatpc.com.vn/");
+//        Retailer iphoneDaNangRetailer = retailerRepository.findByHomePage("https://iphonedanang.com.vn/");
+//        Retailer diDongVietRetailer = retailerRepository.findByHomePage("https://didongviet.vn/");
+//        Retailer gearVNRetailer = retailerRepository.findByHomePage("https://gearvn.com/");
+//        Retailer haNoiComputerRetailer = retailerRepository.findByHomePage("https://www.hanoicomputer.vn/");
+//
+//
+//        Brand asusBrand = brandRepository.findByName("ASUS");
+//        Brand acerBrand = brandRepository.findByName("ACER");
+//        Brand dellBrand = brandRepository.findByName("DELL");
+//        Brand lenovoBrand = brandRepository.findByName("LENOVO");
+//        Brand hpBrand = brandRepository.findByName("HP");
+//        Brand msiBrand = brandRepository.findByName("MSI");
+//        Brand lgBrand = brandRepository.findByName("LG");
+//        Brand avitaBrand = brandRepository.findByName("AVITA");
+//        Brand appleBrand = brandRepository.findByName("APPLE");
+//        Brand amdBrand = brandRepository.findByName("AMD");
+//        Brand intelBrand = brandRepository.findByName("INTEL");
+//
+//
+//        Category laptopAsus = categoryRepository.findByTitle("Laptop ASUS");
+//        Category laptopAcer = categoryRepository.findByTitle("Laptop ACER");
+//        Category laptopDell = categoryRepository.findByTitle("Laptop DELL");
+//        Category laptopLenovo = categoryRepository.findByTitle("Laptop LENOVO");
+//        Category laptopHp = categoryRepository.findByTitle("Laptop HP");
+//        Category laptopMsi = categoryRepository.findByTitle("Laptop MSI");
+//        Category laptopLg = categoryRepository.findByTitle("Laptop LG");
+//        Category laptopAvita = categoryRepository.findByTitle("Laptop AVITA");
+//
+//        Category dienThoaiIphone = categoryRepository.findByTitle("Điện thoại Iphone");
+//
+//        Category cpuCategory = categoryRepository.findByTitle("Bộ vi xử lý - cpu".toUpperCase());
+//
+//        // crawl philong
+//        System.out.println("start philong");
+//        phiLongCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, asusBrand, laptopAsus, phiLongretailer);
+//        });
+//        System.out.println("Done laptop asus");
+//
+//        phiLongCrawler.listLaptopAcer().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, acerBrand, laptopAcer, phiLongretailer);
+//        });
+//        System.out.println("Done laptop acer");
+//
+//
+//        phiLongCrawler.listLaptopAvita().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, avitaBrand, laptopAvita, phiLongretailer);
+//        });
+//        System.out.println("Done laptop avita");
+//
+//
+//        phiLongCrawler.listLaptopLg().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lgBrand, laptopLg, phiLongretailer);
+//        });
+//        System.out.println("Done laptop lg");
+//
+//        phiLongCrawler.listLaptopHp().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, hpBrand, laptopHp, phiLongretailer);
+//        });
+//        System.out.println("Done laptop hp");
+//
+//        phiLongCrawler.listLaptopMsi().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, msiBrand, laptopMsi, phiLongretailer);
+//        });
+//        System.out.println("Done laptop msi");
+//
+//        phiLongCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, phiLongretailer);
+//        });
+//        System.out.println("Done laptop lenovo");
+//
+//        phiLongCrawler.listLaptopDell().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, dellBrand, laptopDell, phiLongretailer);
+//        });
+//        System.out.println("Done laptop asus");
+//
+//        phiLongCrawler.listCpuIntel().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, intelBrand, cpuCategory, phiLongretailer);
+//        });
+//        System.out.println("Done cpu intel");
+//
+//        phiLongCrawler.listCpuAmd().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, amdBrand, cpuCategory, phiLongretailer);
+//        });
+//        System.out.println("Done cpu amd");
+//
+//        System.out.println("end philong");
+//
+//
+//        // crawl xuan vinh
+//        System.out.println("start xuanvinh");
+//        xuanVinhCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, asusBrand, laptopAsus, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop asus");
+//
+//        xuanVinhCrawler.listLaptopAcer().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, acerBrand, laptopAcer, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop acer");
+//
+//        xuanVinhCrawler.listLaptopAvita().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, avitaBrand, laptopAvita, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop avita");
+//
+//        xuanVinhCrawler.listLaptopLg().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lgBrand, laptopLg, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop lg");
+//
+//        xuanVinhCrawler.listLaptopHp().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, hpBrand, laptopHp, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop hp");
+//
+//        xuanVinhCrawler.listLaptopMsi().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, msiBrand, laptopMsi, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop msi");
+//
+//        xuanVinhCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop lenovo");
+//
+//        xuanVinhCrawler.listLaptopDell().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, dellBrand, laptopDell, xuanVinhRetailer);
+//        });
+//        System.out.println("done laptop dell");
+//
+//        xuanVinhCrawler.listCpuIntel().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, intelBrand, cpuCategory, xuanVinhRetailer);
+//        });
+//        System.out.println("done cpu intel");
+//
+//        xuanVinhCrawler.listCpuAmd().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, amdBrand, cpuCategory, xuanVinhRetailer);
+//        });
+//        System.out.println("done cpu amd");
+//
+//        System.out.println("end xuanvinh");
+//
+//        // crawl shopdunk
+//        System.out.println("start shopdunk");
+//        shopDunkCrawler.listIphone().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, appleBrand, dienThoaiIphone, shupDunkRetailer);
+//
+//        });
+//        System.out.println("done iphone");
+//        System.out.println("end shopdunk");
+//
+//
+//        // crawl hanoicomputer
+//        System.out.println("start hanoi computer");
+//        haNoiComputerCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, asusBrand, laptopAsus, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop asus");
+//
+//        haNoiComputerCrawler.listLaptopAcer().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, acerBrand, laptopAcer, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop acer");
+//
+//
+//        haNoiComputerCrawler.listLaptopAvita().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, avitaBrand, laptopAvita, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop avita");
+//
+//        haNoiComputerCrawler.listLaptopLg().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lgBrand, laptopLg, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop lg");
+//
+//        haNoiComputerCrawler.listLaptopHp().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, hpBrand, laptopHp, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop hp");
+//
+//        haNoiComputerCrawler.listLaptopMsi().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, msiBrand, laptopMsi, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop msi");
+//
+//        haNoiComputerCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop lenovo");
+//
+//        haNoiComputerCrawler.listLaptopDell().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, dellBrand, laptopDell, haNoiComputerRetailer);
+//        });
+//        System.out.println("done laptop dell");
+//        System.out.println("end hanoi computer");
+//
+//
+//        // crawl gearvn
+//        System.out.println("start gearvn");
+//        gearVNCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, asusBrand, laptopAsus, gearVNRetailer);
+//        });
+//        System.out.println("done laptop asus");
+//
+//        gearVNCrawler.listLaptopAcer().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, acerBrand, laptopAcer, gearVNRetailer);
+//        });
+//        System.out.println("done laptop acer");
+//
+//        gearVNCrawler.listLaptopLg().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lgBrand, laptopLg, gearVNRetailer);
+//        });
+//        System.out.println("done laptop lg");
+//
+//        gearVNCrawler.listLaptopHp().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, hpBrand, laptopHp, gearVNRetailer);
+//        });
+//        System.out.println("done laptop hp");
+//
+//        gearVNCrawler.listLaptopMsi().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, msiBrand, laptopMsi, gearVNRetailer);
+//        });
+//        System.out.println("done laptop msi");
+//
+//        gearVNCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, gearVNRetailer);
+//        });
+//        System.out.println("done laptop lenovo");
+//
+//        gearVNCrawler.listLaptopDell().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, dellBrand, laptopDell, gearVNRetailer);
+//        });
+//        System.out.println("done laptop dell");
+//
+//        System.out.println("end gearvn");
+//
+//
+//        // crawl anphatPC
+//        System.out.println("start anphat pc");
+//        anPhatPCCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, asusBrand, laptopAsus, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop asus");
+//
+//        anPhatPCCrawler.listLaptopAcer().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, acerBrand, laptopAcer, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop acer");
+//
+//        anPhatPCCrawler.listLaptopAvita().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, avitaBrand, laptopAvita, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop avita");
+//
+//        anPhatPCCrawler.listLaptopLg().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lgBrand, laptopLg, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop lg");
+//
+//        anPhatPCCrawler.listLaptopHp().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, hpBrand, laptopHp, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop hp");
+//
+//        anPhatPCCrawler.listLaptopMsi().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, msiBrand, laptopMsi, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop msi");
+//
+//        anPhatPCCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop lenovo");
+//
+//        anPhatPCCrawler.listLaptopDell().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, dellBrand, laptopDell, anPhatPCRetailer);
+//        });
+//        System.out.println("done laptop dell");
+//        System.out.println("end anphat pc");
+//
+//        // crawl didongviet
+//        System.out.println("start didongviet");
+//        diDongVietCrawler.listIphone().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, appleBrand, dienThoaiIphone, diDongVietRetailer);
+//        });
+//        System.out.println("done iphone");
+//        System.out.println("end didongviet");
+//
+//
+//        // crawl iphonedanang
+//        System.out.println("start iphonedanang");
+//        appleTAndTCrawler.listIphone().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, appleBrand, dienThoaiIphone, iphoneDaNangRetailer);
+//        });
+//        System.out.println("done iphone");
+//        System.out.println("end iphonedanang");
+//
+//        // crawl anhducdigital
+//        System.out.println("start anhducdigital");
+//        anhDucDigitalCrawler.listIphone().forEach(crawlerModel -> {
+//            initProductV3(crawlerModel, appleBrand, dienThoaiIphone, anhDucDigitalRetailer);
+//        });
+//        System.out.println("done iphone");
+//        System.out.println("end anhducdigital");
+
+
 //        System.out.println("Bắt đầu lưu sản phẩm");
 //        initProductV2();
 
 //        initProduct();
 //        initManyProductRetailer();
 //
+//        System.out.println("start rating");
 //        initRating();
+//        System.out.println("end rating");
+//
+//        System.out.println("start access");
 //        initSoluottruycap();
-//        initViewCount();
-//        initSoluotTimKiem();
+//        System.out.println("end access");
 
+//        System.out.println("start viewcount");
+//        initViewCount();
+//        System.out.println("end viewcount");
+//
+//        System.out.println("start search");
+//        initSoluotTimKiem();
+//        System.out.println("end search");
+//
+//        System.out.println("start banner");
 //        initBanner();
+//        System.out.println("end banner");
     }
+
+    private void initProductV3(CrawlerModel crawlerModel, Brand brand, Category category, Retailer retailer) {
+        Product product = productRepository.findByCode(crawlerModel.getCode().toLowerCase().trim());
+
+        if (product == null) {
+            // thêm mới product
+            product = new Product();
+            product.setTitle(crawlerModel.getTitle());
+            product.setLongDescription(crawlerModel.getLongDesc());
+            product.setShortDescription(crawlerModel.getShortDesc());
+            product.setCode(crawlerModel.getCode().toLowerCase().trim());
+            product.setCategory(category);
+            product.setBrand(brand);
+
+            productRepository.save(product);
+
+            // save image
+            if (crawlerModel.getImages().size() > 0) {
+                for (String image : crawlerModel.getImages()) {
+                    imageRepository.save(new Image(image, product));
+                }
+
+            }
+
+            // save product_retailer
+            ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
+            productRetailerRepository.save(productRetailer);
+
+            // save price
+            Price price = new Price(crawlerModel.getPrice(), productRetailer);
+            priceRepository.save(price);
+        } else {
+            // tạo mới giá
+            ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
+            productRetailerRepository.save(productRetailer);
+            priceRepository.save(new Price(crawlerModel.getPrice(), productRetailer));
+
+            // kiểm tra xem sản phẩm hiện tại có bao nhiêu hình ảnh
+            // nếu <=3 sản phẩm lưu thêm hình ảnh cho sản phẩm
+
+            if (imageRepository.findByProductAndDeleteFlgFalse(product).size() <= 3 && crawlerModel.getImages().size() > 0) {
+
+                for (String image : crawlerModel.getImages()) {
+                    imageRepository.save(new Image(image, product));
+                }
+
+            }
+        }
+    }
+
 
     private void initBanner() {
         bannerService.createNew(
@@ -350,29 +746,15 @@ public class initData {
         for (int i = 0; i <= getDaysDiff; i++) {
             // random viewcount dien thoai
             viewCountStatisticRepository.save(new ViewCountStatistic(
-                    productRepository.getOne((long) random(1, 20)),
-                    startDay.plusDays(i),
-                    (long) random(min, max)
-            ));
-            // random laptop
-            viewCountStatisticRepository.save(new ViewCountStatistic(
-                    productRepository.getOne((long) random(1420, 1728)),
+                    productRepository.getOne((long) random(1, (int) productRepository.count())),
                     startDay.plusDays(i),
                     (long) random(min, max)
             ));
         }
 
         // set viewcount for product
-        for (int i = 1; i <= 20; i++) {
-            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
-            if (viewCount != null) {
-                Product product = productRepository.getOne((long) i);
-                product.setViewCount(viewCount);
-                productRepository.save(product);
-            }
-        }
 
-        for (int i = 1420; i <= 1728; i++) {
+        for (int i = 1; i <= productRepository.count(); i++) {
             Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
             if (viewCount != null) {
                 Product product = productRepository.getOne((long) i);
@@ -414,36 +796,8 @@ public class initData {
         }
     }
 
-    //    @PostConstruct
-    private void initManyProductRetailer() {
-        Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
-
-
-        // laptop
-        for (int i = 1422; i <= 1752; i++) {
-            initProductRetailer(
-                    productRepository.getOne((long) i),
-                    xuanVinhRetailer,
-                    "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
-                    (long) (random(12, 18) * 1000000)
-            );
-        }
-
-        // dien thoai
-        for (int i = 1; i <= 20; i++) {
-            initProductRetailer(
-                    productRepository.getOne((long) i),
-                    xuanVinhRetailer,
-                    "http://xuanvinh.vn/acer-aspire-3-a315-23-r0ml-nx-hvusv-004-r3-3250u-4gb-512gb-ssd-15-6fhd-win-10-fpt",
-                    (long) (random(12, 18) * 1000000)
-            );
-        }
-    }
-
     private void saveProductV2(Set<ProductCrawler> productCrawlers, Category category, Brand brand, Retailer retailer) {
         // danh muc laptop
-
-
         productCrawlers.forEach(productCrawler -> {
             System.out.println("Đang lưu " + productCrawler.getUrl());
             Product product = productCrawler.getProduct();
@@ -796,41 +1150,74 @@ public class initData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//
+
 //        // laptop
         try {
             Set<ProductCrawler> listAcer = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_ACER);
+            listAcer = listAcer.stream().filter(Objects::nonNull).collect(Collectors.toSet());
             saveProductV2(listAcer, laptopAcer, acerBrand, phiLongretailer);
-
-            Set<ProductCrawler> listAsus = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_ASUS);
-            saveProductV2(listAsus, laptopAsus, asusBrand, phiLongretailer);
-
-            Set<ProductCrawler> listDell = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_DELL);
-            saveProductV2(listDell, laptopDell, dellBrand, phiLongretailer);
-
-            Set<ProductCrawler> listLenovo = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_LENOVO);
-            saveProductV2(listLenovo, laptopLenovo, lenovoBrand, phiLongretailer);
-
-            Set<ProductCrawler> listHp = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_HP);
-            saveProductV2(listHp, laptopHp, hpBrand, phiLongretailer);
-
-            Set<ProductCrawler> listMsi = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_MSI);
-            saveProductV2(listMsi, laptopMsi, msiBrand, phiLongretailer);
-//
-            Set<ProductCrawler> listLg = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_LG);
-            saveProductV2(listLg, laptopLg, lgBrand, phiLongretailer);
-
-            Set<ProductCrawler> listMicrosoft = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_MICROSOFT);
-            saveProductV2(listMicrosoft, laptopMicrosoft, microsoftBrand, phiLongretailer);
-
-            Set<ProductCrawler> listAvita = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_AVITA);
-            saveProductV2(listAvita, laptopAvita, avitaBrand, phiLongretailer);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop acer");
         }
 
+        try {
+            Set<ProductCrawler> listAsus = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_ASUS);
+            listAsus = listAsus.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listAsus, laptopAsus, asusBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop asus");
+        }
+        try {
+            Set<ProductCrawler> listDell = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_DELL);
+            listDell = listDell.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listDell, laptopDell, dellBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop dell");
+        }
 
+        try {
+            Set<ProductCrawler> listLenovo = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_LENOVO);
+            listLenovo = listLenovo.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listLenovo, laptopLenovo, lenovoBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop lenovo");
+        }
+
+        try {
+            Set<ProductCrawler> listHp = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_HP);
+            listHp = listHp.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listHp, laptopHp, hpBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop HP");
+        }
+        try {
+            Set<ProductCrawler> listMsi = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_MSI);
+            listMsi = listMsi.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listMsi, laptopMsi, msiBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop msi");
+        }
+        try {
+            Set<ProductCrawler> listLg = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_LG);
+            listLg = listLg.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listLg, laptopLg, lgBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop lg");
+        }
+        try {
+            Set<ProductCrawler> listMicrosoft = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_MICROSOFT);
+            listMicrosoft = listMicrosoft.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listMicrosoft, laptopMicrosoft, microsoftBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop Microsoft");
+        }
+        try {
+            Set<ProductCrawler> listAvita = phiLongCrawler.getProductByURL(PHILONG_LAPTOP_AVITA);
+            listAvita = listAvita.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+            saveProductV2(listAvita, laptopAvita, avitaBrand, phiLongretailer);
+        } catch (Exception ignored) {
+            System.out.println("Xảy ra lỗi khi crawl laptop avita");
+        }
     }
 
     private void initProduct() {
@@ -2106,31 +2493,31 @@ public class initData {
     }
 
     private void initRetailer() {
-        retailerRepository.save(new Retailer(
-                "didongdanang.com",
-                "Siêu thị điện thoại - phụ kiện - linh kiện chính hãng",
-                "https://didongdanang.com/",
-                "https://didongdanang.com/wp-content/uploads/2020/02/bi-logo1.jpg",
-                true,
-                true,
-                userRepository.findByUsername("supersuper").orElse(null)
-        ));
+//        retailerRepository.save(new Retailer(
+//                "didongdanang.com",
+//                "Siêu thị điện thoại - phụ kiện - linh kiện chính hãng",
+//                "https://didongdanang.com/",
+//                "https://didongdanang.com/wp-content/uploads/2020/02/bi-logo1.jpg",
+//                true,
+//                true,
+//                userRepository.findByUsername("supersuper").orElse(null)
+//        ));
 
         retailerRepository.save(new Retailer(
-                "SHOPDUNK",
+                "Shopdunk",
                 "ShopDuck Đại lý ủy quyền Apple",
                 "https://shopdunk.com/",
-                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fshopdunk.PNG?alt=media&token=5902bf1d-8258-4762-ae9e-f75c36aeb85c",
-                true,true,
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fshopdunk.PNG?alt=media&token=dfa85480-b42f-4fad-9f36-88f4fbc87a5e",
+                true, true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
-                "PhiLong Techology",
+                "PhiLong Technology",
                 "Trang web công ty Phi Long",
                 "https://philong.com.vn/",
-                "https://philong.com.vn/media/banner/logo_PHILONG-LOGO-min-cn.png",
-                true,true,
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fphilong.PNG?alt=media&token=fcf98e99-3955-4208-bfd1-e3195b1d4a3e",
+                true, true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 
@@ -2138,12 +2525,64 @@ public class initData {
                 "Xuân Vinh",
                 "Trang web công ty Xuân Vinh",
                 "http://xuanvinh.vn/",
-                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fxuanvinh.PNG?alt=media&token=607010d9-ca47-447e-a1c2-f3407e57b7e7",
-                true,true,
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fxuanvinh.PNG?alt=media&token=071dd4ad-3202-4852-9d23-4cdcd4179019",
+                true, true,
                 userRepository.findByUsername("supersuper").orElse(null)
         ));
 
+        retailerRepository.save(new Retailer(
+                "AnhDucDigital",
+                "Trang web AnhDucDigital",
+                "https://anhducdigital.vn/",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fanhducdigital.PNG?alt=media&token=4e7f9c53-722d-47f9-a70d-da5e4d143134",
+                true, true,
+                userRepository.findByUsername("supersuper").orElse(null)
+        ));
 
+        retailerRepository.save(new Retailer(
+                "An Phát PC",
+                "Trang web công ty An Phát PC",
+                "https://www.anphatpc.com.vn/",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fanphatoc.PNG?alt=media&token=e4ff6a88-cbc1-4a69-805c-8d74111cb03d",
+                true, true,
+                userRepository.findByUsername("supersuper").orElse(null)
+        ));
+
+        retailerRepository.save(new Retailer(
+                "IphoneDaNang",
+                "Trang web iphone đà nẵng",
+                "https://iphonedanang.com.vn/",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fapplet%26t.PNG?alt=media&token=35fe7de2-9402-4a73-a6de-5fc0df18f9fe",
+                true, true,
+                userRepository.findByUsername("supersuper").orElse(null)
+        ));
+
+        retailerRepository.save(new Retailer(
+                "Di Động Việt",
+                "Trang web công ty Di Động Việt",
+                "https://didongviet.vn/",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fdidongviet.PNG?alt=media&token=07c1f579-419b-4003-b533-ef24138649bc",
+                true, true,
+                userRepository.findByUsername("supersuper").orElse(null)
+        ));
+
+        retailerRepository.save(new Retailer(
+                "GearVN",
+                "Trang web công ty GearVN",
+                "https://gearvn.com/",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fgearvn.PNG?alt=media&token=0bf2d014-13c5-45ed-91c2-96f7ef5c6357",
+                true, true,
+                userRepository.findByUsername("supersuper").orElse(null)
+        ));
+
+        retailerRepository.save(new Retailer(
+                "Hà Nội Computer",
+                "Trang web công ty Hà Nội Computer",
+                "https://www.hanoicomputer.vn/",
+                "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fhanoicomputer.PNG?alt=media&token=61f89364-7bc7-4ba5-ae8a-3e46c845de34",
+                true, true,
+                userRepository.findByUsername("supersuper").orElse(null)
+        ));
     }
 
     private void initCategory() {

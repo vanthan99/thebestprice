@@ -15,11 +15,13 @@ public interface ProductRetailerRepository extends JpaRepository<ProductRetailer
 
     boolean existsByProductAndRetailerAndDeleteFlgFalse(Product product, Retailer retailer);
 
+    List<ProductRetailer> findByDeleteFlgFalseAndApproveTrueAndRetailer(Retailer retailer);
+
     List<ProductRetailer> findByProductAndDeleteFlgFalse(Product product);
 
     Page<ProductRetailer> findByDeleteFlgFalseAndApprove(boolean approve, Pageable pageable);
 
     List<ProductRetailer> findByDeleteFlgFalseAndProduct(Product product);
 
-    List<ProductRetailer> findByDeleteFlgFalseAndEnableAndApproveAndProduct(boolean enable,boolean approve, Product product);
+    List<ProductRetailer> findByDeleteFlgFalseAndEnableAndApproveAndProduct(boolean enable, boolean approve, Product product);
 }

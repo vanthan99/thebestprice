@@ -10,6 +10,7 @@ public class BannerResponse {
     private String description;
     private String imageUrl;
     private String redirectUrl;
+    private boolean enable;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

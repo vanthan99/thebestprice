@@ -26,7 +26,7 @@ public class ProductRetailer extends BaseEntity {
     @IndexedEmbedded(includeEmbeddedObjectId = true)
     private Retailer retailer;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinColumn(name = "product_id")
     private Product product;
 

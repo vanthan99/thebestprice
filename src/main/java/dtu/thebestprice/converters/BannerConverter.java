@@ -11,6 +11,7 @@ public class BannerConverter {
         BannerResponse response = new BannerResponse();
 
         response.setTitle(banner.getTitle());
+        response.setEnable(banner.isEnable());
         response.setDescription(banner.getDescription());
         response.setImageUrl(banner.getImageUrl());
         response.setRedirectUrl(banner.getRedirectUrl());
@@ -21,7 +22,7 @@ public class BannerConverter {
         return response;
     }
 
-    public Banner toEntity(BannerRequest request){
+    public Banner toEntity(BannerRequest request) {
         Banner banner = new Banner();
 
         banner.setTitle(request.getTitle());
@@ -32,7 +33,7 @@ public class BannerConverter {
         return banner;
     }
 
-    public Banner toEntity(BannerRequest request,Banner banner){
+    public Banner toEntity(BannerRequest request, Banner banner) {
 
         banner.setTitle(request.getTitle());
         banner.setDescription(request.getDescription());
