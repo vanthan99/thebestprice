@@ -10,6 +10,7 @@ public class BannerConverter {
     public BannerResponse toBannerResponse(Banner banner) {
         BannerResponse response = new BannerResponse();
 
+        response.setId(banner.getId());
         response.setTitle(banner.getTitle());
         response.setEnable(banner.isEnable());
         response.setDescription(banner.getDescription());

@@ -4,6 +4,7 @@ import dtu.thebestprice.crawlers.ShopDunkCrawler;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
 import dtu.thebestprice.crawlers.model.ProductCrawler;
 import dtu.thebestprice.entities.Product;
+import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -139,15 +140,20 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
 
         return listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("ch"))
                 .peek(crawlerModel -> {
-                    String title = crawlerModel.getTitle().toLowerCase().
-                            replaceAll(" ", "").trim();
 
-                    String code = title.substring(0, title.indexOf("ch")).trim();
-                    String memory = title.substring(title.indexOf("gb") - 3, title.indexOf("gb") + 2)
-                            .replaceAll("\\(", "");
-                    code = code + memory;
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    String model = title.substring(0, title.indexOf("ch"))
+                            .replaceAll("2020 ", "");
+                    String memory = title
+                            .substring(title.indexOf("gb") - 3, title.indexOf("gb") + 2)
+                            .replaceAll("\\(", "").trim();
 
+                    String newTitle = WordUtils.capitalizeFully(model + memory);
+                    crawlerModel.setTitle(newTitle);
+
+                    String code = newTitle.toLowerCase().replaceAll(" ", "").trim();
                     crawlerModel.setCode(code);
                 }).collect(Collectors.toList());
     }

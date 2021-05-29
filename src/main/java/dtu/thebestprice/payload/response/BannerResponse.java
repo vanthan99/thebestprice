@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class BannerResponse {
+    private Long id;
     private String title;
     private String description;
     private String imageUrl;

@@ -2,6 +2,7 @@ package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.DiDongVietCrawler;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
+import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -78,9 +79,10 @@ public class DiDongVietCrawlerImpl implements DiDongVietCrawler {
 
         List<String> images = new ArrayList<>();
         try {
-            Elements imageElements = document.select("div.product.media > div.nav-gallery-left .thumb-color");
+//            Elements imageElements = document.select("div.product.media > div.nav-gallery-left .thumb-color");
+            Elements imageElements = document.select(".nav-gallery-right img");
             for (Element itemImage : imageElements) {
-                images.add(itemImage.attr("href"));
+                images.add(itemImage.attr("src"));
             }
         } catch (Exception e) {
             images = new ArrayList<>();
@@ -118,8 +120,13 @@ public class DiDongVietCrawlerImpl implements DiDongVietCrawler {
         return this.listProduct(url)
                 .stream()
                 .peek(crawlerModel -> {
-                    String title = crawlerModel.getTitle().toLowerCase().replaceAll(" ", "");
-                    String code = title.substring(0, title.indexOf("gb") + 2);
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    title = title.substring(0, title.indexOf("gb") + 2).trim();
+                    title = WordUtils.capitalizeFully(title);
+
+                    crawlerModel.setTitle(title);
+
+                    String code = title.toLowerCase().replaceAll(" ", "").trim();
                     crawlerModel.setCode(code);
                 }).collect(Collectors.toList());
     }

@@ -2,6 +2,7 @@ package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.AnhDucDigitalCrawler;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
+import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -113,8 +114,14 @@ public class AnhDucDigitalCrawlerImpl implements AnhDucDigitalCrawler {
     public List<CrawlerModel> listIphone() {
         String url = "https://anhducdigital.vn/iphone.html";
         return this.listProduct(url).stream().peek(crawlerModel -> {
-            String title = crawlerModel.getTitle().toLowerCase().replaceAll(" ", "");
-            String code = title.substring(0, title.indexOf("gb") + 2).replaceAll("\\(2020\\)", "");
+            String title = crawlerModel.getTitle().toLowerCase()
+                    .replaceAll("\\(2020\\)", "");
+            title = title.substring(0, title.indexOf("gb") + 2).trim();
+            title = WordUtils.capitalizeFully(title);
+
+            crawlerModel.setTitle(title);
+
+            String code = title.toLowerCase().replaceAll(" ", "").trim();
             crawlerModel.setCode(code);
         }).collect(Collectors.toList());
     }

@@ -2,6 +2,7 @@ package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.AppleTAndTCrawler;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
+import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -81,7 +82,7 @@ public class AppleTAndTCrawlerImpl implements AppleTAndTCrawler {
             String strPrice = priceElement.text().replaceAll("[^0-9]", "");
             price = Long.parseLong(strPrice);
         } catch (Exception e) {
-            price = null;
+            return null;
         }
 
         List<String> images = new ArrayList<>();
@@ -127,15 +128,15 @@ public class AppleTAndTCrawlerImpl implements AppleTAndTCrawler {
         List<CrawlerModel> results = new ArrayList<>();
         for (String url : listUrl) {
             results.addAll(this.listProduct(url).stream()
-                    .filter(Objects::nonNull)
-                    .filter(crawlerModel -> crawlerModel.getPrice() != null)
+                    .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("gb"))
                     .peek(crawlerModel -> {
-                        String title = crawlerModel.getTitle();
-                        String code = title.toLowerCase()
-                                .replaceAll(" ", "")
-                                .replaceAll("chưaactive", "")
-                                .replaceAll("likenew", "")
-                                .replaceAll("new", "");
+                        String title = crawlerModel.getTitle().toLowerCase();
+                        title = title.substring(0, title.indexOf("gb") + 2).trim();
+                        title = WordUtils.capitalizeFully(title);
+
+                        crawlerModel.setTitle(title);
+
+                        String code = title.toLowerCase().replaceAll(" ", "").trim();
                         crawlerModel.setCode(code);
                     }).collect(Collectors.toList()));
         }
