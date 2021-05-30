@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProductRetailerRepository extends JpaRepository<ProductRetailer, Long> {
-    boolean existsByProductAndRetailer(Product product, Retailer retailer);
+    boolean existsByDeleteFlgFalseAndProductAndRetailer(Product product, Retailer retailer);
+
+    boolean existsByDeleteFlgFalseAndUrl(String url);
 
     boolean existsByProductAndRetailerAndDeleteFlgFalse(Product product, Retailer retailer);
 

@@ -67,6 +67,9 @@ public class PriceServiceImpl implements PriceService {
         if (latestPrice == price)
             throw new RuntimeException("Giá bạn muốn cập nhật và giá hiện tại không có gì thay đổi");
 
+        if (productRetailerRepository.existsByDeleteFlgFalseAndUrl(priceRequest.getUrl()) && !productRetailer.getUrl().equals(priceRequest.getUrl()))
+            throw new RuntimeException("URL đã bị trùng");
+
         // tiến hành cập nhật giá
         // thêm giá
         Price newPrice = new Price(price, productRetailer);
@@ -124,6 +127,9 @@ public class PriceServiceImpl implements PriceService {
         // ngược lại, so sánh xem giá hiện tại và giá chuẩn bị cập nhật có bị trùng nhau không?
         if (latestPrice == price)
             throw new RuntimeException("Giá bạn muốn cập nhật và giá hiện tại không có gì thay đổi");
+
+        if (productRetailerRepository.existsByDeleteFlgFalseAndUrl(priceRequest.getUrl()) && !productRetailer.getUrl().equals(priceRequest.getUrl()))
+            throw new RuntimeException("URL đã bị trùng");
 
         // thêm giá
         Price newPrice = new Price(price, productRetailer);
@@ -194,6 +200,9 @@ public class PriceServiceImpl implements PriceService {
 
         if (productRetailerRepository.existsByProductAndRetailerAndDeleteFlgFalse(product, retailer))
             throw new RuntimeException("Nhà bán lẽ này đã kinh doanh sản phẩm trước đó");
+
+        if (productRetailerRepository.existsByDeleteFlgFalseAndUrl(priceRetailerRequest.getUrl()))
+            throw new RuntimeException("URL đã bị trùng");
 
         ProductRetailer productRetailer = new ProductRetailer(
                 priceRetailerRequest.getUrl(),
@@ -271,6 +280,9 @@ public class PriceServiceImpl implements PriceService {
 
         if (productRetailerRepository.existsByProductAndRetailerAndDeleteFlgFalse(product, retailer))
             throw new RuntimeException("Nhà bán lẽ này đã kinh doanh sản phẩm trước đó");
+
+        if (productRetailerRepository.existsByDeleteFlgFalseAndUrl(priceRequest.getUrl()))
+            throw new RuntimeException("URL đã bị trùng");
 
         ProductRetailer productRetailer = new ProductRetailer(
                 priceRequest.getUrl(),

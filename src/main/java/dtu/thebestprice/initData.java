@@ -223,8 +223,8 @@ public class initData {
 //            }
 //        }
 
-
-        shopDunkCrawler.listIphone().forEach(crawlerModel -> {
+        System.out.println("dell");
+        anPhatPCCrawler.listLaptopDell().forEach(crawlerModel -> {
             System.out.println("title: " + crawlerModel.getTitle());
             System.out.println("url: " + crawlerModel.getUrl());
 //            System.out.println("short desc: " + crawlerModel.getShortDesc());
@@ -234,6 +234,42 @@ public class initData {
 //            System.out.println("price: " + crawlerModel.getPrice());
             System.out.println("=============");
         });
+        System.out.println("asus");
+        anPhatPCCrawler.listLaptopAsus().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+        System.out.println("avita");
+        anPhatPCCrawler.listLaptopAvita().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+        System.out.println("msi");
+        anPhatPCCrawler.listLaptopMsi().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+        System.out.println("lenovo");
+        anPhatPCCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+        System.out.println("hp");
+        anPhatPCCrawler.listLaptopHp().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+        System.out.println("acer");
+        anPhatPCCrawler.listLaptopAcer().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+        System.out.println("lg");
+        anPhatPCCrawler.listLaptopLg().forEach(crawlerModel -> {
+            System.out.println("url: " + crawlerModel.getUrl());
+            System.out.println("code: " + crawlerModel.getCode());
+        });
+
     }
 
 //    @PostConstruct
@@ -647,41 +683,45 @@ public class initData {
 
         } else {
 
-            boolean isUpdateShortDesc = false;
-            boolean isUpdateLongDesc = false;
-            if ((product.getShortDescription() == null || product.getShortDescription().length() < 20) && (crawlerModel.getShortDesc() != null && crawlerModel.getShortDesc().length() >= 20))
-                isUpdateShortDesc = true;
-            if ((product.getLongDescription() == null || product.getLongDescription().length() < 20) && (crawlerModel.getLongDesc() != null && crawlerModel.getLongDesc().length() >= 20))
-                isUpdateLongDesc = true;
+            if (!productRetailerRepository.existsByDeleteFlgFalseAndUrl(crawlerModel.getUrl())) {
+                boolean isUpdateShortDesc = false;
+                boolean isUpdateLongDesc = false;
+                if ((product.getShortDescription() == null || product.getShortDescription().length() < 20) && (crawlerModel.getShortDesc() != null && crawlerModel.getShortDesc().length() >= 20))
+                    isUpdateShortDesc = true;
+                if ((product.getLongDescription() == null || product.getLongDescription().length() < 20) && (crawlerModel.getLongDesc() != null && crawlerModel.getLongDesc().length() >= 20))
+                    isUpdateLongDesc = true;
 
-            // cập nhật mô tả ngắn
-            if (isUpdateShortDesc) {
-                product.setShortDescription(crawlerModel.getShortDesc());
-                productRepository.save(product);
-            }
-
-            // cập nhật mô tả dài
-            if (isUpdateLongDesc) {
-                product.setLongDescription(crawlerModel.getLongDesc());
-                productRepository.save(product);
-            }
-
-
-            // tạo mới giá
-            ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
-            productRetailerRepository.save(productRetailer);
-            priceRepository.save(new Price(crawlerModel.getPrice(), productRetailer));
-
-            // kiểm tra xem sản phẩm hiện tại có bao nhiêu hình ảnh
-            // nếu <=3 sản phẩm lưu thêm hình ảnh cho sản phẩm
-
-            if (imageRepository.findByProductAndDeleteFlgFalse(product).size() <= 3 && crawlerModel.getImages().size() > 0) {
-
-                for (String image : crawlerModel.getImages()) {
-                    imageRepository.save(new Image(image, product));
+                // cập nhật mô tả ngắn
+                if (isUpdateShortDesc) {
+                    product.setShortDescription(crawlerModel.getShortDesc());
+                    productRepository.save(product);
                 }
 
+                // cập nhật mô tả dài
+                if (isUpdateLongDesc) {
+                    product.setLongDescription(crawlerModel.getLongDesc());
+                    productRepository.save(product);
+                }
+
+
+                // tạo mới giá
+                ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
+                productRetailerRepository.save(productRetailer);
+                priceRepository.save(new Price(crawlerModel.getPrice(), productRetailer));
+
+                // kiểm tra xem sản phẩm hiện tại có bao nhiêu hình ảnh
+                // nếu <=3 sản phẩm lưu thêm hình ảnh cho sản phẩm
+
+                if (imageRepository.findByProductAndDeleteFlgFalse(product).size() <= 3 && crawlerModel.getImages().size() > 0) {
+
+                    for (String image : crawlerModel.getImages()) {
+                        imageRepository.save(new Image(image, product));
+                    }
+
+                }
             }
+
+
         }
     }
 

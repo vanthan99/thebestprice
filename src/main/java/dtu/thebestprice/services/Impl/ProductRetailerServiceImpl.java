@@ -88,6 +88,9 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
         if (productRetailer.getUrl().equals(productRetailerRequest.getUrl()))
             throw new RuntimeException("Không có thay đổi mới");
 
+        if (productRetailerRepository.existsByDeleteFlgFalseAndUrl(productRetailerRequest.getUrl()) && !productRetailer.getUrl().equals(productRetailerRequest.getUrl()))
+            throw new RuntimeException("URL đã bị trùng");
+
         productRetailer.setUrl(productRetailerRequest.getUrl());
         if (user.getRole().equals(ERole.ROLE_ADMIN)) {
             productRetailer.setApprove(true);

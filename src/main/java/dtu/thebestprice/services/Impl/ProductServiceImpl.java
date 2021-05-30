@@ -403,6 +403,10 @@ public class ProductServiceImpl implements ProductService {
 
         if (categoryRepository.existsByDeleteFlgFalseAndIdAndCategoryIsNull(categoryId))
             throw new RuntimeException("id danh mục phải là danh mục con");
+
+        if (productRetailerRepository.existsByDeleteFlgFalseAndUrl(productFullRequest.getUrl()))
+            throw new RuntimeException("URL đã bị trùng");
+
         Product product = productConverter.toEntity(productFullRequest);
         product.setEnable(false);
         product.setApprove(false);
