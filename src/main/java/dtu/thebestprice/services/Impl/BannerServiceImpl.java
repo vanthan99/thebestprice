@@ -85,9 +85,8 @@ public class BannerServiceImpl implements BannerService {
     public ResponseEntity<Object> findAll(Pageable pageable) {
         Page<BannerResponse> page
                 = bannerRepository
-                .findAll(pageable)
+                .findByDeleteFlgFalse(pageable)
                 .map(banner -> bannerConverter.toBannerResponse(banner));
-
         return ResponseEntity.ok(page);
     }
 }
