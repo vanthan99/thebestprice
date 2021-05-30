@@ -89,4 +89,12 @@ public class BannerServiceImpl implements BannerService {
                 .map(banner -> bannerConverter.toBannerResponse(banner));
         return ResponseEntity.ok(page);
     }
+
+    @Override
+    public ResponseEntity<Object> findById(long bannerId) {
+        Banner banner = bannerRepository.findByDeleteFlgFalseAndId(bannerId)
+                .orElseThrow(() -> new RuntimeException("Không tồn tại banner"));
+
+        return ResponseEntity.ok(bannerConverter.toBannerResponse(banner));
+    }
 }

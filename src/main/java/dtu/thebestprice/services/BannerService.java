@@ -16,4 +16,6 @@ public interface BannerService {
     ResponseEntity<Object> switchEnable(long bannerId);
 
     ResponseEntity<Object> findAll(Pageable pageable);
+
+    ResponseEntity<Object> findById(long bannerId);
 }

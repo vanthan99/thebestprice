@@ -29,6 +29,22 @@ public class BannerController {
         return bannerService.findAll(pageable);
     }
 
+    @GetMapping("/{bannerId}")
+    @ApiOperation(value = "tìm kiếm banner theo id")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public  ResponseEntity<Object> findById(
+            @PathVariable("bannerId") String strId
+    ){
+        long bannerId;
+        try {
+            bannerId = Long.parseLong(strId);
+        }catch (Exception e){
+            throw new RuntimeException("Banner Id phải là số nguyên");
+        }
+
+        return bannerService.findById(bannerId);
+    }
+
     @GetMapping("/isOn")
     @ApiOperation(value = "Danhh sách banner đang hoạt động")
     public ResponseEntity<Object> listEnableTrue() {
