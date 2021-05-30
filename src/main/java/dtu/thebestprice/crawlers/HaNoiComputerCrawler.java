@@ -24,4 +24,8 @@ public interface HaNoiComputerCrawler {
     List<CrawlerModel> listLaptopMsi();
 
     List<CrawlerModel> listLaptopLenovo();
+
+    List<CrawlerModel> listCpuIntel();
+
+    List<CrawlerModel> listCpuAmd();
 }

@@ -621,7 +621,11 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                             .replaceAll(" ", "")
                             .replaceAll("-", "")
                             .toLowerCase()
-                            .replaceAll("amd", "").trim();
+                            .replaceAll("amd", "")
+                            .replaceAll("/3.8ghz", "")
+                            .replaceAll("/3.7ghz", "")
+                            .replaceAll("/3.4ghz", "")
+                            .trim();
                     crawlerModel.setCode(code);
                 })
                 .filter(MyFilter.distinctByKey(CrawlerModel::getCode))

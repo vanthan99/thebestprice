@@ -24,4 +24,8 @@ public interface AnPhatPCCrawler {
     List<CrawlerModel> listLaptopMsi();
 
     List<CrawlerModel> listLaptopLenovo();
+
+    List<CrawlerModel> listCpuIntel();
+
+    List<CrawlerModel> listCpuAmd();
 }

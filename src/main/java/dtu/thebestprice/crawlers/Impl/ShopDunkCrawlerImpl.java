@@ -52,10 +52,10 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
         } catch (IOException e) {
             return result;
         }
-        Elements itemElements = document.select(".sdo-wrap-item.sdo-item-product");
+        Elements itemElements = document.select(".sdo-item-title h5 a");
         itemElements.forEach(element -> {
             try {
-                CrawlerModel crawlerModel = getProductByUrl(element.attr("data-link"));
+                CrawlerModel crawlerModel = getProductByUrl(element.attr("href"));
                 if (crawlerModel != null)
                     result.add(crawlerModel);
 

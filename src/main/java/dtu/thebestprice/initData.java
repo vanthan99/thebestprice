@@ -188,54 +188,55 @@ public class initData {
     @Autowired
     DiDongVietCrawler diDongVietCrawler;
 
-//    @PostConstruct
+    //    @PostConstruct
     public void test() {
 
-        LocalDate startDay = LocalDate.of(2021, 1, 1);
-        LocalDate endDay = LocalDate.of(2021, 7, 1);
-        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        LocalDate startDay = LocalDate.of(2021, 1, 1);
+//        LocalDate endDay = LocalDate.of(2021, 7, 1);
+//        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//
+//        long getDiff = date2.getTime() - date.getTime();
+//
+//        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+//
+//        int min = 50;
+//        int max = 60;
+//
+//        for (int i = 0; i <= getDaysDiff; i++) {
+//            // random viewcount dien thoai
+//            viewCountStatisticRepository.save(new ViewCountStatistic(
+//                    productRepository.getOne((long) random(908, 915)),
+//                    startDay.plusDays(i),
+//                    (long) random(min, max)
+//            ));
+//        }
+//
+//        // set viewcount for product
+//
+//        for (int i = 908; i <= 915; i++) {
+//            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
+//            if (viewCount != null) {
+//                Product product = productRepository.getOne((long) i);
+//                product.setViewCount(viewCount);
+//                productRepository.save(product);
+//            }
+//        }
 
-        long getDiff = date2.getTime() - date.getTime();
 
-        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
-
-        int min = 50;
-        int max = 60;
-
-        for (int i = 0; i <= getDaysDiff; i++) {
-            // random viewcount dien thoai
-            viewCountStatisticRepository.save(new ViewCountStatistic(
-                    productRepository.getOne((long) random(908, 915)),
-                    startDay.plusDays(i),
-                    (long) random(min, max)
-            ));
-        }
-
-        // set viewcount for product
-
-        for (int i = 908; i <= 915; i++) {
-            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
-            if (viewCount != null) {
-                Product product = productRepository.getOne((long) i);
-                product.setViewCount(viewCount);
-                productRepository.save(product);
-            }
-        }
-
-
-//        xuanVinhCrawler.listLaptopAsus().forEach(crawlerModel -> {
-//            System.out.println("title: " + crawlerModel.getTitle());
-//            System.out.println("url: " + crawlerModel.getUrl());
+        shopDunkCrawler.listIphone().forEach(crawlerModel -> {
+            System.out.println("title: " + crawlerModel.getTitle());
+            System.out.println("url: " + crawlerModel.getUrl());
 //            System.out.println("short desc: " + crawlerModel.getShortDesc());
 //            System.out.println("long desc: " + crawlerModel.getLongDesc());
 //            System.out.println("images: " + crawlerModel.getImages().toString());
-//            System.out.println("code: "   + crawlerModel.getCode());
+            System.out.println("code: " + crawlerModel.getCode());
 //            System.out.println("price: " + crawlerModel.getPrice());
-//        });
+            System.out.println("=============");
+        });
     }
 
-    //    @PostConstruct
+//    @PostConstruct
     public void init() {
 
         System.out.println("Bắt đầu lưu user");
@@ -340,6 +341,17 @@ public class initData {
             initProductV3(crawlerModel, dellBrand, laptopDell, haNoiComputerRetailer);
         });
         System.out.println("done laptop dell");
+
+        haNoiComputerCrawler.listCpuIntel().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, intelBrand, cpuCategory, haNoiComputerRetailer);
+        });
+        System.out.println("done cpu intel");
+
+        haNoiComputerCrawler.listLaptopDell().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, amdBrand, cpuCategory, haNoiComputerRetailer);
+        });
+        System.out.println("done cpu amd");
+
         System.out.println("end hanoi computer");
 
 
@@ -478,6 +490,17 @@ public class initData {
             initProductV3(crawlerModel, dellBrand, laptopDell, anPhatPCRetailer);
         });
         System.out.println("done laptop dell");
+
+        anPhatPCCrawler.listCpuIntel().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, intelBrand, cpuCategory, anPhatPCRetailer);
+        });
+        System.out.println("done cpu intel");
+
+        anPhatPCCrawler.listLaptopDell().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, amdBrand, cpuCategory, anPhatPCRetailer);
+        });
+        System.out.println("done cpu amd");
+
         System.out.println("end anphat pc");
 
         // crawl xuan vinh
@@ -591,32 +614,37 @@ public class initData {
         Product product = productRepository.findByCode(crawlerModel.getCode().toLowerCase().trim());
 
         if (product == null) {
-            // thêm mới product
-            product = new Product();
-            product.setTitle(crawlerModel.getTitle());
-            product.setLongDescription(crawlerModel.getLongDesc());
-            product.setShortDescription(crawlerModel.getShortDesc());
-            product.setCode(crawlerModel.getCode().toLowerCase().trim());
-            product.setCategory(category);
-            product.setBrand(brand);
 
-            productRepository.save(product);
+            if (retailer.getId() != 3) {
+                // thêm mới product
+                product = new Product();
+                product.setTitle(crawlerModel.getTitle());
+                product.setLongDescription(crawlerModel.getLongDesc());
+                product.setShortDescription(crawlerModel.getShortDesc());
+                product.setCode(crawlerModel.getCode().toLowerCase().trim());
+                product.setCategory(category);
+                product.setBrand(brand);
 
-            // save image
-            if (crawlerModel.getImages().size() > 0) {
-                for (String image : crawlerModel.getImages()) {
-                    imageRepository.save(new Image(image, product));
+                productRepository.save(product);
+
+                // save image
+                if (crawlerModel.getImages().size() > 0) {
+                    for (String image : crawlerModel.getImages()) {
+                        imageRepository.save(new Image(image, product));
+                    }
+
                 }
 
+                // save product_retailer
+                ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
+                productRetailerRepository.save(productRetailer);
+
+                // save price
+                Price price = new Price(crawlerModel.getPrice(), productRetailer);
+                priceRepository.save(price);
             }
 
-            // save product_retailer
-            ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
-            productRetailerRepository.save(productRetailer);
 
-            // save price
-            Price price = new Price(crawlerModel.getPrice(), productRetailer);
-            priceRepository.save(price);
         } else {
 
             boolean isUpdateShortDesc = false;
@@ -850,7 +878,7 @@ public class initData {
                     null,
                     startDay.plusDays(i),
                     true,
-                    (long) random(min, max)
+                    (long) random(35, 50)
             ));
 
             statisticAccessRepository.save(new StatisticAccess(

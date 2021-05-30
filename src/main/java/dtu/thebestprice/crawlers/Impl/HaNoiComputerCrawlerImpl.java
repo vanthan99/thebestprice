@@ -10,10 +10,10 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -334,6 +334,53 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                     String title = crawlerModel.getTitle().toLowerCase();
                     String code = title.substring(title.indexOf("(") + 1, title.indexOf(")"));
 
+                    crawlerModel.setCode(code);
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CrawlerModel> listCpuIntel() {
+        String url = "https://www.hanoicomputer.vn/cpu-intel";
+
+        return this.listProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("intel"))
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("("))
+                .peek(crawlerModel -> {
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    String code = title
+                            .substring(0, title.indexOf("("))
+                            .replaceAll("cpu", "")
+                            .replaceAll("intel", "")
+                            .replaceAll(" ", "")
+                            .replaceAll("-", "")
+                            .trim();
+
+                    crawlerModel.setCode(code);
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CrawlerModel> listCpuAmd() {
+        String url = "https://www.hanoicomputer.vn/cpu-amd";
+
+        return this.listProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("amd"))
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("("))
+                .peek(crawlerModel -> {
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    String code = title
+                            .substring(0, title.indexOf("("))
+                            .replaceAll("cpu", "")
+                            .replaceAll("amd", "")
+                            .replaceAll(" ", "")
+                            .replaceAll("-", "")
+                            .trim();
                     crawlerModel.setCode(code);
                 })
                 .filter(MyFilter.distinctByKey(CrawlerModel::getCode))

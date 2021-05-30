@@ -1,14 +1,10 @@
 package dtu.thebestprice.entities.interceptor;
 
-import dtu.thebestprice.entities.Price;
 import dtu.thebestprice.entities.Product;
-import dtu.thebestprice.entities.ProductRetailer;
 import dtu.thebestprice.repositories.PriceRepository;
 import org.hibernate.search.indexes.interceptor.EntityIndexingInterceptor;
 import org.hibernate.search.indexes.interceptor.IndexingOverride;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 
 public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Product> {
 
@@ -49,7 +45,7 @@ public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Pro
         if (!product.isApprove() || !product.isEnable() || product.isDeleteFlg())
             return false;
 
-        if (product.getProductRetailers().size() == 0)
+        if (product.getProductRetailers() == null || product.getProductRetailers().size() == 0)
             return false;
 
 //        int count = 0;
@@ -65,7 +61,7 @@ public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Pro
 //                }
 //            }
 //        }
-        
+
 //        if (product.getId() == 44)
 //            System.out.println("count = " + count);
 

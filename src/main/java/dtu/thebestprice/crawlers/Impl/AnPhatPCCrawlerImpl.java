@@ -301,4 +301,60 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                 .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CrawlerModel> listCpuIntel() {
+        String url = "https://www.anphatpc.com.vn/cpu-intel.html";
+
+        return this.listProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("intel"))
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("("))
+                .peek(crawlerModel -> {
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    String code = title
+                            .substring(0, title.indexOf("("))
+                            .replaceAll("cpu", "")
+                            .replaceAll("intel", "")
+                            .replaceAll(" ", "")
+                            .replaceAll("-", "")
+                            .trim();
+                    crawlerModel.setCode(code);
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CrawlerModel> listCpuAmd() {
+        String url = "https://www.anphatpc.com.vn/cpu-amd.html";
+
+        return this.listProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("amd"))
+                .peek(crawlerModel -> {
+                    String title = crawlerModel.getTitle().toLowerCase();
+
+                    if (title.contains(",") && title.contains("/")) {
+                        if (title.indexOf(",") < title.indexOf("/"))
+                            title = title.substring(0, title.indexOf(",")).trim();
+                        else title = title.substring(0, title.indexOf("/")).trim();
+                    } else if (title.contains("/"))
+                        title = title.substring(0, title.indexOf("/")).trim();
+                    else if (title.contains(","))
+                        title = title.substring(0, title.indexOf(",")).trim();
+
+
+                    String code = title
+                            .replaceAll("cpu", "")
+                            .replaceAll("amd", "")
+                            .replaceAll(" ", "")
+                            .replaceAll("-", "")
+                            .replaceAll("3\\.6ghz\\(4.1ghzwithboost\\)", "")
+                            .trim();
+                    crawlerModel.setCode(code);
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
+    }
 }
