@@ -1,6 +1,7 @@
 package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.PhiLongCrawler;
+import dtu.thebestprice.crawlers.filters.MyFilter;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
 import dtu.thebestprice.crawlers.model.ProductCrawler;
 import dtu.thebestprice.entities.Product;
@@ -97,32 +98,40 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                 shortDesc.append("\n");
             });
         }
-        Elements longDescEs = document.select("#tb-product-spec .tbl-technical tbody tr");
-        StringBuffer longDesc = new StringBuffer("");
 
-        if (longDescEs.size() > 0) {
-            longDescEs.forEach(element -> {
-                longDesc.append(element.text());
-                longDesc.append("\n");
-            });
-        } else {
-            longDescEs = document.select("#tb-product-spec .tbl-technical p");
-            if (longDescEs != null && longDescEs.size() > 0) {
-                longDescEs.forEach(element -> {
-                    longDesc.append(element.text().replaceAll("&nbsp", " "));
-                    longDesc.append("\\n");
-                });
-            } else {
-                longDescEs = document.select("#tb-product-spec .tbl-technical li");
-                if (longDescEs != null && longDescEs.size() > 0) {
-                    longDescEs.forEach(element -> {
-                        longDesc.append(element.text().replaceAll("&nbsp;", " "));
-                        longDesc.append("\n");
-                    });
-                }
 
-            }
-        }
+//        Elements longDescEs = document.select("#tb-product-spec .tbl-technical tbody tr");
+//        StringBuffer longDesc = new StringBuffer("");
+//        if (document.select("table#tblGeneralAttribute tr") != null) {
+//            Elements longElements = document.select("#tblGeneralAttribute tr");
+//
+//            for (Element longElement : longElements) {
+//                shortDesc.append(longElement.select("td:nth-child(1)").text());
+//                shortDesc.append(" : ");
+//                shortDesc.append(longElement.select("td:nth-child(2)").text());
+//                shortDesc.append("\n");
+//            }
+//        } else if (document.select("#tb-product-spec .tbl-technical tbody tr") != null) {
+//            Elements longDescEs = document.select("#tb-product-spec .tbl-technical tbody tr");
+//            longDescEs.forEach(element -> {
+//                longDesc.append(element.text().replaceAll("&nbsp", " "));
+//                longDesc.append("\n");
+//            });
+//        } else if (document.select("#tb-product-spec .tbl-technical p") != null) {
+//            Elements longDescEs = document.select("#tb-product-spec .tbl-technical p");
+//            longDescEs.forEach(element -> {
+//                longDesc.append(element.text().replaceAll("&nbsp", " "));
+//                longDesc.append("\n");
+//            });
+//        } else if (document.select("#tb-product-spec .tbl-technical li") != null) {
+//            Elements longDescEs = document.select("#tb-product-spec .tbl-technical li");
+//
+//            longDescEs.forEach(element -> {
+//                longDesc.append(element.text().replaceAll("&nbsp;", " "));
+//                longDesc.append("\n");
+//            });
+//
+//        } else longDesc.append("");
 
 
         long price;
@@ -137,7 +146,7 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         CrawlerModel crawlerModel = new CrawlerModel();
         crawlerModel.setTitle(title);
         crawlerModel.setShortDesc(shortDesc.toString().replaceAll("&nbsp;", ""));
-        crawlerModel.setLongDesc(longDesc.toString());
+        crawlerModel.setLongDesc(shortDesc.toString());
         crawlerModel.setImages(images);
         crawlerModel.setPrice(price);
         crawlerModel.setCode(null);
@@ -180,45 +189,29 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         String url = "https://philong.com.vn/laptop-asus.html";
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
-                    String title = crawlerModel.getTitle();
-                    String code = title.substring(0, title.indexOf("("))
-                            .toLowerCase()
-                            .replaceAll(" ", "")
-                            .replaceAll("-", "")
-                            .replaceAll("laptopasus", "")
-                            .replaceAll("EXPERTBOOK".toLowerCase(), "")
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopasus"))
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("("))
+                .peek(crawlerModel -> {
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    title = title.substring(0, title.indexOf("(")).trim();
+                    title = title.replaceAll(" - ", " ")
+                            .replaceAll("- ", " ")
+                            .replaceAll(" -", " ")
+                            .replaceAll("-", " ")
+                            .trim()
+                    ;
 
-                            .replaceAll("ZENBOOKDUO".toLowerCase(), "")
-                            .replaceAll("ZENBOOKFLIP13".toLowerCase(), "")
-                            .replaceAll("ZENBOOKFLIP".toLowerCase(), "")
-                            .replaceAll("ZEPHYRUSG14".toLowerCase(), "")
-                            .replaceAll("ZEPHYRUSM14".toLowerCase(), "")
-                            .replaceAll("ZEPHYRUSM15".toLowerCase(), "")
-                            .replaceAll("ZephyrusDuo15".toLowerCase(), "")
-                            .replaceAll("ZEPHYRUS".toLowerCase(), "")
-                            .replaceAll("ZENBOOK".toLowerCase(), "")
 
-                            .replaceAll("ROGFLOWX13".toLowerCase(), "")
-                            .replaceAll("ROGSTRIXSCAR15".toLowerCase(), "")
-                            .replaceAll("ROGSTRIXG15".toLowerCase(), "")
-                            .replaceAll("ROGG15".toLowerCase(), "")
-                            .replaceAll("ROGZEPHYRUSDUO15".toLowerCase(), "")
+                    List<String> keyList = Arrays.asList(title.split(" "));
+                    Collections.reverse(keyList);
+                    String code = keyList.get(1) + keyList.get(0);
+                    code = code.trim().toLowerCase();
 
-                            .replaceAll("ROGSTRIXG".toLowerCase(), "")
-                            .replaceAll("ROG".toLowerCase(), "")
-                            .replaceAll("TUFGAMINGA15".toLowerCase(), "")
-                            .replaceAll("TUFGAMING".toLowerCase(), "")
-                            .replaceAll("TUFDASHF15".toLowerCase(), "")
-                            .replaceAll("TUFF15".toLowerCase(), "")
-                            .replaceAll("TUFA15".toLowerCase(), "")
-                            .replaceAll("VIVOBOOKFLIP14".toLowerCase(), "")
-                            .replaceAll("VIVOBOOKFLIP".toLowerCase(), "")
-                            .replaceAll("VIVOBOOK".toLowerCase(), "")
-                            .replaceAll("VIVIBOOK".toLowerCase(), "")
-                            .trim();
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -226,26 +219,28 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         String url = "https://philong.com.vn/laptop-acer.html";
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
-                    String title = crawlerModel.getTitle();
-                    String code = title.substring(0, title.indexOf("("))
-                            .toLowerCase()
-                            .replaceAll(" ", "")
-                            .replaceAll("-", "")
-                            .replaceAll("laptopacer", "")
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopacer"))
+                .peek(crawlerModel -> {
+                    String title = crawlerModel.getTitle().toLowerCase();
+                    title = title.substring(0, title.indexOf("(")).trim();
+                    title = title.replaceAll(" - ", " ")
+                            .replaceAll("- ", " ")
+                            .replaceAll(" -", " ")
+                            .replaceAll("-", " ")
+                            .trim()
+                    ;
 
-                            .replaceAll("LAPTOPGAMINGACERNITRO5".toLowerCase(), "")
-                            .replaceAll("Nitro5AMD".toLowerCase(), "")
-                            .replaceAll("NITRO5".toLowerCase(), "")
-                            .replaceAll("ASPIRE5".toLowerCase(), "")
-                            .replaceAll("ASPIRE3".toLowerCase(), "")
-                            .replaceAll("ASPRISE3".toLowerCase(), "")
-                            .replaceAll("ASPIRE7".toLowerCase(), "")
-                            .replaceAll("ASPIRE".toLowerCase(), "")
-                            .replaceAll("SWIFT5".toLowerCase(), "")
-                            .replaceAll("SWIFT3".toLowerCase(), "");
+
+                    List<String> keyList = Arrays.asList(title.split(" "));
+                    Collections.reverse(keyList);
+                    String code = keyList.get(2) + keyList.get(1) + keyList.get(0);
+                    code = code.trim().toLowerCase();
+
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -253,7 +248,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         String url = "https://philong.com.vn/laptop-dell.html";
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopdell"))
+                .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().replaceAll("-", " ");
                     String code;
 
@@ -271,7 +268,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                         code = keyList.get(0).trim();
                     }
                     crawlerModel.setCode(code.replaceAll("-", ""));
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -279,11 +278,11 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         String url = "https://philong.com.vn/laptop-lenovo.html";
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplenovo"))
+                .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle();
                     String code = null;
-
-
                     List<String> listContain = Arrays.asList(
                             "81W",
                             "81L",
@@ -309,7 +308,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                     }
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -322,7 +323,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         );
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptophp"))
+                .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle();
                     String code = title.toLowerCase().replaceAll("pavilion", "");
 
@@ -339,7 +342,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                     }
 
                     crawlerModel.setCode(code.trim());
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -348,6 +353,7 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopmsi"))
                 .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("vn"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
@@ -363,7 +369,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                     code = keyList.get(1) + keyList.get(0);
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -371,7 +379,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         String url = "https://philong.com.vn/laptop-lg.html";
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplg"))
+                .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle();
                     if (title.contains("("))
                         title = title.substring(0, title.indexOf("("))
@@ -383,7 +393,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                             .replaceAll("-", "")
                             .replaceAll("\\.", "");
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
 //    @Override
@@ -409,7 +421,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
         String url = "https://philong.com.vn/laptop-avita.html";
 
         return this.listProduct(url)
-                .stream().peek(crawlerModel -> {
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopavita"))
+                .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().substring(0, crawlerModel.getTitle().indexOf("("));
 
                     List<String> keyList = Arrays.asList(title.split(" "));
@@ -418,7 +432,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
 
                     String code = keyList.get(0).replaceAll("-", "");
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -427,13 +443,16 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptophp"))
                 .filter(crawlerModel -> crawlerModel.getTitle().contains("("))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle();
                     String code = title.substring(title.indexOf("(") + 1, title.indexOf(")"))
                             .toLowerCase();
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -457,7 +476,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
 
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -512,7 +533,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
 
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -558,7 +581,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                     }
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -577,7 +602,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                             .toLowerCase()
                             .replaceAll("intel", "").trim();
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -596,7 +623,9 @@ public class PhiLongCrawlerImpl implements PhiLongCrawler {
                             .toLowerCase()
                             .replaceAll("amd", "").trim();
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override

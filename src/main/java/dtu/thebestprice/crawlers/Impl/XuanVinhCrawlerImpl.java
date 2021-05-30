@@ -1,6 +1,7 @@
 package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.XuanVinhCrawler;
+import dtu.thebestprice.crawlers.filters.MyFilter;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -97,8 +98,17 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
         }
 
 
-        Element descElement = document.selectFirst("#tab1");
-        String desc = descElement.text();
+//        Element descElement = document.selectFirst("#tab1");
+        String desc;
+        try {
+            Element descElement = document.selectFirst(".mo-ta-san-pham");
+            desc = descElement.html()
+                    .replaceAll("<br>", "")
+                    .trim();
+        } catch (Exception e) {
+            desc = "";
+        }
+
 
         Elements imageElements = document.select(".item img");
         List<String> images = new ArrayList<>();
@@ -129,7 +139,7 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
         String url = "http://xuanvinh.vn/DELL";
 
         return this.getListProduct(url).stream()
-                .filter(crawlerModel -> !crawlerModel.getTitle().toLowerCase().contains("msi"))
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("dell"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle();
                     if (title.contains("70")) {
@@ -137,14 +147,18 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                         crawlerModel.setCode(code);
                     }
 
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CrawlerModel> listLaptopLg() {
         String url = "http://xuanvinh.vn/LG";
         return getListProduct(url)
-                .stream().peek(crawlerModel -> {
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("lg"))
+                .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle();
                     List<String> keyList = Arrays.asList(title.split(" "));
                     String code = keyList.get(2).toLowerCase()
@@ -152,33 +166,42 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                             .replaceAll("\\.", "");
                     crawlerModel.setCode(code);
 
-                }).collect(Collectors.toList());
-
-
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CrawlerModel> listLaptopAvita() {
         String url = "http://xuanvinh.vn/avita-1";
-        return this.getListProduct(url).stream()
+        return this.getListProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("avita"))
                 .peek(crawlerModel -> {
                     String code = crawlerModel.getCode();
                     code = code.replaceAll("-", "");
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CrawlerModel> listLaptopLenovo() {
         String url = "http://xuanvinh.vn/lenovo";
-        return this.getListProduct(url);
+        return this.getListProduct(url).stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("lenovo"))
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CrawlerModel> listLaptopHp() {
         String url = "http://xuanvinh.vn/HP";
-        return this.getListProduct(url).stream()
+        return this.getListProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("hp"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
                             .replaceAll("pavilion", "")
@@ -190,7 +213,9 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                         crawlerModel.setCode(code);
                     }
 
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -198,6 +223,7 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
         String url = "http://xuanvinh.vn/msi";
         return this.getListProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("msi"))
                 .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("vn"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
@@ -213,7 +239,9 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                     code = keyList.get(1) + keyList.get(0);
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -221,6 +249,7 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
         String url = "http://xuanvinh.vn/ASUS";
         return this.getListProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("asus"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     if (title.contains("-")) {
@@ -238,13 +267,17 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                         crawlerModel.setCode(crawlerModel.getCode().toLowerCase().replaceAll("-", "").replaceAll(" ", "").trim());
                     }
 
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CrawlerModel> listLaptopAcer() {
         String url = "http://xuanvinh.vn/Acer";
-        return this.getListProduct(url).stream()
+        return this.getListProduct(url)
+                .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("acer"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
                             .trim()
@@ -271,6 +304,7 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
 
                     crawlerModel.setCode(code);
                 })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
                 .collect(Collectors.toList());
     }
 
@@ -285,7 +319,9 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                     List<String> keyList = Arrays.asList(title.split(" "));
                     String code = keyList.get(1) + keyList.get(2).replaceAll("-", "");
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
 
     }
 
@@ -300,7 +336,9 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
                     List<String> keyList = Arrays.asList(title.split(" "));
                     String code = keyList.get(1) + keyList.get(2) + keyList.get(3);
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
 
     }
 }

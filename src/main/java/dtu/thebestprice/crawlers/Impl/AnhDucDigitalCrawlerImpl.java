@@ -80,7 +80,17 @@ public class AnhDucDigitalCrawlerImpl implements AnhDucDigitalCrawler {
         String desc;
         try {
             Element descElement = document.selectFirst("div.summary-detail");
-            desc = descElement.text().replaceAll("-", "").trim();
+            desc = descElement
+                    .html()
+                    .replaceAll(" - ", "")
+                    .replaceAll(" -", "")
+                    .replaceAll("- ", "")
+                    .replaceAll("-", "")
+                    .replaceAll("<br>", "\n")
+                    .replaceAll("<p>", "")
+                    .replaceAll("</p>", "")
+                    .replaceAll("&nbsp;", "")
+                    .trim();
         } catch (Exception e) {
             desc = "";
         }

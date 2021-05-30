@@ -12,10 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,7 +34,7 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
     public Set<ProductCrawler> getListIphoneByUrl(String url) throws IOException {
         document = Jsoup.connect(url).get();
         Set<ProductCrawler> listResult = new HashSet<>();
-        Elements itemElements = document.select(".item-product");
+        Elements itemElements = document.select(".sdo-wrap-item.sdo-item-product");
         itemElements.forEach(element -> {
             try {
                 listResult.add(getProduct(element.attr("data-link")));
@@ -55,7 +52,7 @@ public class ShopDunkCrawlerImpl implements ShopDunkCrawler {
         } catch (IOException e) {
             return result;
         }
-        Elements itemElements = document.select(".item-product");
+        Elements itemElements = document.select(".sdo-wrap-item.sdo-item-product");
         itemElements.forEach(element -> {
             try {
                 CrawlerModel crawlerModel = getProductByUrl(element.attr("data-link"));

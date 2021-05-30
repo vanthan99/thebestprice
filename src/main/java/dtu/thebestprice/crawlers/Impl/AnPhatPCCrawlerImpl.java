@@ -1,6 +1,7 @@
 package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.AnPhatPCCrawler;
+import dtu.thebestprice.crawlers.filters.MyFilter;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -107,6 +108,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-acer_dm1060.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopacer"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     String code = title.substring(0, title.indexOf(".") - 3);
@@ -115,7 +117,9 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                     Collections.reverse(keyList);
                     code = keyList.get(0).replaceAll("-", "").trim();
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
 //    @Override
@@ -134,6 +138,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-asus_dm1058.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopasus"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
                             .replaceAll("- bạc", "")
@@ -151,7 +156,9 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                     Collections.reverse(keyList);
                     String code = keyList.get(0).replaceAll("-", "");
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -159,13 +166,16 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-avita_dm2214.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopavita"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     List<String> keyList = Arrays.asList(title.split(" "));
                     String code = keyList.get(3).replaceAll("-", "").trim();
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -173,6 +183,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-dell_dm1012.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopdell"))
                 .filter(crawlerModel -> !crawlerModel.getTitle().toLowerCase().contains("cto"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
@@ -194,7 +205,9 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                     String code = keyList.get(0);
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -202,6 +215,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-hp_dm1013.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptophp"))
                 .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("pa"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
@@ -210,7 +224,9 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                     String code = title.substring(title.indexOf("pa") - 5, title.indexOf("pa") + 2);
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -218,6 +234,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-may-tinh-xach-tay-lg_dm1480.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplg"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     List<String> keyList = Arrays.asList(title.split(" "));
@@ -226,7 +243,9 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                             .trim();
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -234,6 +253,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/Laptop-msi_dm1065.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopmsi"))
                 .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("vn"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
@@ -248,7 +268,9 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
                     crawlerModel.setCode(code);
 
 
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -256,6 +278,7 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
         String url = "https://www.anphatpc.com.vn/laptop-lenovo_dm1059.html";
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplenovo"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
                             .replaceAll("gaming", "")
@@ -274,6 +297,8 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
 
                     crawlerModel.setCode(code);
 
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 }

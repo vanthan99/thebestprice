@@ -190,13 +190,49 @@ public class initData {
 
 //    @PostConstruct
     public void test() {
-        shopDunkCrawler.listIphone().forEach(crawlerModel -> {
-            System.out.println("title: " + crawlerModel.getTitle());
-            System.out.println("url: " + crawlerModel.getUrl());
+
+        LocalDate startDay = LocalDate.of(2021, 1, 1);
+        LocalDate endDay = LocalDate.of(2021, 7, 1);
+        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        long getDiff = date2.getTime() - date.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        int min = 50;
+        int max = 60;
+
+        for (int i = 0; i <= getDaysDiff; i++) {
+            // random viewcount dien thoai
+            viewCountStatisticRepository.save(new ViewCountStatistic(
+                    productRepository.getOne((long) random(908, 915)),
+                    startDay.plusDays(i),
+                    (long) random(min, max)
+            ));
+        }
+
+        // set viewcount for product
+
+        for (int i = 908; i <= 915; i++) {
+            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
+            if (viewCount != null) {
+                Product product = productRepository.getOne((long) i);
+                product.setViewCount(viewCount);
+                productRepository.save(product);
+            }
+        }
+
+
+//        xuanVinhCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            System.out.println("title: " + crawlerModel.getTitle());
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("short desc: " + crawlerModel.getShortDesc());
+//            System.out.println("long desc: " + crawlerModel.getLongDesc());
 //            System.out.println("images: " + crawlerModel.getImages().toString());
-            System.out.println("code: " + crawlerModel.getCode());
-            System.out.println("price: " + crawlerModel.getPrice());
-        });
+//            System.out.println("code: "   + crawlerModel.getCode());
+//            System.out.println("price: " + crawlerModel.getPrice());
+//        });
     }
 
     //    @PostConstruct
@@ -251,116 +287,6 @@ public class initData {
 
         Category cpuCategory = categoryRepository.findByTitle("Bộ vi xử lý - cpu".toUpperCase());
 
-        // crawl philong
-        System.out.println("start philong");
-        phiLongCrawler.listLaptopAsus().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, asusBrand, laptopAsus, phiLongretailer);
-        });
-        System.out.println("Done laptop asus");
-
-        phiLongCrawler.listLaptopAcer().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, acerBrand, laptopAcer, phiLongretailer);
-        });
-        System.out.println("Done laptop acer");
-
-
-        phiLongCrawler.listLaptopAvita().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, avitaBrand, laptopAvita, phiLongretailer);
-        });
-        System.out.println("Done laptop avita");
-
-
-        phiLongCrawler.listLaptopLg().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, lgBrand, laptopLg, phiLongretailer);
-        });
-        System.out.println("Done laptop lg");
-
-        phiLongCrawler.listLaptopHp().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, hpBrand, laptopHp, phiLongretailer);
-        });
-        System.out.println("Done laptop hp");
-
-        phiLongCrawler.listLaptopMsi().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, msiBrand, laptopMsi, phiLongretailer);
-        });
-        System.out.println("Done laptop msi");
-
-        phiLongCrawler.listLaptopLenovo().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, phiLongretailer);
-        });
-        System.out.println("Done laptop lenovo");
-
-        phiLongCrawler.listLaptopDell().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, dellBrand, laptopDell, phiLongretailer);
-        });
-        System.out.println("Done laptop asus");
-
-        phiLongCrawler.listCpuIntel().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, intelBrand, cpuCategory, phiLongretailer);
-        });
-        System.out.println("Done cpu intel");
-
-        phiLongCrawler.listCpuAmd().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, amdBrand, cpuCategory, phiLongretailer);
-        });
-        System.out.println("Done cpu amd");
-
-        System.out.println("end philong");
-
-
-        // crawl xuan vinh
-        System.out.println("start xuanvinh");
-        xuanVinhCrawler.listLaptopAsus().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, asusBrand, laptopAsus, xuanVinhRetailer);
-        });
-        System.out.println("done laptop asus");
-
-        xuanVinhCrawler.listLaptopAcer().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, acerBrand, laptopAcer, xuanVinhRetailer);
-        });
-        System.out.println("done laptop acer");
-
-        xuanVinhCrawler.listLaptopAvita().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, avitaBrand, laptopAvita, xuanVinhRetailer);
-        });
-        System.out.println("done laptop avita");
-
-        xuanVinhCrawler.listLaptopLg().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, lgBrand, laptopLg, xuanVinhRetailer);
-        });
-        System.out.println("done laptop lg");
-
-        xuanVinhCrawler.listLaptopHp().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, hpBrand, laptopHp, xuanVinhRetailer);
-        });
-        System.out.println("done laptop hp");
-
-        xuanVinhCrawler.listLaptopMsi().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, msiBrand, laptopMsi, xuanVinhRetailer);
-        });
-        System.out.println("done laptop msi");
-
-        xuanVinhCrawler.listLaptopLenovo().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, xuanVinhRetailer);
-        });
-        System.out.println("done laptop lenovo");
-
-        xuanVinhCrawler.listLaptopDell().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, dellBrand, laptopDell, xuanVinhRetailer);
-        });
-        System.out.println("done laptop dell");
-
-        xuanVinhCrawler.listCpuIntel().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, intelBrand, cpuCategory, xuanVinhRetailer);
-        });
-        System.out.println("done cpu intel");
-
-        xuanVinhCrawler.listCpuAmd().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, amdBrand, cpuCategory, xuanVinhRetailer);
-        });
-        System.out.println("done cpu amd");
-
-        System.out.println("end xuanvinh");
 
         // crawl shopdunk
         System.out.println("start shopdunk");
@@ -456,6 +382,60 @@ public class initData {
 
         System.out.println("end gearvn");
 
+        // crawl philong
+        System.out.println("start philong");
+        phiLongCrawler.listLaptopAsus().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, asusBrand, laptopAsus, phiLongretailer);
+        });
+        System.out.println("Done laptop asus");
+
+        phiLongCrawler.listLaptopAcer().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, acerBrand, laptopAcer, phiLongretailer);
+        });
+        System.out.println("Done laptop acer");
+
+
+        phiLongCrawler.listLaptopAvita().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, avitaBrand, laptopAvita, phiLongretailer);
+        });
+        System.out.println("Done laptop avita");
+
+
+        phiLongCrawler.listLaptopLg().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, lgBrand, laptopLg, phiLongretailer);
+        });
+        System.out.println("Done laptop lg");
+
+        phiLongCrawler.listLaptopHp().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, hpBrand, laptopHp, phiLongretailer);
+        });
+        System.out.println("Done laptop hp");
+
+        phiLongCrawler.listLaptopMsi().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, msiBrand, laptopMsi, phiLongretailer);
+        });
+        System.out.println("Done laptop msi");
+
+        phiLongCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, phiLongretailer);
+        });
+        System.out.println("Done laptop lenovo");
+
+        phiLongCrawler.listLaptopDell().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, dellBrand, laptopDell, phiLongretailer);
+        });
+        System.out.println("Done laptop asus");
+
+        phiLongCrawler.listCpuIntel().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, intelBrand, cpuCategory, phiLongretailer);
+        });
+        System.out.println("Done cpu intel");
+
+        phiLongCrawler.listCpuAmd().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, amdBrand, cpuCategory, phiLongretailer);
+        });
+        System.out.println("Done cpu amd");
+        System.out.println("end philong");
 
         // crawl anphatPC
         System.out.println("start anphat pc");
@@ -500,13 +480,59 @@ public class initData {
         System.out.println("done laptop dell");
         System.out.println("end anphat pc");
 
-        // crawl didongviet
-        System.out.println("start didongviet");
-        diDongVietCrawler.listIphone().forEach(crawlerModel -> {
-            initProductV3(crawlerModel, appleBrand, dienThoaiIphone, diDongVietRetailer);
+        // crawl xuan vinh
+        System.out.println("start xuanvinh");
+        xuanVinhCrawler.listLaptopAsus().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, asusBrand, laptopAsus, xuanVinhRetailer);
         });
-        System.out.println("done iphone");
-        System.out.println("end didongviet");
+        System.out.println("done laptop asus");
+
+        xuanVinhCrawler.listLaptopAcer().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, acerBrand, laptopAcer, xuanVinhRetailer);
+        });
+        System.out.println("done laptop acer");
+
+        xuanVinhCrawler.listLaptopAvita().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, avitaBrand, laptopAvita, xuanVinhRetailer);
+        });
+        System.out.println("done laptop avita");
+
+        xuanVinhCrawler.listLaptopLg().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, lgBrand, laptopLg, xuanVinhRetailer);
+        });
+        System.out.println("done laptop lg");
+
+        xuanVinhCrawler.listLaptopHp().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, hpBrand, laptopHp, xuanVinhRetailer);
+        });
+        System.out.println("done laptop hp");
+
+        xuanVinhCrawler.listLaptopMsi().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, msiBrand, laptopMsi, xuanVinhRetailer);
+        });
+        System.out.println("done laptop msi");
+
+        xuanVinhCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, lenovoBrand, laptopLenovo, xuanVinhRetailer);
+        });
+        System.out.println("done laptop lenovo");
+
+        xuanVinhCrawler.listLaptopDell().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, dellBrand, laptopDell, xuanVinhRetailer);
+        });
+        System.out.println("done laptop dell");
+
+        xuanVinhCrawler.listCpuIntel().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, intelBrand, cpuCategory, xuanVinhRetailer);
+        });
+        System.out.println("done cpu intel");
+
+        xuanVinhCrawler.listCpuAmd().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, amdBrand, cpuCategory, xuanVinhRetailer);
+        });
+        System.out.println("done cpu amd");
+
+        System.out.println("end xuanvinh");
 
 
         // crawl iphonedanang
@@ -524,6 +550,14 @@ public class initData {
         });
         System.out.println("done iphone");
         System.out.println("end anhducdigital");
+
+        // crawl didongviet
+        System.out.println("start didongviet");
+        diDongVietCrawler.listIphone().forEach(crawlerModel -> {
+            initProductV3(crawlerModel, appleBrand, dienThoaiIphone, diDongVietRetailer);
+        });
+        System.out.println("done iphone");
+        System.out.println("end didongviet");
 
 
 //        System.out.println("Bắt đầu lưu sản phẩm");
@@ -584,6 +618,27 @@ public class initData {
             Price price = new Price(crawlerModel.getPrice(), productRetailer);
             priceRepository.save(price);
         } else {
+
+            boolean isUpdateShortDesc = false;
+            boolean isUpdateLongDesc = false;
+            if ((product.getShortDescription() == null || product.getShortDescription().length() < 20) && (crawlerModel.getShortDesc() != null && crawlerModel.getShortDesc().length() >= 20))
+                isUpdateShortDesc = true;
+            if ((product.getLongDescription() == null || product.getLongDescription().length() < 20) && (crawlerModel.getLongDesc() != null && crawlerModel.getLongDesc().length() >= 20))
+                isUpdateLongDesc = true;
+
+            // cập nhật mô tả ngắn
+            if (isUpdateShortDesc) {
+                product.setShortDescription(crawlerModel.getShortDesc());
+                productRepository.save(product);
+            }
+
+            // cập nhật mô tả dài
+            if (isUpdateLongDesc) {
+                product.setLongDescription(crawlerModel.getLongDesc());
+                productRepository.save(product);
+            }
+
+
             // tạo mới giá
             ProductRetailer productRetailer = new ProductRetailer(crawlerModel.getUrl(), retailer, product, true, true);
             productRetailerRepository.save(productRetailer);

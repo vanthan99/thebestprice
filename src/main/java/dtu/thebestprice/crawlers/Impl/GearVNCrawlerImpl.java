@@ -1,6 +1,7 @@
 package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.GearVNCrawler;
+import dtu.thebestprice.crawlers.filters.MyFilter;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -77,15 +78,16 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
         }
 
 
-        StringBuilder shortDesc = new StringBuilder();
+        StringBuffer shortDesc = new StringBuffer();
         try {
             Elements shortDescElements = document.select("#tblGeneralAttribute tr");
-            shortDescElements.forEach(element -> {
-                shortDesc.append(element.getAllElements().get(0).text());
+
+            for (Element shortDescElement : shortDescElements) {
+                shortDesc.append(shortDescElement.select("td:nth-child(1)").text());
                 shortDesc.append(" : ");
-                shortDesc.append(element.getAllElements().get(1).text());
+                shortDesc.append(shortDescElement.select("td:nth-child(2)").text());
                 shortDesc.append("\n");
-            });
+            }
         } catch (Exception ignored) {
         }
 
@@ -137,6 +139,8 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopasus"))
+
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase().trim();
 
@@ -144,7 +148,9 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
                     Collections.reverse(keyList);
                     String code = keyList.get(1) + keyList.get(0);
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -153,6 +159,7 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopdell"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase().trim();
 
@@ -160,7 +167,9 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
                     Collections.reverse(keyList);
                     String code = keyList.get(0);
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -169,6 +178,8 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptophp"))
+
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase().trim();
 
@@ -176,7 +187,9 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
                     Collections.reverse(keyList);
                     String code = keyList.get(0);
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -185,6 +198,7 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplg"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase().trim();
 
@@ -192,7 +206,9 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
                     Collections.reverse(keyList);
                     String code = keyList.get(1) + keyList.get(0);
                     crawlerModel.setCode(code.replaceAll("\\.", ""));
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -201,6 +217,7 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopmsi"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase().trim();
 
@@ -216,7 +233,9 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
                         code = "a11m089vn";
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -225,6 +244,7 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplenovo"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase().trim();
 
@@ -232,6 +252,8 @@ public class GearVNCrawlerImpl implements GearVNCrawler {
                     Collections.reverse(keyList);
                     String code = keyList.get(0);
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 }

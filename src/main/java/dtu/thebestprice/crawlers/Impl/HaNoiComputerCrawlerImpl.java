@@ -1,6 +1,7 @@
 package dtu.thebestprice.crawlers.Impl;
 
 import dtu.thebestprice.crawlers.HaNoiComputerCrawler;
+import dtu.thebestprice.crawlers.filters.MyFilter;
 import dtu.thebestprice.crawlers.model.CrawlerModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,10 +10,10 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,9 +103,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
         try {
             Elements longDescElements = document.select(".bang-tskt tr");
             for (Element longDescElement : longDescElements) {
-                longDesc.append(longDescElement.getAllElements().get(0).text());
+                longDesc.append(longDescElement.select("td:nth-child(1)").text());
                 longDesc.append(" : ");
-                longDesc.append(longDescElement.getAllElements().get(1).text());
+                longDesc.append(longDescElement.select("td:nth-child(2)").text());
                 longDesc.append("\n");
             }
         } catch (Exception ignored) {
@@ -129,6 +130,8 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopacer"))
+
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     String code;
@@ -144,9 +147,10 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                         code = keyList.get(3).replaceAll("-", "")
                                 .replaceAll("\\.", "");
                     }
-
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -170,6 +174,8 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopasus"))
+
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     String code;
@@ -187,7 +193,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                     }
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -196,6 +204,8 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopavita"))
+
                 .filter(crawlerModel -> crawlerModel.getTitle().contains("("))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
@@ -203,7 +213,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                             .replaceAll("-", "");
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -212,6 +224,7 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopdell"))
                 .filter(crawlerModel -> crawlerModel.getTitle().contains("("))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
@@ -227,7 +240,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                         code = keyList.get(0);
                     }
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -236,6 +251,7 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptophp"))
                 .filter(crawlerModel -> crawlerModel.getTitle().contains("("))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
@@ -251,7 +267,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                         code = keyList.get(0);
                     }
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -260,6 +278,8 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplg"))
+
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
 
@@ -270,7 +290,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                             .replaceAll("\\.", "");
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -279,6 +301,7 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptopmsi"))
                 .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("vn"))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase()
@@ -294,7 +317,9 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
                     code = keyList.get(1) + keyList.get(0);
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -303,12 +328,15 @@ public class HaNoiComputerCrawlerImpl implements HaNoiComputerCrawler {
 
         return this.listProduct(url)
                 .stream()
+                .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().replaceAll(" ", "").trim().contains("laptoplenovo"))
                 .filter(crawlerModel -> crawlerModel.getTitle().toLowerCase().contains("("))
                 .peek(crawlerModel -> {
                     String title = crawlerModel.getTitle().toLowerCase();
                     String code = title.substring(title.indexOf("(") + 1, title.indexOf(")"));
 
                     crawlerModel.setCode(code);
-                }).collect(Collectors.toList());
+                })
+                .filter(MyFilter.distinctByKey(CrawlerModel::getCode))
+                .collect(Collectors.toList());
     }
 }
