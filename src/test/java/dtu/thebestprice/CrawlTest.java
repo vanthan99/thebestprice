@@ -9,9 +9,9 @@ import java.io.IOException;
 
 public class CrawlTest {
     public static void main(String[] args) throws IOException {
-        Document document = Jsoup.connect("https://shopdunk.com/iphone/").get();
-        Elements codeElement = document.select(".sdo-item-title h5 a");
+        Document document = Jsoup.connect("https://anhducdigital.vn/iphone-8-256gb-space-gray.html").get();
+        Element priceElement = document.selectFirst("#info-normal_product div.pull-right.text-right > span");
 
-        System.out.println("code: "+codeElement.outerHtml());
+        System.out.println("price: "+Long.parseLong(priceElement.text().replaceAll("[^0-9]", "")));
     }
 }

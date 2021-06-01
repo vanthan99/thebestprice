@@ -1,11 +1,15 @@
 package dtu.thebestprice.entities.interceptor;
 
+import dtu.thebestprice.entities.Price;
 import dtu.thebestprice.entities.Product;
+import dtu.thebestprice.entities.ProductRetailer;
 import dtu.thebestprice.repositories.PriceRepository;
 import org.hibernate.search.indexes.interceptor.EntityIndexingInterceptor;
 import org.hibernate.search.indexes.interceptor.IndexingOverride;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Product> {
 
     @Autowired
@@ -48,10 +52,10 @@ public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Pro
         if (product.getProductRetailers() == null || product.getProductRetailers().size() == 0)
             return false;
 
-//        int count = 0;
-//
+        int count = 0;
+
 //        for (ProductRetailer productRetailer : product.getProductRetailers()) {
-//            if (productRetailer!=null){
+//            if (productRetailer != null) {
 //                Price price = priceRepository.findFirstByProductRetailerOrderByUpdatedAtDesc(productRetailer);
 //                if (price == null) {
 //                    return false;
@@ -62,8 +66,16 @@ public class ProductIndexingInterceptor implements EntityIndexingInterceptor<Pro
 //            }
 //        }
 
-//        if (product.getId() == 44)
-//            System.out.println("count = " + count);
+        int productRetialerSize = product.getProductRetailers().size();
+
+        for (ProductRetailer productRetailer : product.getProductRetailers()) {
+            if (productRetailer.isDeleteFlg() || !productRetailer.isApprove() || !productRetailer.isEnable())
+                count++;
+        }
+
+        if (count == productRetialerSize)
+            return false;
+
 
         return true;
     }

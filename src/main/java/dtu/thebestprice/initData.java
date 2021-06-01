@@ -188,91 +188,91 @@ public class initData {
     @Autowired
     DiDongVietCrawler diDongVietCrawler;
 
-    //    @PostConstruct
+//    @PostConstruct
     public void test() {
 
-//        LocalDate startDay = LocalDate.of(2021, 1, 1);
-//        LocalDate endDay = LocalDate.of(2021, 7, 1);
-//        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//
-//        long getDiff = date2.getTime() - date.getTime();
-//
-//        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
-//
-//        int min = 50;
-//        int max = 60;
-//
-//        for (int i = 0; i <= getDaysDiff; i++) {
-//            // random viewcount dien thoai
-//            viewCountStatisticRepository.save(new ViewCountStatistic(
-//                    productRepository.getOne((long) random(908, 915)),
-//                    startDay.plusDays(i),
-//                    (long) random(min, max)
-//            ));
-//        }
-//
-//        // set viewcount for product
-//
-//        for (int i = 908; i <= 915; i++) {
-//            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
-//            if (viewCount != null) {
-//                Product product = productRepository.getOne((long) i);
-//                product.setViewCount(viewCount);
-//                productRepository.save(product);
-//            }
-//        }
+        LocalDate startDay = LocalDate.of(2021, 6, 1);
+        LocalDate endDay = LocalDate.of(2021, 6, 30);
+        Date date = Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date date2 = Date.from(endDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        System.out.println("dell");
-        anPhatPCCrawler.listLaptopDell().forEach(crawlerModel -> {
-            System.out.println("title: " + crawlerModel.getTitle());
-            System.out.println("url: " + crawlerModel.getUrl());
+        long getDiff = date2.getTime() - date.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        int min = 20;
+        int max = 30;
+
+        for (int i = 0; i <= getDaysDiff; i++) {
+            // random viewcount dien thoai
+            viewCountStatisticRepository.save(new ViewCountStatistic(
+                    productRepository.getOne((long) random(904, 915)),
+                    startDay.plusDays(i),
+                    (long) random(min, max)
+            ));
+        }
+
+        // set viewcount for product
+
+        for (int i = 904; i <= 915; i++) {
+            Long viewCount = viewCountStatisticRepository.countByProduct((long) i);
+            if (viewCount != null) {
+                Product product = productRepository.getOne((long) i);
+                product.setViewCount(viewCount);
+                productRepository.save(product);
+            }
+        }
+
+//        System.out.println("dell");
+//        anPhatPCCrawler.listLaptopDell().forEach(crawlerModel -> {
+//            System.out.println("title: " + crawlerModel.getTitle());
+//            System.out.println("url: " + crawlerModel.getUrl());
 //            System.out.println("short desc: " + crawlerModel.getShortDesc());
 //            System.out.println("long desc: " + crawlerModel.getLongDesc());
 //            System.out.println("images: " + crawlerModel.getImages().toString());
-            System.out.println("code: " + crawlerModel.getCode());
+//            System.out.println("code: " + crawlerModel.getCode());
 //            System.out.println("price: " + crawlerModel.getPrice());
-            System.out.println("=============");
-        });
-        System.out.println("asus");
-        anPhatPCCrawler.listLaptopAsus().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
-        System.out.println("avita");
-        anPhatPCCrawler.listLaptopAvita().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
-        System.out.println("msi");
-        anPhatPCCrawler.listLaptopMsi().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
-        System.out.println("lenovo");
-        anPhatPCCrawler.listLaptopLenovo().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
-        System.out.println("hp");
-        anPhatPCCrawler.listLaptopHp().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
-        System.out.println("acer");
-        anPhatPCCrawler.listLaptopAcer().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
-        System.out.println("lg");
-        anPhatPCCrawler.listLaptopLg().forEach(crawlerModel -> {
-            System.out.println("url: " + crawlerModel.getUrl());
-            System.out.println("code: " + crawlerModel.getCode());
-        });
+//            System.out.println("=============");
+//        });
+//        System.out.println("asus");
+//        anPhatPCCrawler.listLaptopAsus().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
+//        System.out.println("avita");
+//        anPhatPCCrawler.listLaptopAvita().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
+//        System.out.println("msi");
+//        anPhatPCCrawler.listLaptopMsi().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
+//        System.out.println("lenovo");
+//        anPhatPCCrawler.listLaptopLenovo().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
+//        System.out.println("hp");
+//        anPhatPCCrawler.listLaptopHp().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
+//        System.out.println("acer");
+//        anPhatPCCrawler.listLaptopAcer().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
+//        System.out.println("lg");
+//        anPhatPCCrawler.listLaptopLg().forEach(crawlerModel -> {
+//            System.out.println("url: " + crawlerModel.getUrl());
+//            System.out.println("code: " + crawlerModel.getCode());
+//        });
 
     }
 
-//    @PostConstruct
+    //    @PostConstruct
     public void init() {
 
         System.out.println("Bắt đầu lưu user");
