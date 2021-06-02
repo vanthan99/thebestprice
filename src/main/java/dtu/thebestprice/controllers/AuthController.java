@@ -56,7 +56,7 @@ public class AuthController {
     @GetMapping("/me")
     @ApiOperation(value = "Thông tin của tôi")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Object> me(){
+    public ResponseEntity<Object> me() {
         return authService.me();
     }
 
@@ -104,17 +104,19 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_RETAILER','ROLE_GUEST')")
     @ApiOperation(value = "Đăng xuất")
     public ResponseEntity<Object> logout(
             @RequestHeader(value = "Authorization", required = false) String token
     ) {
 
+        if (token == null || token.isEmpty())
+            return new ResponseEntity<>(new ApiResponse(false, "Bạn chưa đăng đăng nhập vào hệ thống"), HttpStatus.UNAUTHORIZED);
+
         if (template.hasKey(token.substring(7))) {
             template.delete(token.substring(7));
             return ResponseEntity.ok(new ApiResponse(true, "Đăng xuất thành công"));
         } else
-            return new ResponseEntity<>(new ApiResponse(false, "Bạn chưa đăng đăng nhập vào hệ thống"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ApiResponse(false, "Token đã hết hạn"), HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/validateToken")
