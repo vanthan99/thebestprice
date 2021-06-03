@@ -93,9 +93,14 @@ public class AnPhatPCCrawlerImpl implements AnPhatPCCrawler {
 
     @Override
     public Long getPriceByUrl(String url) {
+
         try {
             document = Jsoup.connect(url).get();
+        } catch (Exception e) {
+            System.out.println("Lỗi khi truy cập vào url: " + url);
+        }
 
+        try {
             Element priceElement = document.selectFirst("b.js-pro-total-price");
             return Long.parseLong(priceElement.text().replaceAll("[^0-9]", ""));
         } catch (Exception e) {

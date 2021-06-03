@@ -23,6 +23,10 @@ public class DiDongVietCrawlerImpl implements DiDongVietCrawler {
     public Long getPriceByUrl(String url) {
         try {
             document = Jsoup.connect(url).get();
+        } catch (Exception e) {
+            System.out.println("Lỗi khi truy cập vào url: " + url);
+        }
+        try {
             Element priceElement = document.selectFirst(".price-wrapper");
             return Long.parseLong(priceElement.attr("data-price-amount"));
         } catch (Exception e) {

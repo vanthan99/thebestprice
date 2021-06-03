@@ -53,6 +53,7 @@ public class UpdatePriceJob {
     RetailerRepository retailerRepository;
 
     //     cập nhật giá cho sản phẩm của Phi Long
+    //18000000
     @Scheduled(fixedDelay = 18000000)
     @Transactional
     public void updatePriceForPhiLong() {

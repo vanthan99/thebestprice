@@ -25,6 +25,10 @@ public class XuanVinhCrawlerImpl implements XuanVinhCrawler {
     public Long getPriceByUrl(String url) {
         try {
             document = Jsoup.connect(url).get();
+        } catch (Exception e) {
+            System.out.println("Lỗi khi truy cập vào url: " + url);
+        }
+        try {
             Element priceElement = document.selectFirst("#main-content > div > div.content-box > div.product-right > div > div.single-product-price > div:nth-child(1)");
             String strPrice = priceElement.text().replaceAll("[^0-9]", "");
             return Long.parseLong(strPrice);

@@ -22,8 +22,14 @@ public class AppleTAndTCrawlerImpl implements AppleTAndTCrawler {
 
     @Override
     public Long getPriceByUrl(String url) {
+
         try {
             document = Jsoup.connect(url).get();
+        } catch (Exception e) {
+            System.out.println("Lỗi khi truy cập vào url: " + url);
+        }
+
+        try {
             Element priceElement = document.selectFirst("div.summary.entry-summary > p.price > span > bdi");
             String strPrice = priceElement.text().replaceAll("[^0-9]", "");
             return Long.parseLong(strPrice);

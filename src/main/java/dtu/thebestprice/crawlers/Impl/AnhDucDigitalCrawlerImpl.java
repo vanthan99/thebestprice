@@ -112,8 +112,12 @@ public class AnhDucDigitalCrawlerImpl implements AnhDucDigitalCrawler {
     public Long getPriceByUrl(String url) {
         try {
             document = Jsoup.connect(url).get();
-            Element priceElement = document.selectFirst("#info-normal_product div.pull-right.text-right > span");
+        } catch (Exception e) {
+            System.out.println("Lỗi khi truy cập vào url: " + url);
+        }
 
+        try {
+            Element priceElement = document.selectFirst("#info-normal_product div.pull-right.text-right > span");
             return Long.parseLong(priceElement.text().replaceAll("[^0-9]", ""));
         } catch (Exception e) {
             return null;
