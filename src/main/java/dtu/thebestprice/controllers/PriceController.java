@@ -203,4 +203,14 @@ public class PriceController {
         return priceService.adminDelete(productRetailerId);
     }
 
+    // retailer xem danh sách giá của mình
+    @ApiOperation(value = "Retailer xem danh sách giá của mình")
+    @PreAuthorize("hasAuthority('ROLE_RETAILER')")
+    @GetMapping("/getPagePriceForRetailer")
+    public ResponseEntity<Object> getPagePriceForRetailer(
+           Pageable pageable
+    ) {
+        return priceService.getPagePriceForRetailer(pageable);
+    }
+
 }

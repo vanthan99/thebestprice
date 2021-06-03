@@ -2,6 +2,7 @@ package dtu.thebestprice.services;
 
 import dtu.thebestprice.payload.request.price.PriceRequest;
 import dtu.thebestprice.payload.request.price.PriceRetailerRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface PriceService {
@@ -29,4 +30,7 @@ public interface PriceService {
 
     // admin xoa gia
     ResponseEntity<Object> adminDelete(long productRetailerId);
+
+    // retailer get page giá những sản phẩm của mình
+    ResponseEntity<Object> getPagePriceForRetailer(Pageable pageable);
 }

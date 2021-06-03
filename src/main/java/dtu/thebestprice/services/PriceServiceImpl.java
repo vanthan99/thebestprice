@@ -8,7 +8,10 @@ import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.payload.response.price.PriceResponse;
 import dtu.thebestprice.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -315,5 +318,26 @@ public class PriceServiceImpl implements PriceService {
         productRetailerRepository.save(productRetailer);
 
         return ResponseEntity.ok(new ApiResponse(true, "Xóa thành công"));
+    }
+
+    @Override
+    public ResponseEntity<Object> getPagePriceForRetailer(Pageable pageable) {
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                //when Anonymous Authentication is enabled
+                !(SecurityContextHolder.getContext().getAuthentication()
+                        instanceof AnonymousAuthenticationToken)) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            Page<ProductRetailer> productRetailerPage = productRetailerRepository.findByUsername(username,pageable);
+
+            Page<PriceResponse> resultPage =
+                    productRetailerPage
+                    .map(productRetailer -> priceConverter.toPriceResponse(productRetailer));
+            return ResponseEntity.ok(resultPage);
+        }
+
+        return ResponseEntity.status(400).build();
     }
 }
