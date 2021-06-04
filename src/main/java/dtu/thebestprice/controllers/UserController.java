@@ -2,6 +2,7 @@ package dtu.thebestprice.controllers;
 
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
+import dtu.thebestprice.entities.validator.CustomValidator;
 import dtu.thebestprice.payload.request.*;
 import dtu.thebestprice.payload.response.ApiResponse;
 import dtu.thebestprice.repositories.UserRepository;
@@ -102,6 +103,11 @@ public class UserController {
     public ResponseEntity<Object> editProfile(
             @RequestBody @Valid PasswordRequest request
     ) {
+        if (!CustomValidator.isValid(request.getCurrentPassword()))
+            throw new RuntimeException("Mật khẩu hiện tại không được chứa khoảng cách hoặc ký tự tiếng việt");
+        if (!CustomValidator.isValid(request.getNewPassword()))
+            throw new RuntimeException("Mật khẩu mới không được chứa khoảng cách hoặc ký tự tiếng việt");
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
         return userService.updatePassword(request, userDetails.getId());
@@ -113,6 +119,11 @@ public class UserController {
     public ResponseEntity<Object> adminCreateGuestAccount(
             @RequestBody @Valid RegisterRequest request
     ) {
+        if (!CustomValidator.isValid(request.getUsername()))
+            throw new RuntimeException("Tên đăng nhập không được chứa khoảng cách hoặc ký tự tiếng việt");
+        if (!CustomValidator.isValid(request.getPassword()))
+            throw new RuntimeException("Mật khẩu không được chứa khoảng cách hoặc ký tự tiếng việt");
+
         userService.createNew(request, true, false, ERole.ROLE_GUEST, true);
         return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản guest thành công"));
     }
@@ -153,6 +164,9 @@ public class UserController {
             @PathVariable("userId") String strId,
             @RequestBody @Valid UpdateUserByAdminRequest request
     ) {
+        if (!CustomValidator.isValid(request.getUsername()))
+            throw new RuntimeException("Tên đăng nhập không được chứa khoảng cách hoặc ký tự tiếng việt");
+
         long userId;
         long phoneNumber;
         try {
@@ -178,6 +192,10 @@ public class UserController {
             @PathVariable("userId") String strUserId,
             @RequestBody @Valid PasswordByAdminRequest request
     ) {
+
+        if (!CustomValidator.isValid(request.getNewPassword()))
+            throw new RuntimeException("Mật khẩu không được chứa khoảng cách hoặc ký tự tiếng việt");
+
         long userId;
         try {
             userId = Long.parseLong(strUserId);
@@ -232,6 +250,10 @@ public class UserController {
     public ResponseEntity<Object> createAdminAccount(
             @RequestBody @Valid RegisterRequest request
     ) {
+        if (!CustomValidator.isValid(request.getUsername()))
+            throw new RuntimeException("Tên đăng nhập không được chứa khoảng cách hoặc ký tự tiếng việt");
+        if (!CustomValidator.isValid(request.getPassword()))
+            throw new RuntimeException("Mật khẩu không được chứa khoảng cách hoặc ký tự tiếng việt");
         userService.createNew(request, true, true, ERole.ROLE_GUEST, true);
         return ResponseEntity.ok(new ApiResponse(true, "Đăng ký tài khoản admin thành công"));
     }
