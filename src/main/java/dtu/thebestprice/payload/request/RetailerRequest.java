@@ -14,6 +14,7 @@ public class RetailerRequest {
     private String name;
 
     @NotBlank(message = "Không được để trống mô tả")
+    @Size(min = 5,message = "Mô tả tối thiểu 5 ký tự")
     private String description;
 
     @NotBlank(message = "Không được để trống logo")

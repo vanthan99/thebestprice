@@ -177,6 +177,8 @@ public class UserController {
 
         try {
             phoneNumber = Long.parseLong(request.getPhoneNumber());
+            if (phoneNumber < 0)
+                throw new RuntimeException("Số điện thoại phải là số nguyên dương");
         } catch (NumberFormatException e) {
             throw new RuntimeException("Số điện thoại không hợp lệ");
         }

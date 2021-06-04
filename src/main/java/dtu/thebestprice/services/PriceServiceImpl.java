@@ -46,6 +46,8 @@ public class PriceServiceImpl implements PriceService {
 
         try {
             price = Long.parseLong(priceRequest.getPrice());
+            if (price<1000)
+                throw new RuntimeException("Giá không được bé hơn 1000");
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Giá phải là số nguyên");
         }
@@ -114,6 +116,8 @@ public class PriceServiceImpl implements PriceService {
 
         try {
             price = Long.parseLong(priceRequest.getPrice());
+            if (price < 1000)
+                throw new RuntimeException("Giá không được bé hơn 1000");
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Giá phải là số nguyên");
         }
@@ -173,6 +177,8 @@ public class PriceServiceImpl implements PriceService {
         long priceLong;
         try {
             priceLong = Long.parseLong(priceRetailerRequest.getPrice());
+            if (priceLong<1000)
+                throw new RuntimeException("Giá không được bé hơn 1000");
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Giá phải là số nguyên");
         }
@@ -251,6 +257,8 @@ public class PriceServiceImpl implements PriceService {
         long priceLong;
         try {
             priceLong = Long.parseLong(priceRequest.getPrice());
+            if (priceLong<1000)
+                throw new RuntimeException("Giá không được bé hơn 1000");
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Giá phải là số nguyên");
         }
@@ -330,11 +338,11 @@ public class PriceServiceImpl implements PriceService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
-            Page<ProductRetailer> productRetailerPage = productRetailerRepository.findByUsername(username,pageable);
+            Page<ProductRetailer> productRetailerPage = productRetailerRepository.findByUsername(username, pageable);
 
             Page<PriceResponse> resultPage =
                     productRetailerPage
-                    .map(productRetailer -> priceConverter.toPriceResponse(productRetailer));
+                            .map(productRetailer -> priceConverter.toPriceResponse(productRetailer));
             return ResponseEntity.ok(resultPage);
         }
 

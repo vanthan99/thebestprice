@@ -394,6 +394,9 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Giá phải là số nguyên");
         }
 
+        if (price<1000)
+            throw new RuntimeException("Giá phải là số dương và không bé hơn 1000");
+
         long categoryId;
         try {
             categoryId = Long.parseLong(productFullRequest.getCategoryId());

@@ -85,6 +85,8 @@ public class UserServiceImpl implements UserService {
 
         try {
             int phoneNumberTemp = Integer.parseInt(request.getPhoneNumber());
+            if (phoneNumberTemp<0)
+                throw new RuntimeException("Số điện thoại không thể là số âm");
         } catch (Exception e) {
             throw new RuntimeException("Số điên thoại không đúng định dạng.  số điện thoại chỉ bao gồm số từ 0 đến 9");
         }

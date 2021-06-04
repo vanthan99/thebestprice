@@ -20,11 +20,11 @@ public class BannerRequest {
     @Size(min = 10, max = 100, message = "mô tả từ 5 - 50 ký tự")
     private String description;
 
-    @URL(message = "url hình ảnh khôgn đúng định dạng")
-    @Size(min = 5, max = 255, message = "url hình ảnh từ 5 - 255 ký tự")
+    @URL(message = "Đường dẫn hình ảnh không đúng định dạng")
+    @Size(min = 50, max = 255, message = "url hình ảnh từ 5 - 255 ký tự")
     private String imageUrl;
 
-    @URL(message = "url gian hàng khôgn đúng định dạng")
-    @Size(min = 5, max = 255, message = "url gian hàng từ 5 - 255 ký tự")
+    @URL(message = "Đường dẫn gian hàng khôgn đúng định dạng")
+    @Size(min = 5, max = 255, message = "Đường dẫn gian hàng từ 5 - 255 ký tự")
     private String redirectUrl;
 }

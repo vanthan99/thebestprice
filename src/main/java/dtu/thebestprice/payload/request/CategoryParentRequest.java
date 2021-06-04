@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -16,5 +17,6 @@ public class CategoryParentRequest {
     private String title;
 
     @NotBlank(message = "Không được để trống mô tả của danh mục")
+    @Size(min = 5,message = "Mô tả ít nhất 5 ký tự")
     private String description;
 }

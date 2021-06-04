@@ -21,6 +21,7 @@ public class CategoryChildRequest {
     private String title;
 
     @NotBlank(message = "Không được để trống mô tả danh mục")
+    @Size(min = 5,message = "Mô tả ít nhất 5 ký tự")
     @ApiModelProperty(notes = "Mô tả danh mục")
     private String description;
 
