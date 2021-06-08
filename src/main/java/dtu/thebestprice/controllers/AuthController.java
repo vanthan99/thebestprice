@@ -31,7 +31,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 @RestController
@@ -146,7 +145,7 @@ public class AuthController {
             throw new RuntimeException("Token không hợp lệ");
 
         User user = userRepository
-                .findByUsername(myUserDetails.getUsername())
+                .findByUsernameAndDeleteFlgFalse(myUserDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
 
         if (user.isDeleteFlg())

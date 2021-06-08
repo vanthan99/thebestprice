@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BrandRepository extends JpaRepository<Brand, Long> {
-    Brand findByName(String name);
+    Brand findByNameAndDeleteFlgFalse(String name);
 
     Optional<Brand> findByDeleteFlgFalseAndIdAndEnableTrue(Long brandId);
 
-    boolean existsByName(String name);
+    boolean existsByNameAndDeleteFlgFalse(String name);
 
     List<Brand> findByDeleteFlgFalseAndEnable(boolean enable);
 }

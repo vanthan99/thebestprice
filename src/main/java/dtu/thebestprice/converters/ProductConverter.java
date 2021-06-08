@@ -168,7 +168,7 @@ public class ProductConverter {
                 //when Anonymous Authentication is enabled
                 !(SecurityContextHolder.getContext().getAuthentication()
                         instanceof AnonymousAuthenticationToken)) {
-            User user = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElse(null);
+            User user = userRepository.findByUsernameAndDeleteFlgFalse(SecurityContextHolder.getContext().getAuthentication().getName()).orElse(null);
 
             if (user != null) {
                 if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER)) {
@@ -254,7 +254,7 @@ public class ProductConverter {
             response.setRate((double) Math.round(rate * 10) / 10);
 
         // set list image
-        response.setImage(imageRepository.findFirstByProduct(product).getUrl());
+        response.setImage(imageRepository.findFirstByProductAndDeleteFlgFalse(product).getUrl());
 
 
         // set lowest and highest price

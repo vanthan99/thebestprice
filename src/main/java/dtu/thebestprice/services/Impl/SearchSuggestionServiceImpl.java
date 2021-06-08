@@ -45,7 +45,7 @@ public class SearchSuggestionServiceImpl implements SearchSuggestionService {
     public Page<ProductItem> findByKeyword(String keyword, Pageable pageable) {
         Specification condition = Specification.where(
                 ProductSpecification.titleContaining(keyword)
-        );
+        ).and(ProductSpecification.deleteFlgFalse());
         Page<Product> productPage = productRepository.findAll(condition, pageable);
         return productPage.map(product -> productConverter.toProductItem(product));
     }

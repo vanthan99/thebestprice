@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface RatingRepository extends JpaRepository<Rating, Long> {
-    @Query(value = "SELECT AVG(r.rate)  FROM Rating r WHERE r.product.id=:productId")
+    @Query(value = "SELECT AVG(r.rate)  FROM Rating r WHERE r.product.id=:productId and r.product.deleteFlg = false")
     Double getRateByProduct(Long productId);
 
     boolean existsByProductAndUser(Product product, User user);

@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Page<Product> findByDeleteFlgFalseAndCreatedBy(String createdBy, Pageable pageable);
 
-    boolean existsByCode(String code);
+    boolean existsByCodeAndDeleteFlgFalse(String code);
 
-    Product findByCode(String code);
+    Product findByCodeAndDeleteFlgFalse(String code);
 }

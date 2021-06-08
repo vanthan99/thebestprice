@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import javax.management.RuntimeMBeanException;
 import javax.transaction.Transactional;
 
 @Service
@@ -77,10 +76,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createNew(RegisterRequest request, boolean enable, boolean approve, ERole role, boolean checkValidate) {
         // validate
-        if (userRepository.existsByUsername(request.getUsername()))
+        if (userRepository.existsByUsernameAndDeleteFlgFalse(request.getUsername()))
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
 
-        if (userRepository.existsByEmail(request.getEmail()))
+        if (userRepository.existsByEmailAndDeleteFlgFalse(request.getEmail()))
             throw new RuntimeException("Email đã tồn tại");
 
         try {
@@ -108,15 +107,15 @@ public class UserServiceImpl implements UserService {
 //        retailerService.create(retailerRequest, user, false, false, false);
 
         // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
-        if (retailerRepository.existsByName(retailerRequest.getName().trim()))
+        if (retailerRepository.existsByNameAndDeleteFlgFalse(retailerRequest.getName().trim()))
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByLogoImage(retailerRequest.getLogo().trim()))
+        if (retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerRequest.getLogo().trim()))
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByHomePage(retailerRequest.getHomePage().trim()))
+        if (retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerRequest.getHomePage().trim()))
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
 
 
@@ -152,10 +151,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validateWhileCreateUser(RegisterRequest registerRequest) {
         // validate
-        if (userRepository.existsByUsername(registerRequest.getUsername()))
+        if (userRepository.existsByUsernameAndDeleteFlgFalse(registerRequest.getUsername()))
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
 
-        if (userRepository.existsByEmail(registerRequest.getEmail()))
+        if (userRepository.existsByEmailAndDeleteFlgFalse(registerRequest.getEmail()))
             throw new RuntimeException("Email đã tồn tại");
 
         try {
@@ -202,7 +201,7 @@ public class UserServiceImpl implements UserService {
                         .findById(userId)
                         .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
 
-        if (userRepository.existsByIdAndFullNameAndAddressAndPhoneNumber(userId, request.getFullName(), request.getAddress(), request.getPhoneNumber()))
+        if (userRepository.existsByIdAndFullNameAndAddressAndPhoneNumberAndDeleteFlgFalse(userId, request.getFullName(), request.getAddress(), request.getPhoneNumber()))
             throw new RuntimeException("Thông tin tài khoản không có thay đổi mới nào");
 
         User newUser = userConverter.toUser(request, user);
@@ -273,19 +272,19 @@ public class UserServiceImpl implements UserService {
         if (user.getRole().equals(ERole.ROLE_ADMIN) || user.getRole().equals(ERole.ROLE_SUPER))
             throw new RuntimeException("Không đủ quyền để chỉnh sửa tài khoản này");
 
-        if (userRepository.existsByIdAndFullNameAndAddressAndPhoneNumberAndUsernameAndEmail(userId, request.getFullName(), request.getAddress(), request.getPhoneNumber(), request.getUsername(), request.getEmail()))
+        if (userRepository.existsByIdAndFullNameAndAddressAndPhoneNumberAndUsernameAndEmailAndDeleteFlgFalse(userId, request.getFullName(), request.getAddress(), request.getPhoneNumber(), request.getUsername(), request.getEmail()))
             throw new RuntimeException("Không tin tài khoản không có thay đổi");
 
         // check username
-        if (userRepository.existsByUsername(request.getUsername()) && !user.getUsername().equals(request.getUsername()))
+        if (userRepository.existsByUsernameAndDeleteFlgFalse(request.getUsername()) && !user.getUsername().equals(request.getUsername()))
             throw new RuntimeException("Tên đăng nhập đã bị trùng");
 
         // check email
-        if (userRepository.existsByEmail(request.getEmail()) && !user.getEmail().equals(request.getEmail()))
+        if (userRepository.existsByEmailAndDeleteFlgFalse(request.getEmail()) && !user.getEmail().equals(request.getEmail()))
             throw new RuntimeException("email đã bị trùng");
 
         // check phonenumber
-        if (userRepository.existsByPhoneNumber(request.getPhoneNumber()) && !user.getPhoneNumber().equals(request.getPhoneNumber()))
+        if (userRepository.existsByPhoneNumberAndDeleteFlgFalse(request.getPhoneNumber()) && !user.getPhoneNumber().equals(request.getPhoneNumber()))
             throw new RuntimeException("số điện thoại đã bị trùng");
 
 

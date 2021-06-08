@@ -20,7 +20,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // danh sách category con
     List<Category> findByCategoryIsNotNullAndDeleteFlgFalse();
 
-    Category findByTitleAndCategory(String title, Category category);
+    Category findByTitleAndCategoryAndDeleteFlgFalse(String title, Category category);
 
     // Danh sách danh mục cha đang hoạt động
     List<Category> findByCategoryIsNullAndDeleteFlgFalseOrderByCreatedAtDesc();
@@ -32,7 +32,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByCategoryAndDeleteFlgFalseOrderByTitle(Category parentCategory);
 
-    Category findByTitle(String title);
+    Category findByTitleAndDeleteFlgFalse(String title);
 
     // chuyển delete flag về true khi khuyển vào category id
     @Transactional

@@ -46,10 +46,10 @@ public class AuthServiceImpl implements AuthService {
     @SneakyThrows
     @Override
     public ApiResponse register(RegisterRequest registerRequest, ERole eRole) {
-        if (userRepository.existsByUsername(registerRequest.getUsername()))
+        if (userRepository.existsByUsernameAndDeleteFlgFalse(registerRequest.getUsername()))
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
 
-        if (userRepository.existsByEmail(registerRequest.getEmail()))
+        if (userRepository.existsByEmailAndDeleteFlgFalse(registerRequest.getEmail()))
             throw new RuntimeException("Email đã tồn tại");
 
         try {
@@ -114,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<Object> me() {
         Authentication authentication    = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
 
         return ResponseEntity.ok(userConverter.toUserResponse(user));

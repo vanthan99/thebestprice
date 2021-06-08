@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameAndDeleteFlgFalse(String username);
 
-    boolean existsByPhoneNumber(String phoneNumber);
+    boolean existsByPhoneNumberAndDeleteFlgFalse(String phoneNumber);
 
-    boolean existsByUsername(String username);
+    boolean existsByUsernameAndDeleteFlgFalse(String username);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndDeleteFlgFalse(String email);
 
     // danh sách tài khoản đã phê duyệt hay chưa phê duyệt sắp xếp theo ngày
     Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveFalseOrderByCreatedAtDesc(Pageable pageable);
@@ -33,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     // page người dùng theo role
     Page<User> findByDeleteFlgFalseAndEnableTrueAndApproveTrueAndRole(Pageable pageable, ERole role);
 
-    boolean existsByIdAndFullNameAndAddressAndPhoneNumber(Long id, String fullName, String address, String phoneNumber);
+    boolean existsByIdAndFullNameAndAddressAndPhoneNumberAndDeleteFlgFalse(Long id, String fullName, String address, String phoneNumber);
 
-    boolean existsByIdAndFullNameAndAddressAndPhoneNumberAndUsernameAndEmail(Long id, String fullName, String address, String phoneNumber, String username, String email);
+    boolean existsByIdAndFullNameAndAddressAndPhoneNumberAndUsernameAndEmailAndDeleteFlgFalse(Long id, String fullName, String address, String phoneNumber, String username, String email);
 }

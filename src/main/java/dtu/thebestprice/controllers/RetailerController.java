@@ -115,7 +115,7 @@ public class RetailerController {
         User user;
         if (retailerRequest.getUserId() == null || retailerRequest.getUserId().equals("")) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            user = userRepository.findByUsername(auth.getName()).orElse(null);
+            user = userRepository.findByUsernameAndDeleteFlgFalse(auth.getName()).orElse(null);
         } else {
 
             long userIdRequest;

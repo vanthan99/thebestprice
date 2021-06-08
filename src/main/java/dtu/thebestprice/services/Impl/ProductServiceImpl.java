@@ -11,8 +11,6 @@ import dtu.thebestprice.payload.response.query.ViewCountModel;
 import dtu.thebestprice.repositories.*;
 import dtu.thebestprice.services.ProductService;
 import dtu.thebestprice.specifications.ProductSpecification;
-import dtu.thebestprice.specifications.ViewCountStatisticSpecification;
-import org.hibernate.service.NullServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import javax.management.RuntimeErrorException;
-import javax.naming.AuthenticationNotSupportedException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -72,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
                         ProductSpecification.categoryIs(getSetCatId(filterRequest.getCatId()))
                                 .and(ProductSpecification.titleContaining(filterRequest.getKeyword()))
                                 .and(ProductSpecification.retailerIdIn(convertListRetailerId(filterRequest.getRetailerIds())))
-
+                                .and(ProductSpecification.deleteFlgFalse())
                 );
 
         Page<Product> productPage = productRepository.findAll(specification, pageable);
@@ -85,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
         if (setIds == null) throw new Exception("Mã danh mục trống");
         Specification specification = Specification.where(
                 ProductSpecification.categoryIs(setIds)
-        );
+        ).and(ProductSpecification.deleteFlgFalse());
         Page<Product> productPage = productRepository.findAll(specification, pageable);
         return productPage.map(product -> productConverter.toLongProductResponse(product));
     }
@@ -105,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
                             instanceof AnonymousAuthenticationToken)) {
 
                 String username = SecurityContextHolder.getContext().getAuthentication().getName();
-                User user = userRepository.findByUsername(username).orElse(null);
+                User user = userRepository.findByUsernameAndDeleteFlgFalse(username).orElse(null);
 
                 if ((product.getCreatedBy().equals(username) || user.getRole().equals(ERole.ROLE_ADMIN)) && !product.isApprove())
                     return ResponseEntity.ok(productConverter.toLongProductResponse(product));
@@ -152,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Object> update(ProductRequest productRequest, Long productId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("Chỉnh sửa thất bại. hệ thống không biết bạn là ai"));
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName()).orElseThrow(() -> new RuntimeException("Chỉnh sửa thất bại. hệ thống không biết bạn là ai"));
 
         long categoryId;
         try {
@@ -218,7 +213,7 @@ public class ProductServiceImpl implements ProductService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Hệ thống không biết bạn là ai"));
 
         if (user.getRole().equals(ERole.ROLE_RETAILER) && !product.getCreatedBy().equals(authentication.getName()))
@@ -447,7 +442,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Sản phẩm này đang bị khóa");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("hệ thống không thể nhận biết được bạn"));
 
         if (user.getRole().equals(ERole.ROLE_RETAILER) && !product.getCreatedBy().equals(authentication))

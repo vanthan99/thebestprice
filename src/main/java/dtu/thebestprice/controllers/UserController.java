@@ -18,7 +18,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +44,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_RETAILER')")
     public ResponseEntity<Object> findRetailerByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName()).orElseThrow(() -> new RuntimeException("Không tồn tại người dùng"));
         return retailerService.getRetailerByUser(user);
     }
 

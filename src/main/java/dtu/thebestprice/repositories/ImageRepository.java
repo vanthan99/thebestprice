@@ -10,5 +10,5 @@ public interface ImageRepository extends JpaRepository<Image,Long> {
     List<Image> findByProductAndDeleteFlgFalse(Product product);
     boolean  existsByProductAndUrlAndDeleteFlgFalse(Product product, String url);
 
-    Image findFirstByProduct(Product product);
+    Image findFirstByProductAndDeleteFlgFalse(Product product);
 }

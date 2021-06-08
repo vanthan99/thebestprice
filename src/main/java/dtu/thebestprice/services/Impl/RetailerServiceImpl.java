@@ -74,7 +74,7 @@ public class RetailerServiceImpl implements RetailerService {
 
         Retailer retailer = retailerRepository.getOne(retailerId);
 
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Hệ thống không thể nhận biết bạn là ai"));
 
 
@@ -91,15 +91,15 @@ public class RetailerServiceImpl implements RetailerService {
     @Override
     public ResponseEntity<Object> create(RetailerRequest retailerRequest, Long userId) {
         // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
-        if (retailerRepository.existsByName(retailerRequest.getName().trim()))
+        if (retailerRepository.existsByNameAndDeleteFlgFalse(retailerRequest.getName().trim()))
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByLogoImage(retailerRequest.getLogo().trim()))
+        if (retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerRequest.getLogo().trim()))
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByHomePage(retailerRequest.getHomePage().trim()))
+        if (retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerRequest.getHomePage().trim()))
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
 
         User user = userRepository
@@ -118,15 +118,15 @@ public class RetailerServiceImpl implements RetailerService {
     public ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean approve, boolean isCheckValidate) {
         if (isCheckValidate) {
             // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
-            if (retailerRepository.existsByName(retailerRequest.getName().trim()))
+            if (retailerRepository.existsByNameAndDeleteFlgFalse(retailerRequest.getName().trim()))
                 throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
             // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
-            if (retailerRepository.existsByLogoImage(retailerRequest.getLogo().trim()))
+            if (retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerRequest.getLogo().trim()))
                 throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
             // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
-            if (retailerRepository.existsByHomePage(retailerRequest.getHomePage().trim()))
+            if (retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerRequest.getHomePage().trim()))
                 throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
         }
 
@@ -147,15 +147,15 @@ public class RetailerServiceImpl implements RetailerService {
     public ResponseEntity<Object> create(RetailerRequest retailerRequest, User user, boolean deleteFlg, boolean enable, boolean approve) {
 
         // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
-        if (retailerRepository.existsByName(retailerRequest.getName().trim()))
+        if (retailerRepository.existsByNameAndDeleteFlgFalse(retailerRequest.getName().trim()))
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByLogoImage(retailerRequest.getLogo().trim()))
+        if (retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerRequest.getLogo().trim()))
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByHomePage(retailerRequest.getHomePage().trim()))
+        if (retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerRequest.getHomePage().trim()))
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
 
 
@@ -179,15 +179,15 @@ public class RetailerServiceImpl implements RetailerService {
     @Override
     public ResponseEntity<Object> create(RetailerForUserRequest retailerForUserRequest, User user, boolean deleteFlg, boolean enable, boolean approve) {
         // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
-        if (retailerRepository.existsByName(retailerForUserRequest.getName().trim()))
+        if (retailerRepository.existsByNameAndDeleteFlgFalse(retailerForUserRequest.getName().trim()))
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByLogoImage(retailerForUserRequest.getLogo().trim()))
+        if (retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerForUserRequest.getLogo().trim()))
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByHomePage(retailerForUserRequest.getHomePage().trim()))
+        if (retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerForUserRequest.getHomePage().trim()))
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
 
 
@@ -211,15 +211,15 @@ public class RetailerServiceImpl implements RetailerService {
     @Override
     public boolean validateWhileCreateRetailer(RetailerRequest request) {
         // kiểm tra xem có bị trùng tên với các nhà bán lẽ khác hay không
-        if (retailerRepository.existsByName(request.getName().trim()))
+        if (retailerRepository.existsByNameAndDeleteFlgFalse(request.getName().trim()))
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra xem có bị trùng logo với các nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByLogoImage(request.getLogo().trim()))
+        if (retailerRepository.existsByLogoImageAndDeleteFlgFalse(request.getLogo().trim()))
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra xem có bị trung homepage với nhà bán lẽ khác hay không?
-        if (retailerRepository.existsByHomePage(request.getHomePage().trim()))
+        if (retailerRepository.existsByHomePageAndDeleteFlgFalse(request.getHomePage().trim()))
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
         return true;
     }
@@ -240,7 +240,7 @@ public class RetailerServiceImpl implements RetailerService {
         User user = userRepository.getOne(userId);
 
         // kiểm tra xem thông tin trước và sau khi update có giống nhau hay không?
-        if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
+        if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUserAndDeleteFlgFalse(
                 retailerId,
                 retailerRequest.getName(),
                 retailerRequest.getDescription(),
@@ -252,21 +252,21 @@ public class RetailerServiceImpl implements RetailerService {
 
         // kiểm tra tên mới có trùng với tên của một nhà bán lẽ khác hay không?
         if (
-                retailerRepository.existsByName(retailerRequest.getName())
+                retailerRepository.existsByNameAndDeleteFlgFalse(retailerRequest.getName())
                         && !retailer.getName().equalsIgnoreCase(retailerRequest.getName())
         )
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra hình ảnh có trung với tên của một nhà bán lẽ khác hay không?
         if (
-                retailerRepository.existsByLogoImage(retailerRequest.getLogo())
+                retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerRequest.getLogo())
                         && !retailer.getLogoImage().equalsIgnoreCase(retailerRequest.getLogo())
         )
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra homepage có trùng với homepage của nhà bán lẽ khác hay không?
         if (
-                retailerRepository.existsByHomePage(retailerRequest.getHomePage())
+                retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerRequest.getHomePage())
                         && !retailer.getHomePage().equalsIgnoreCase(retailerRequest.getHomePage())
         )
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");
@@ -340,7 +340,7 @@ public class RetailerServiceImpl implements RetailerService {
 
         User user =
                 userRepository
-                        .findByUsername(authentication.getName())
+                        .findByUsernameAndDeleteFlgFalse(authentication.getName())
                         .orElseThrow(() -> new RuntimeException("Phải đăng nhập vào hệ thống"));
 
         Retailer retailer = retailerRepository
@@ -391,14 +391,14 @@ public class RetailerServiceImpl implements RetailerService {
                 .orElseThrow(() -> new RuntimeException("id của nhà bán lẽ không tồn tại"));
 
 
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Không tồn tại user"));
 
         if (retailer.getUser().getRole().equals(ERole.ROLE_RETAILER) && user.getRole().equals(ERole.ROLE_RETAILER) && !retailer.getUser().getUsername().equals(authentication.getName()))
             throw new RuntimeException("Bạn không phải là chủ sở hữu của nhà bán lẽ này");
 
         // kiểm tra xem thông tin trước và sau khi update có giống nhau hay không?
-        if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
+        if (retailerRepository.existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUserAndDeleteFlgFalse(
                 retailerId,
                 retailerForUserRequest.getName(),
                 retailerForUserRequest.getDescription(),
@@ -410,21 +410,21 @@ public class RetailerServiceImpl implements RetailerService {
 
         // kiểm tra tên mới có trùng với tên của một nhà bán lẽ khác hay không?
         if (
-                retailerRepository.existsByName(retailerForUserRequest.getName())
+                retailerRepository.existsByNameAndDeleteFlgFalse(retailerForUserRequest.getName())
                         && !retailer.getName().equalsIgnoreCase(retailerForUserRequest.getName())
         )
             throw new RuntimeException("Tên nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập tên khác");
 
         // kiểm tra hình ảnh có trung với tên của một nhà bán lẽ khác hay không?
         if (
-                retailerRepository.existsByLogoImage(retailerForUserRequest.getLogo())
+                retailerRepository.existsByLogoImageAndDeleteFlgFalse(retailerForUserRequest.getLogo())
                         && !retailer.getLogoImage().equalsIgnoreCase(retailerForUserRequest.getLogo())
         )
             throw new RuntimeException("logo của nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập logo khác");
 
         // kiểm tra homepage có trùng với homepage của nhà bán lẽ khác hay không?
         if (
-                retailerRepository.existsByHomePage(retailerForUserRequest.getHomePage())
+                retailerRepository.existsByHomePageAndDeleteFlgFalse(retailerForUserRequest.getHomePage())
                         && !retailer.getHomePage().equalsIgnoreCase(retailerForUserRequest.getHomePage())
         )
             throw new RuntimeException("Homepage nhà bán lẽ này bị trùng với một nhà bán lẽ khác.Vui lòng nhập Homepage khác");

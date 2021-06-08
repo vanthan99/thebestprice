@@ -1,14 +1,11 @@
 package dtu.thebestprice.services.Impl;
 
 import dtu.thebestprice.converters.PriceConverter;
-import dtu.thebestprice.entities.Product;
 import dtu.thebestprice.entities.ProductRetailer;
-import dtu.thebestprice.entities.Retailer;
 import dtu.thebestprice.entities.User;
 import dtu.thebestprice.entities.enums.ERole;
 import dtu.thebestprice.payload.request.price.ProductRetailerRequest;
 import dtu.thebestprice.payload.response.ApiResponse;
-import dtu.thebestprice.payload.response.price.PriceDetailResponse;
 import dtu.thebestprice.payload.response.price.PriceResponse;
 import dtu.thebestprice.repositories.ProductRepository;
 import dtu.thebestprice.repositories.ProductRetailerRepository;
@@ -73,7 +70,7 @@ public class ProductRetailerServiceImpl implements ProductRetailerService {
     public ResponseEntity<Object> update(long productRetailerId, ProductRetailerRequest productRetailerRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsernameAndDeleteFlgFalse(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Hệ thống không thể nhận biết bạn là ai"));
 
         ProductRetailer productRetailer = productRetailerRepository.findById(productRetailerId)

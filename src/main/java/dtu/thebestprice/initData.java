@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -287,42 +286,42 @@ public class initData {
         System.out.println("Bắt đầu lưu brand");
         initBrand();
 
-        Retailer phiLongretailer = retailerRepository.findByHomePage("https://philong.com.vn/");
-        Retailer xuanVinhRetailer = retailerRepository.findByHomePage("http://xuanvinh.vn/");
-        Retailer shupDunkRetailer = retailerRepository.findByHomePage("https://shopdunk.com/");
-        Retailer anhDucDigitalRetailer = retailerRepository.findByHomePage("https://anhducdigital.vn/");
-        Retailer anPhatPCRetailer = retailerRepository.findByHomePage("https://www.anphatpc.com.vn/");
-        Retailer iphoneDaNangRetailer = retailerRepository.findByHomePage("https://iphonedanang.com.vn/");
-        Retailer diDongVietRetailer = retailerRepository.findByHomePage("https://didongviet.vn/");
-        Retailer gearVNRetailer = retailerRepository.findByHomePage("https://gearvn.com/");
-        Retailer haNoiComputerRetailer = retailerRepository.findByHomePage("https://www.hanoicomputer.vn/");
+        Retailer phiLongretailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://philong.com.vn/");
+        Retailer xuanVinhRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("http://xuanvinh.vn/");
+        Retailer shupDunkRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://shopdunk.com/");
+        Retailer anhDucDigitalRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://anhducdigital.vn/");
+        Retailer anPhatPCRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://www.anphatpc.com.vn/");
+        Retailer iphoneDaNangRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://iphonedanang.com.vn/");
+        Retailer diDongVietRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://didongviet.vn/");
+        Retailer gearVNRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://gearvn.com/");
+        Retailer haNoiComputerRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://www.hanoicomputer.vn/");
 
 
-        Brand asusBrand = brandRepository.findByName("ASUS");
-        Brand acerBrand = brandRepository.findByName("ACER");
-        Brand dellBrand = brandRepository.findByName("DELL");
-        Brand lenovoBrand = brandRepository.findByName("LENOVO");
-        Brand hpBrand = brandRepository.findByName("HP");
-        Brand msiBrand = brandRepository.findByName("MSI");
-        Brand lgBrand = brandRepository.findByName("LG");
-        Brand avitaBrand = brandRepository.findByName("AVITA");
-        Brand appleBrand = brandRepository.findByName("APPLE");
-        Brand amdBrand = brandRepository.findByName("AMD");
-        Brand intelBrand = brandRepository.findByName("INTEL");
+        Brand asusBrand = brandRepository.findByNameAndDeleteFlgFalse("ASUS");
+        Brand acerBrand = brandRepository.findByNameAndDeleteFlgFalse("ACER");
+        Brand dellBrand = brandRepository.findByNameAndDeleteFlgFalse("DELL");
+        Brand lenovoBrand = brandRepository.findByNameAndDeleteFlgFalse("LENOVO");
+        Brand hpBrand = brandRepository.findByNameAndDeleteFlgFalse("HP");
+        Brand msiBrand = brandRepository.findByNameAndDeleteFlgFalse("MSI");
+        Brand lgBrand = brandRepository.findByNameAndDeleteFlgFalse("LG");
+        Brand avitaBrand = brandRepository.findByNameAndDeleteFlgFalse("AVITA");
+        Brand appleBrand = brandRepository.findByNameAndDeleteFlgFalse("APPLE");
+        Brand amdBrand = brandRepository.findByNameAndDeleteFlgFalse("AMD");
+        Brand intelBrand = brandRepository.findByNameAndDeleteFlgFalse("INTEL");
 
 
-        Category laptopAsus = categoryRepository.findByTitle("Laptop ASUS");
-        Category laptopAcer = categoryRepository.findByTitle("Laptop ACER");
-        Category laptopDell = categoryRepository.findByTitle("Laptop DELL");
-        Category laptopLenovo = categoryRepository.findByTitle("Laptop LENOVO");
-        Category laptopHp = categoryRepository.findByTitle("Laptop HP");
-        Category laptopMsi = categoryRepository.findByTitle("Laptop MSI");
-        Category laptopLg = categoryRepository.findByTitle("Laptop LG");
-        Category laptopAvita = categoryRepository.findByTitle("Laptop AVITA");
+        Category laptopAsus = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop ASUS");
+        Category laptopAcer = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop ACER");
+        Category laptopDell = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop DELL");
+        Category laptopLenovo = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop LENOVO");
+        Category laptopHp = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop HP");
+        Category laptopMsi = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop MSI");
+        Category laptopLg = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop LG");
+        Category laptopAvita = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop AVITA");
 
-        Category dienThoaiIphone = categoryRepository.findByTitle("Điện thoại Iphone");
+        Category dienThoaiIphone = categoryRepository.findByTitleAndDeleteFlgFalse("Điện thoại Iphone");
 
-        Category cpuCategory = categoryRepository.findByTitle("Bộ vi xử lý - cpu".toUpperCase());
+        Category cpuCategory = categoryRepository.findByTitleAndDeleteFlgFalse("Bộ vi xử lý - cpu".toUpperCase());
 
 
         // crawl shopdunk
@@ -647,7 +646,7 @@ public class initData {
     }
 
     private void initProductV3(CrawlerModel crawlerModel, Brand brand, Category category, Retailer retailer) {
-        Product product = productRepository.findByCode(crawlerModel.getCode().toLowerCase().trim());
+        Product product = productRepository.findByCodeAndDeleteFlgFalse(crawlerModel.getCode().toLowerCase().trim());
 
         if (product == null) {
 
@@ -961,93 +960,93 @@ public class initData {
     }
 
     private void initProductV2() {
-        Brand asusBrand = brandRepository.findByName("ASUS");
-        Brand acerBrand = brandRepository.findByName("ACER");
-        Brand dellBrand = brandRepository.findByName("DELL");
-        Brand lenovoBrand = brandRepository.findByName("LENOVO");
-        Brand hpBrand = brandRepository.findByName("HP");
-        Brand msiBrand = brandRepository.findByName("MSI");
-        Brand lgBrand = brandRepository.findByName("LG");
-        Brand microsoftBrand = brandRepository.findByName("MICROSOFT");
-        Brand avitaBrand = brandRepository.findByName("AVITA");
+        Brand asusBrand = brandRepository.findByNameAndDeleteFlgFalse("ASUS");
+        Brand acerBrand = brandRepository.findByNameAndDeleteFlgFalse("ACER");
+        Brand dellBrand = brandRepository.findByNameAndDeleteFlgFalse("DELL");
+        Brand lenovoBrand = brandRepository.findByNameAndDeleteFlgFalse("LENOVO");
+        Brand hpBrand = brandRepository.findByNameAndDeleteFlgFalse("HP");
+        Brand msiBrand = brandRepository.findByNameAndDeleteFlgFalse("MSI");
+        Brand lgBrand = brandRepository.findByNameAndDeleteFlgFalse("LG");
+        Brand microsoftBrand = brandRepository.findByNameAndDeleteFlgFalse("MICROSOFT");
+        Brand avitaBrand = brandRepository.findByNameAndDeleteFlgFalse("AVITA");
 
-        Brand aocBrand = brandRepository.findByName("AOC");
-        Brand benqBrand = brandRepository.findByName("BENQ");
-        Brand gigabyteBrand = brandRepository.findByName("GIGABYTE");
-        Brand hkcBrand = brandRepository.findByName("HKC");
-        Brand infinityBrand = brandRepository.findByName("INFINITY");
-        Brand philipsBrand = brandRepository.findByName("PHILIPS");
-        Brand samsungBrand = brandRepository.findByName("SAMSUNG");
-        Brand viewsonicBrand = brandRepository.findByName("VIEWSONIC");
-        Brand corsairBrand = brandRepository.findByName("CORSAIR");
+        Brand aocBrand = brandRepository.findByNameAndDeleteFlgFalse("AOC");
+        Brand benqBrand = brandRepository.findByNameAndDeleteFlgFalse("BENQ");
+        Brand gigabyteBrand = brandRepository.findByNameAndDeleteFlgFalse("GIGABYTE");
+        Brand hkcBrand = brandRepository.findByNameAndDeleteFlgFalse("HKC");
+        Brand infinityBrand = brandRepository.findByNameAndDeleteFlgFalse("INFINITY");
+        Brand philipsBrand = brandRepository.findByNameAndDeleteFlgFalse("PHILIPS");
+        Brand samsungBrand = brandRepository.findByNameAndDeleteFlgFalse("SAMSUNG");
+        Brand viewsonicBrand = brandRepository.findByNameAndDeleteFlgFalse("VIEWSONIC");
+        Brand corsairBrand = brandRepository.findByNameAndDeleteFlgFalse("CORSAIR");
 
-        Brand galaxBrand = brandRepository.findByName("GALAX");
-        Brand geilBrand = brandRepository.findByName("GEIL");
-        Brand gskillBrand = brandRepository.findByName("GSKILL");
-        Brand kingmaxBrand = brandRepository.findByName("KINGMAX");
-        Brand kingstonBrand = brandRepository.findByName("KINGSTON");
-        Brand patriotBrand = brandRepository.findByName("PATRIOT");
+        Brand galaxBrand = brandRepository.findByNameAndDeleteFlgFalse("GALAX");
+        Brand geilBrand = brandRepository.findByNameAndDeleteFlgFalse("GEIL");
+        Brand gskillBrand = brandRepository.findByNameAndDeleteFlgFalse("GSKILL");
+        Brand kingmaxBrand = brandRepository.findByNameAndDeleteFlgFalse("KINGMAX");
+        Brand kingstonBrand = brandRepository.findByNameAndDeleteFlgFalse("KINGSTON");
+        Brand patriotBrand = brandRepository.findByNameAndDeleteFlgFalse("PATRIOT");
 
-        Brand seagateBrand = brandRepository.findByName("SEAGATE");
-        Brand toshibaBrand = brandRepository.findByName("TOSHIBA");
-        Brand wdBrand = brandRepository.findByName("WD");
-        Brand plextorBrand = brandRepository.findByName("PLEXTOR");
-        Brand jblBrand = brandRepository.findByName("JBL");
-        Brand darueBrand = brandRepository.findByName("DAREU");
-        Brand logitechBrand = brandRepository.findByName("LOGITECH");
-        Brand appleBrand = brandRepository.findByName("APPLE");
-
-
-        Brand amdBrand = brandRepository.findByName("AMD");
-        Brand intelBrand = brandRepository.findByName("INTEL");
-
-        Category laptopAsus = categoryRepository.findByTitle("Laptop ASUS");
-        Category laptopAcer = categoryRepository.findByTitle("Laptop ACER");
-        Category laptopDell = categoryRepository.findByTitle("Laptop DELL");
-        Category laptopLenovo = categoryRepository.findByTitle("Laptop LENOVO");
-        Category laptopHp = categoryRepository.findByTitle("Laptop HP");
-        Category laptopMsi = categoryRepository.findByTitle("Laptop MSI");
-        Category laptopLg = categoryRepository.findByTitle("Laptop LG");
-        Category laptopMicrosoft = categoryRepository.findByTitle("Laptop MICROSOFT");
-        Category laptopAvita = categoryRepository.findByTitle("Laptop AVITA");
+        Brand seagateBrand = brandRepository.findByNameAndDeleteFlgFalse("SEAGATE");
+        Brand toshibaBrand = brandRepository.findByNameAndDeleteFlgFalse("TOSHIBA");
+        Brand wdBrand = brandRepository.findByNameAndDeleteFlgFalse("WD");
+        Brand plextorBrand = brandRepository.findByNameAndDeleteFlgFalse("PLEXTOR");
+        Brand jblBrand = brandRepository.findByNameAndDeleteFlgFalse("JBL");
+        Brand darueBrand = brandRepository.findByNameAndDeleteFlgFalse("DAREU");
+        Brand logitechBrand = brandRepository.findByNameAndDeleteFlgFalse("LOGITECH");
+        Brand appleBrand = brandRepository.findByNameAndDeleteFlgFalse("APPLE");
 
 
-        Category manHinhAcer = categoryRepository.findByTitle("Màn hình ACER");
-        Category manHinhAoc = categoryRepository.findByTitle("Màn hình AOC");
-        Category manHinhAsus = categoryRepository.findByTitle("Màn hình ASUS");
-        Category manHinhDell = categoryRepository.findByTitle("Màn hình DELL");
-        Category manHinhGigabyte = categoryRepository.findByTitle("Màn hình GIGABYTE");
-        Category manHinhHKC = categoryRepository.findByTitle("Màn hình HKC");
-        Category manHinhHP = categoryRepository.findByTitle("Màn hình HP");
-        Category manHinhInfinity = categoryRepository.findByTitle("Màn hình INFINITY");
-        Category manHinhLenovo = categoryRepository.findByTitle("Màn hình LENOVO");
-        Category manHinhLg = categoryRepository.findByTitle("Màn hình LG");
-        Category manHinhMsi = categoryRepository.findByTitle("Màn hình MSI");
-        Category manHinhPhilips = categoryRepository.findByTitle("Màn hình PHILIPS");
-        Category manHinhSamsung = categoryRepository.findByTitle("Màn hình SAMSUNG");
-        Category manHinhViewSonic = categoryRepository.findByTitle("Màn hình VIEWSONIC");
+        Brand amdBrand = brandRepository.findByNameAndDeleteFlgFalse("AMD");
+        Brand intelBrand = brandRepository.findByNameAndDeleteFlgFalse("INTEL");
 
-        Category cpuCategory = categoryRepository.findByTitle("Bộ vi xử lý - cpu".toUpperCase());
-        Category mainboardCategory = categoryRepository.findByTitle("Bo mạch chủ - mainboard".toUpperCase());
-        Category ramCategory = categoryRepository.findByTitle("Bộ nhớ trong - ram".toUpperCase());
-        Category hddCategory = categoryRepository.findByTitle("ổ đĩa hdd-dvd".toUpperCase());
-        Category ssdCategory = categoryRepository.findByTitle("ổ cứng ssd".toUpperCase());
-        Category vgaCategory = categoryRepository.findByTitle("card đồ họa-vga".toUpperCase());
-        Category psuCategory = categoryRepository.findByTitle("nguồn máy tính psu".toUpperCase());
-        Category caseCategory = categoryRepository.findByTitle("vỏ máy tính - case".toUpperCase());
-
-        Category taiNgheApple = categoryRepository.findByTitle("Tai nghe APPLE");
-        Category taiNgheCorsair = categoryRepository.findByTitle("Tai nghe CORSAIR");
-        Category taiNgheDarue = categoryRepository.findByTitle("Tai nghe DAREU");
-        Category taiNgheJbl = categoryRepository.findByTitle("Tai nghe JBL");
-        Category taiNgheLg = categoryRepository.findByTitle("Tai nghe LG");
-        Category taiNgheLogitech = categoryRepository.findByTitle("Tai nghe LOGITECH");
-
-        Category appleCategory = categoryRepository.findByTitle("Điện thoại Iphone");
+        Category laptopAsus = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop ASUS");
+        Category laptopAcer = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop ACER");
+        Category laptopDell = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop DELL");
+        Category laptopLenovo = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop LENOVO");
+        Category laptopHp = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop HP");
+        Category laptopMsi = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop MSI");
+        Category laptopLg = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop LG");
+        Category laptopMicrosoft = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop MICROSOFT");
+        Category laptopAvita = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop AVITA");
 
 
-        Retailer phiLongretailer = retailerRepository.findByHomePage("https://philong.com.vn/");
-        Retailer shopDunkRetailer = retailerRepository.findByHomePage("https://shopdunk.com/");
+        Category manHinhAcer = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình ACER");
+        Category manHinhAoc = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình AOC");
+        Category manHinhAsus = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình ASUS");
+        Category manHinhDell = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình DELL");
+        Category manHinhGigabyte = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình GIGABYTE");
+        Category manHinhHKC = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình HKC");
+        Category manHinhHP = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình HP");
+        Category manHinhInfinity = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình INFINITY");
+        Category manHinhLenovo = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình LENOVO");
+        Category manHinhLg = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình LG");
+        Category manHinhMsi = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình MSI");
+        Category manHinhPhilips = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình PHILIPS");
+        Category manHinhSamsung = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình SAMSUNG");
+        Category manHinhViewSonic = categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình VIEWSONIC");
+
+        Category cpuCategory = categoryRepository.findByTitleAndDeleteFlgFalse("Bộ vi xử lý - cpu".toUpperCase());
+        Category mainboardCategory = categoryRepository.findByTitleAndDeleteFlgFalse("Bo mạch chủ - mainboard".toUpperCase());
+        Category ramCategory = categoryRepository.findByTitleAndDeleteFlgFalse("Bộ nhớ trong - ram".toUpperCase());
+        Category hddCategory = categoryRepository.findByTitleAndDeleteFlgFalse("ổ đĩa hdd-dvd".toUpperCase());
+        Category ssdCategory = categoryRepository.findByTitleAndDeleteFlgFalse("ổ cứng ssd".toUpperCase());
+        Category vgaCategory = categoryRepository.findByTitleAndDeleteFlgFalse("card đồ họa-vga".toUpperCase());
+        Category psuCategory = categoryRepository.findByTitleAndDeleteFlgFalse("nguồn máy tính psu".toUpperCase());
+        Category caseCategory = categoryRepository.findByTitleAndDeleteFlgFalse("vỏ máy tính - case".toUpperCase());
+
+        Category taiNgheApple = categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe APPLE");
+        Category taiNgheCorsair = categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe CORSAIR");
+        Category taiNgheDarue = categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe DAREU");
+        Category taiNgheJbl = categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe JBL");
+        Category taiNgheLg = categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe LG");
+        Category taiNgheLogitech = categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe LOGITECH");
+
+        Category appleCategory = categoryRepository.findByTitleAndDeleteFlgFalse("Điện thoại Iphone");
+
+
+        Retailer phiLongretailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://philong.com.vn/");
+        Retailer shopDunkRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://shopdunk.com/");
 
 // list dien thoai
         try {
@@ -1355,9 +1354,9 @@ public class initData {
     }
 
     private void initProduct() {
-        Category categoryLaptopAcer = categoryRepository.findByTitle("Laptop ACER");
-        Brand brandAcer = brandRepository.findByName("ACER");
-        Retailer phiLongRetailer = retailerRepository.findByHomePage("https://philong.com.vn/");
+        Category categoryLaptopAcer = categoryRepository.findByTitleAndDeleteFlgFalse("Laptop ACER");
+        Brand brandAcer = brandRepository.findByNameAndDeleteFlgFalse("ACER");
+        Retailer phiLongRetailer = retailerRepository.findByHomePageAndDeleteFlgFalse("https://philong.com.vn/");
         saveProduct(
                 "LAPTOP ACER SWIFT 3 SF314-42-R0TR (Ryzen 5-4500U, Ram 16GB, SSD 1TB, Màn hình 14\" Full HD, Win 10)",
                 "CPU:&nbsp;AMD Ryzen 5-4500U \n" +
@@ -2643,7 +2642,7 @@ public class initData {
                 "https://shopdunk.com/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fshopdunk.PNG?alt=media&token=dfa85480-b42f-4fad-9f36-88f4fbc87a5e",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2652,7 +2651,7 @@ public class initData {
                 "https://philong.com.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fphilong.PNG?alt=media&token=fcf98e99-3955-4208-bfd1-e3195b1d4a3e",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2661,7 +2660,7 @@ public class initData {
                 "http://xuanvinh.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fxuanvinh.PNG?alt=media&token=071dd4ad-3202-4852-9d23-4cdcd4179019",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2670,7 +2669,7 @@ public class initData {
                 "https://anhducdigital.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fanhducdigital.PNG?alt=media&token=4e7f9c53-722d-47f9-a70d-da5e4d143134",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2679,7 +2678,7 @@ public class initData {
                 "https://www.anphatpc.com.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fanphatoc.PNG?alt=media&token=e4ff6a88-cbc1-4a69-805c-8d74111cb03d",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2688,7 +2687,7 @@ public class initData {
                 "https://iphonedanang.com.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fapplet%26t.PNG?alt=media&token=35fe7de2-9402-4a73-a6de-5fc0df18f9fe",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2697,7 +2696,7 @@ public class initData {
                 "https://didongviet.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fdidongviet.PNG?alt=media&token=07c1f579-419b-4003-b533-ef24138649bc",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2706,7 +2705,7 @@ public class initData {
                 "https://gearvn.com/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fgearvn.PNG?alt=media&token=0bf2d014-13c5-45ed-91c2-96f7ef5c6357",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
 
         retailerRepository.save(new Retailer(
@@ -2715,7 +2714,7 @@ public class initData {
                 "https://www.hanoicomputer.vn/",
                 "https://firebasestorage.googleapis.com/v0/b/shop1-eeb2c.appspot.com/o/images%2Fthebestprice%2Fhanoicomputer.PNG?alt=media&token=61f89364-7bc7-4ba5-ae8a-3e46c845de34",
                 true, true,
-                userRepository.findByUsername("supersuper").orElse(null)
+                userRepository.findByUsernameAndDeleteFlgFalse("supersuper").orElse(null)
         ));
     }
 
@@ -2752,7 +2751,7 @@ public class initData {
             categoryService.create(new CategoryRequest(
                     s,
                     "Danh mục điện thoại " + s,
-                    categoryRepository.findByTitle("Điện thoại").getId()
+                    categoryRepository.findByTitleAndDeleteFlgFalse("Điện thoại").getId()
             ));
         });
 
@@ -2779,7 +2778,7 @@ public class initData {
             categoryService.create(new CategoryRequest(
                     s,
                     "Danh muc laptop " + s,
-                    categoryRepository.findByTitle("Laptop").getId()
+                    categoryRepository.findByTitleAndDeleteFlgFalse("Laptop").getId()
             ));
         });
 
@@ -2804,7 +2803,7 @@ public class initData {
                     new CategoryRequest(
                             "Tivi " + s,
                             "Danh mục tivi " + s,
-                            categoryRepository.findByTitle("Tivi").getId()
+                            categoryRepository.findByTitleAndDeleteFlgFalse("Tivi").getId()
                     )
             );
         });
@@ -2829,7 +2828,7 @@ public class initData {
                     new CategoryRequest(
                             "Tai nghe " + s,
                             "Danh mục tai nghe " + s,
-                            categoryRepository.findByTitle("Tai nghe").getId()
+                            categoryRepository.findByTitleAndDeleteFlgFalse("Tai nghe").getId()
                     )
             );
         });
@@ -2863,7 +2862,7 @@ public class initData {
             categoryService.create(new CategoryRequest(
                     "Màn hình " + s,
                     "Danh mục màn hình máy tính " + s,
-                    categoryRepository.findByTitle("Màn hình").getId()
+                    categoryRepository.findByTitleAndDeleteFlgFalse("Màn hình").getId()
             ));
         });
 
@@ -2891,7 +2890,7 @@ public class initData {
                     new CategoryRequest(
                             s.toUpperCase(),
                             "Danh mục linh kiện máy tính - " + s,
-                            categoryRepository.findByTitle("Linh kiện máy tính").getId()
+                            categoryRepository.findByTitleAndDeleteFlgFalse("Linh kiện máy tính").getId()
                     )
             );
         });
@@ -2918,7 +2917,7 @@ public class initData {
             categoryService.create(new CategoryRequest(
                     s,
                     "Danh mục phím chuột, Gaming Gear - " + s,
-                    categoryRepository.findByTitle("Phím chuột, Gaming Gear").getId()
+                    categoryRepository.findByTitleAndDeleteFlgFalse("Phím chuột, Gaming Gear").getId()
             ));
         });
 
@@ -2943,7 +2942,7 @@ public class initData {
                     new CategoryRequest(
                             s,
                             "Danh mục phụ kiện công nghệ - " + s,
-                            categoryRepository.findByTitle("Phụ kiện công nghê").getId()
+                            categoryRepository.findByTitleAndDeleteFlgFalse("Phụ kiện công nghê").getId()
                     )
             );
         });
@@ -2972,7 +2971,7 @@ public class initData {
                         new CategoryRequest(
                                 s,
                                 "Danh mục thiết bị mạng " + s,
-                                categoryRepository.findByTitle("Thiết bị mạng").getId()
+                                categoryRepository.findByTitleAndDeleteFlgFalse("Thiết bị mạng").getId()
                         )
                 )
         );
@@ -3000,7 +2999,7 @@ public class initData {
                     new CategoryRequest(
                             s,
                             "Danh mục máy in, Scan, Vật tự máy in - " + s,
-                            categoryRepository.findByTitle("Máy in, Scan, Vật tự máy in").getId()
+                            categoryRepository.findByTitleAndDeleteFlgFalse("Máy in, Scan, Vật tự máy in").getId()
                     )
             );
         });

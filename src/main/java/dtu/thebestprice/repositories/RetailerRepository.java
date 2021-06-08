@@ -13,9 +13,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface RetailerRepository extends JpaRepository<Retailer, Long>, JpaSpecificationExecutor<Retailer> {
-    Retailer findByHomePage(String homePage);
+    Retailer findByHomePageAndDeleteFlgFalse(String homePage);
 
-    Retailer findByName(String name);
+    Retailer findByNameAndDeleteFlgFalse(String name);
 
     Retailer findByDeleteFlgFalseAndHomePage(String homepage);
 
@@ -35,13 +35,13 @@ public interface RetailerRepository extends JpaRepository<Retailer, Long>, JpaSp
     // Danh sách nhà bán lẽ đã bị xóa
     Set<Retailer> findByDeleteFlgTrue();
 
-    boolean existsByHomePage(String homePage);
+    boolean existsByHomePageAndDeleteFlgFalse(String homePage);
 
-    boolean existsByLogoImage(String logoImage);
+    boolean existsByLogoImageAndDeleteFlgFalse(String logoImage);
 
-    boolean existsByName(String name);
+    boolean existsByNameAndDeleteFlgFalse(String name);
 
-    boolean existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUser(
+    boolean existsByIdAndNameAndDescriptionAndLogoImageAndHomePageAndUserAndDeleteFlgFalse(
             Long id,
             String name,
             String description,

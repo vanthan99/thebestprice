@@ -37,7 +37,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public ResponseEntity<Object> adminCreateBrand(BrandRequest brandRequest) {
         // kiểm tra xem có cùng tên brand trươc đó không
-        if (brandRepository.existsByName(brandRequest.getName().toUpperCase()))
+        if (brandRepository.existsByNameAndDeleteFlgFalse(brandRequest.getName().toUpperCase()))
             throw new RuntimeException("Đã tồn tại tên nhà sản xuất này");
 
         Brand brand = new Brand(brandRequest.getName(), brandRequest.getDescription(), true);
@@ -64,7 +64,7 @@ public class BrandServiceImpl implements BrandService {
             throw new RuntimeException("Trước và sau khi cập nhật không có thay đổi");
 
         // kiểm tra xem tên mới có bị trùng với tên nhà sản xuất khác hay không
-        if (brandRepository.existsByName(brandRequest.getName().toUpperCase()) && !brand.getName().equalsIgnoreCase(brandRequest.getName()))
+        if (brandRepository.existsByNameAndDeleteFlgFalse(brandRequest.getName().toUpperCase()) && !brand.getName().equalsIgnoreCase(brandRequest.getName()))
             throw new RuntimeException("Tên nhà sản xuất đã cập nhật với một nhà sản xuất khác");
 
 

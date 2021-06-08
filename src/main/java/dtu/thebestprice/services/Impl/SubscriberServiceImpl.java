@@ -20,7 +20,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     public ResponseEntity<Object> create(SubscriberRequest request) {
         if (request.getEmail() == null)
             throw new RuntimeException("Không được để trống email");
-        if (subscriberRepository.existsByEmail(request.getEmail()))
+        if (subscriberRepository.existsByEmailAndDeleteFlgFalse(request.getEmail()))
             throw new RuntimeException("Email này đã tồn tại");
 
         Subscriber subscriber = new Subscriber();
