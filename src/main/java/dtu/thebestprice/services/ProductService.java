@@ -40,4 +40,7 @@ public interface ProductService {
 
     // danh sách sản phẩm của role retailer
     ResponseEntity<Object> listProductForRetailer(Pageable pageable);
+
+    // page sản phẩm thuộc retailer sở hữu được xem nhiều nhất
+    ResponseEntity<Object> pageProductMostViewMonthForRetailer(String keyword, Pageable pageable, Integer month, Integer year);
 }

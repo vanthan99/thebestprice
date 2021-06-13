@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 public final class CustomValidator {
     public static boolean isValid(String input) {
-        System.out.println(input);
         int index = StringUtils.indexOfAny(input, String.valueOf(Arrays.asList((
                 "À,Á,Â,Ã,È,É,Ê,Ì,Í,Ò,Ó,Ô,Õ,Ù,Ú,Ă,Đ,Ĩ,Ũ,Ơ,à,á,â,ã,è,é," +
                         "ê,ì,í,ò,ó,ô,õ,ù,ú,ă,đ,ĩ,ũ,ơ,Ư,Ă,Ạ,Ả,Ấ,Ầ,Ẩ,Ẫ,Ậ,Ắ,Ằ,Ẳ,Ẵ,Ặ,Ẹ," +

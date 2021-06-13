@@ -389,7 +389,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Giá phải là số nguyên");
         }
 
-        if (price<1000)
+        if (price < 1000)
             throw new RuntimeException("Giá phải là số dương và không bé hơn 1000");
 
         long categoryId;
@@ -457,6 +457,99 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productPage = productRepository.findByDeleteFlgFalseAndCreatedBy(authentication.getName(), pageable);
         Page<ShortProductResponse> page = productPage.map(product -> productConverter.toShortProductResponse(product));
         return ResponseEntity.ok(page);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Object> pageProductMostViewMonthForRetailer(String keyword, Pageable pageable, Integer month, Integer year) {
+        // lấy thông username của retailer đang đăng nhập
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Query query;
+        if (keyword != null && year != null && month != null) {
+            // trả về tất cả
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.deleteFlg = false and s.product.createdBy = ?4 and s.product.enable = true and s.product.approve = true and lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?3 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, keyword)
+                    .setParameter(3, month)
+                    .setParameter(4, username);
+
+        } else if (keyword != null && year == null && month == null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.deleteFlg = false and s.product.createdBy = ?2 and s.product.enable = true and s.product.approve = true and  lower(s.product.title) like concat('%',lower(?1) ,'%') " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, keyword)
+                    .setParameter(2, username);
+
+        } else if (keyword != null && year != null && month == null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.deleteFlg = false  and s.product.createdBy = ?3 and s.product.enable = true and s.product.approve = true and  lower(s.product.title) like concat('%',lower(?2) ,'%') and YEAR(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, keyword)
+                    .setParameter(3, username);
+
+        } else if (keyword == null && year != null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.deleteFlg = false and s.product.createdBy = ?3 and s.product.enable = true and s.product.approve = true and   YEAR(s.statisticDay) = ?1 AND month(s.statisticDay) =  ?2 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, month)
+                    .setParameter(3, username);
+        } else if (keyword == null && year == null && month == null) {
+            System.out.println("username: "+username);
+            // trả về tất cả
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product ) " +
+                            "FROM ViewCountStatistic s where s.product.deleteFlg = false  and s.product.createdBy = ?1 and s.product.enable = true and s.product.approve = true " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, username);
+
+        } else if (keyword == null && year == null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
+                            "FROM ViewCountStatistic s where  s.product.deleteFlg = false  and s.product.createdBy = ?2 and s.product.enable = true and s.product.approve = true and  month(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, month)
+                    .setParameter(2, username);
+        } else if (keyword != null && year == null && month != null) {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product) " +
+                            "FROM ViewCountStatistic s " +
+                            "WHERE s.product.deleteFlg = false  and s.product.createdBy = ?3 and s.product.enable = true and s.product.approve = true and  lower(s.product.title) like concat('%',lower(?2) ,'%') and month(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, month)
+                    .setParameter(2, keyword)
+                    .setParameter(3, username);
+        } else {
+            query = entityManager
+                    .createQuery("SELECT  new dtu.thebestprice.payload.response.query.ViewCountModel(sum(s.viewCount) as viewcount, s.product)  " +
+                            "FROM ViewCountStatistic s where  s.product.deleteFlg = false  and s.product.createdBy = ?2 and s.product.enable = true and s.product.approve = true and  year(s.statisticDay) = ?1 " +
+                            "GROUP BY s.product " +
+                            "ORDER BY viewcount desc ")
+                    .setParameter(1, year)
+                    .setParameter(2, username);
+        }
+
+        return getResult(query, pageable);
     }
 
     @Transactional
