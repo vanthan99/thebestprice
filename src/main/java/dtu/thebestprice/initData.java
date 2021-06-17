@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -271,7 +272,7 @@ public class initData {
 
     }
 
-    //    @PostConstruct
+//        @PostConstruct
     public void init() {
 
         System.out.println("Bắt đầu lưu user");
